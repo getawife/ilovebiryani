@@ -13,7 +13,6 @@ function getRatingColor(r) {
     return "#8b5a2b";
 }
 
-// Custom Styled Dropdown Component to replace native select elements
 function CustomSelect({ label, value, options, onChange }) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef(null);
@@ -233,7 +232,6 @@ export default function SearchPage() {
 
     return (
         <div style={{ background: "#0a0f0a", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, var(--font-sans), sans-serif", position: "relative" }}>
-            {/* Full-Screen Subtle Digital Noise Overlay Filter */}
             <div style={{
                 position: "fixed",
                 inset: 0,
@@ -243,10 +241,8 @@ export default function SearchPage() {
                 zIndex: 1
             }} />
 
-            {/* Global Header Integrated */}
             <Header />
 
-            {/* Layout Main Workspace */}
             <div className="search-layout-container" style={{
                 maxWidth: 1400,
                 width: "100%",
@@ -257,7 +253,6 @@ export default function SearchPage() {
                 position: "relative",
                 zIndex: 2
             }}>
-                {/* Left Sidebar Control Dashboard / Changes to Top Bar on Mobile */}
                 <aside className="search-sidebar-panel" style={{
                     width: 260,
                     flexShrink: 0,
@@ -281,7 +276,6 @@ export default function SearchPage() {
                         <span>FILTERS</span>
                     </div>
 
-                    {/* Styled Type Toggle Options */}
                     <div className="type-toggle-container" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                         <label style={{ fontSize: "0.7rem", color: "rgba(232,221,208,0.4)", fontWeight: 700, letterSpacing: "0.06em" }}>TYPE</label>
                         <div className="type-toggle-row" style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
@@ -325,7 +319,6 @@ export default function SearchPage() {
                         </div>
                     </div>
 
-                    {/* Integrated Custom Dropdowns */}
                     <div className="select-dropdowns-wrapper" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                         <CustomSelect label="GENRE" value={filters.genre} options={filterOptions.genres} onChange={(val) => handleFilterChange('genre', val)} />
                         <CustomSelect label="YEAR" value={filters.year} options={filterOptions.years} onChange={(val) => handleFilterChange('year', val)} />
@@ -335,7 +328,6 @@ export default function SearchPage() {
                     </div>
                 </aside>
 
-                {/* Main Results Viewport Grid */}
                 <main style={{ flex: 1, minWidth: 0 }}>
                     <h1 className="search-results-heading" style={{
                         fontSize: "1.1rem",
@@ -370,7 +362,6 @@ export default function SearchPage() {
                 </main>
             </div>
 
-            {/* Integrated Custom Footer Matching Application Layout */}
             <footer style={{
                 borderTop: "1px solid rgba(255,255,255,0.05)",
                 padding: "2.5rem 1rem 2rem",
