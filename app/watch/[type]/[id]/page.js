@@ -1,8 +1,10 @@
-
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from "../../../components/header";
 import PlayerSection from "./PlayerSection";
-import { notFound } from 'next/navigation';
+import SeasonSelector from "../../../components/SeasonSelector";
+import WatchPageClient from "./WatchPageClient";
+import { Film, User, Star, Clock, Play, Calendar } from 'lucide-react';
 
 async function getMediaData(type, id) {
   const url = `https://api.themoviedb.org/3/${type}/${id}?append_to_response=credits,images,watch/providers,recommendations&language=en-US`;
@@ -33,10 +35,11 @@ function formatRuntime(minutes) {
 
 export default async function WatchPage({ params }) {
   const { type, id } = await params;
+
   const data = await getMediaData(type, id);
 
   if (!data) {
-    notFound()
+    notFound();
   }
 
   const isReleased = ["Released", "Returning Series", "Ended"].includes(data.status);
@@ -48,7 +51,6 @@ export default async function WatchPage({ params }) {
   const cast = data.credits?.cast?.slice(0, 8) || [];
   const director = data.credits?.crew?.find((c) => c.job === "Director");
   const backdrops = data.images?.backdrops?.slice(0, 6) || [];
-  const providers = data["watch/providers"]?.results?.US?.flatrate || [];
   const recommendations = data.recommendations?.results?.slice(0, 12) || [];
   const runtime = type === "movie" ? formatRuntime(data.runtime) : null;
   const seasons = type === "tv" ? data.number_of_seasons : null;
@@ -124,12 +126,7 @@ export default async function WatchPage({ params }) {
           display: "grid",
           gridTemplateColumns: "minmax(140px, 200px) 1fr",
           gap: "clamp(1rem, 3vw, 2.5rem)",
-          alignItems: "flex-start",
-          // Mobile: stack vertically
-          "@media (max-width: 768px)": {
-            gridTemplateColumns: "1fr",
-            gap: "1.5rem"
-          }
+          alignItems: "flex-start"
         }}>
 
           <div style={{
@@ -173,11 +170,11 @@ export default async function WatchPage({ params }) {
           <div style={{
             paddingTop: "clamp(0.5rem, 2vw, 1.5rem)",
             width: "100%",
-            minWidth: 0 // Prevents overflow
+            minWidth: 0
           }}>
 
             <h1 style={{
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--font-sans)",
               fontSize: "clamp(1.6rem, 4vw, 3.6rem)",
               letterSpacing: "0.02em",
               lineHeight: 1.05,
@@ -212,7 +209,7 @@ export default async function WatchPage({ params }) {
               maxWidth: "100%",
               fontStyle: "italic"
             }}>
-              "{overview}"
+              {overview}
             </p>
 
             {director && (
@@ -226,46 +223,12 @@ export default async function WatchPage({ params }) {
               </p>
             )}
 
-            <PlayerSection
+            <WatchPageClient
               type={type}
               id={id}
-              seasonsData={validSeasons}
+              validSeasons={validSeasons}
               isReleased={isReleased}
             />
-
-            {providers.length > 0 && (
-              <div style={{ marginTop: "2rem" }}>
-                <SectionLabel>Where to watch</SectionLabel>
-                <div style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "0.5rem",
-                  marginTop: "0.6rem"
-                }}>
-                  {providers.map((p) => (
-                    <div key={p.provider_id} style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      background: "#111811",
-                      border: "1px solid rgba(45,155,78,0.06)",
-                      borderRadius: 6,
-                      padding: "0.35rem 0.7rem",
-                      fontSize: "clamp(0.6rem, 0.8vw, 0.7rem)",
-                      fontWeight: 500,
-                      color: "rgba(232,221,208,0.6)"
-                    }}>
-                      <img
-                        src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
-                        alt={p.provider_name}
-                        style={{ width: 20, height: 20, borderRadius: 4 }}
-                      />
-                      {p.provider_name}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -310,7 +273,7 @@ export default async function WatchPage({ params }) {
                       fontSize: "clamp(1rem, 2vw, 1.4rem)",
                       opacity: 0.3
                     }}>
-                      🎭
+                      <User size={24} />
                     </div>
                   )}
                   <p style={{
@@ -465,20 +428,6 @@ function StatPill({ children, color }) {
   );
 }
 
-function SectionLabel({ children }) {
-  return (
-    <p style={{
-      fontSize: "clamp(0.5rem, 0.7vw, 0.6rem)",
-      fontWeight: 600,
-      letterSpacing: "0.12em",
-      textTransform: "uppercase",
-      color: "rgba(232,221,208,0.25)"
-    }}>
-      {children}
-    </p>
-  );
-}
-
 function Section({ title, children }) {
   return (
     <section style={{ marginTop: "clamp(2rem, 4vw, 3rem)" }}>
@@ -489,12 +438,12 @@ function Section({ title, children }) {
         marginBottom: "1rem"
       }}>
         <h2 style={{
-          fontFamily: "var(--font-display)",
+          fontFamily: "var(--font-sans)",
           fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)",
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: "#e8ddd0",
-          fontWeight: 400
+          fontWeight: 600
         }}>
           {title}
         </h2>

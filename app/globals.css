@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────────────────────
-   Design Tokens
-───────────────────────────────────────────────────────────── */
 @theme {
   --color-bg: #0a0f0a;
   --color-surface: #111811;
@@ -16,6 +13,11 @@
   --color-primary-glow: rgba(45, 155, 78, 0.25);
   --color-primary-dim: rgba(45, 155, 78, 0.12);
 
+  --color-rose: #e8808a;
+  --color-sunset: #f0b87a;
+  --color-lavender: #b8a9c9;
+  --color-mint: #7bc9a8;
+
   --color-cream: #e8ddd0;
   --color-cream-dim: rgba(232, 221, 208, 0.15);
   --color-gold: #c9a84c;
@@ -27,12 +29,8 @@
   --color-text-sub: rgba(232, 221, 208, 0.65);
 
   --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Base 
-───────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -54,9 +52,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Scrollbar 
-───────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -75,23 +70,17 @@ body {
   background: rgba(45, 155, 78, 0.6);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Typography
-───────────────────────────────────────────────────────────── */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   letter-spacing: 0.04em;
-  font-weight: 400;
+  font-weight: 600;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Utility Classes
-───────────────────────────────────────────────────────────── */
 .text-primary {
   color: var(--color-primary);
 }
@@ -255,9 +244,6 @@ h6 {
   font-family: var(--font-sans);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Buttons 
-───────────────────────────────────────────────────────────── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -340,9 +326,6 @@ h6 {
   transform: scale(0.96);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Movie Card 
-───────────────────────────────────────────────────────────── */
 .card-hover:hover .poster-img {
   transform: scale(1.08);
 }
@@ -397,9 +380,6 @@ h6 {
   transform: scale(1.04);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Rating Colors 
-───────────────────────────────────────────────────────────── */
 .rating-excellent {
   color: #2d9b4e;
 }
@@ -416,10 +396,6 @@ h6 {
   color: #8b5a2b;
 }
 
-
-/* ─────────────────────────────────────────────────────────────
-   Modal — emerald
-───────────────────────────────────────────────────────────── */
 @keyframes overlayIn {
   from {
     opacity: 0;
@@ -450,9 +426,6 @@ h6 {
   animation: panelIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Design System Variables
-───────────────────────────────────────────────────────────── */
 :root {
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;

@@ -1,5 +1,4 @@
-
-"use client";
+'use client';
 
 import { useState, useEffect, useCallback } from "react";
 import { Play, X, Clock, Film } from "lucide-react";
@@ -18,18 +17,27 @@ function buildServers(type, id, season, episode) {
   };
 }
 
-export default function PlayerSection({ type, id, seasonsData = [], isReleased = true }) {
+export default function PlayerSection({ type, id, seasonsData = [], isReleased = true, selectedSeason = 1 }) {
   const [showPlayer, setShowPlayer] = useState(false);
   const [showEpisodes, setShowEpisodes] = useState(false);
 
   const validSeasons = seasonsData.filter((s) => s.season_number > 0);
-  const [season, setSeason] = useState(validSeasons.length > 0 ? validSeasons[0].season_number : 1);
+  const [season, setSeason] = useState(selectedSeason || (validSeasons.length > 0 ? validSeasons[0].season_number : 1));
   const [episode, setEpisode] = useState(1);
   const [activeServer, setActiveServer] = useState("Watch Now");
   const [episodesList, setEpisodesList] = useState([]);
   const [loadingEpisodes, setLoadingEpisodes] = useState(false);
 
   const servers = buildServers(type, id, season, episode);
+
+  // Update season when prop changes
+  useEffect(() => {
+    if (selectedSeason && selectedSeason !== season) {
+      setSeason(selectedSeason);
+      setEpisode(1);
+      setEpisodesList([]);
+    }
+  }, [selectedSeason]);
 
   useEffect(() => {
     if (type !== "tv" || !showPlayer || !isReleased) return;
@@ -51,12 +59,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
     const handler = (e) => { if (e.key === "Escape") setShowPlayer(false); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  const handleSeasonChange = useCallback((newSeason) => {
-    setSeason(newSeason);
-    setEpisode(1);
-    setEpisodesList([]);
   }, []);
 
   if (!isReleased) {
@@ -96,52 +98,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
           <Play size={18} />
           Start watching
         </button>
-
-        {type === "tv" && validSeasons.length > 0 && (
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.4rem",
-            flexWrap: "wrap",
-            background: "rgba(45,155,78,0.03)",
-            padding: "0.15rem 0.4rem",
-            borderRadius: 4,
-            border: "1px solid rgba(45,155,78,0.04)"
-          }}>
-            <span style={{
-              fontSize: "0.65rem",
-              color: "rgba(232,221,208,0.3)",
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              marginRight: "0.2rem"
-            }}>
-              Season
-            </span>
-            <div style={{ display: "flex", gap: "0.2rem", flexWrap: "wrap" }}>
-              {validSeasons.slice(0, 10).map((s) => (
-                <button
-                  key={s.season_number}
-                  onClick={() => handleSeasonChange(s.season_number)}
-                  style={{
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: 4,
-                    fontSize: "0.65rem",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    border: "1px solid",
-                    transition: "all 0.2s ease",
-                    borderColor: season === s.season_number ? "rgba(45,155,78,0.3)" : "rgba(45,155,78,0.06)",
-                    background: season === s.season_number ? "rgba(45,155,78,0.1)" : "rgba(45,155,78,0.03)",
-                    color: season === s.season_number ? "#2d9b4e" : "rgba(232,221,208,0.35)",
-                    fontFamily: "var(--font-sans)"
-                  }}
-                >
-                  {s.season_number}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {showPlayer && (
@@ -286,7 +242,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
               overflow: "hidden",
               background: "#000"
             }}>
-
               <div style={{
                 flex: 1,
                 aspectRatio: "16/9",
@@ -311,24 +266,16 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                 />
               </div>
 
-
               {type === "tv" && showEpisodes && (
                 <div style={{
-                  width: "clamp(200px, 30vw, 260px)",  // Responsive!
+                  width: "clamp(200px, 30vw, 260px)",
                   flexShrink: 0,
                   borderLeft: "1px solid rgba(45,155,78,0.04)",
                   background: "rgba(6,12,6,0.95)",
                   display: "flex",
                   flexDirection: "column",
-                  overflow: "hidden",
-                  "@media (max-width: 640px)": {
-                    width: "100%",
-                    borderLeft: "none",
-                    borderTop: "1px solid rgba(45,155,78,0.04)",
-                    maxHeight: "50vh"
-                  }
+                  overflow: "hidden"
                 }}>
-
                   <div style={{
                     padding: "0.5rem 0.6rem",
                     borderBottom: "1px solid rgba(45,155,78,0.04)",
@@ -340,7 +287,11 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                     {validSeasons.slice(0, 12).map((s) => (
                       <button
                         key={s.season_number}
-                        onClick={() => handleSeasonChange(s.season_number)}
+                        onClick={() => {
+                          setSeason(s.season_number);
+                          setEpisode(1);
+                          setEpisodesList([]);
+                        }}
                         style={{
                           padding: "0.15rem 0.5rem",
                           borderRadius: 4,
@@ -524,4 +475,3 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
     </>
   );
 }
-

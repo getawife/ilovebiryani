@@ -1,9 +1,8 @@
-
 import Link from 'next/link';
 import Header from './components/header';
-import { Flame, Tv, Star, Film, Play } from 'lucide-react';
+import { Flame, Tv, Trophy, Popcorn, Play } from 'lucide-react';
+import { ContentRow } from './components/ContentRow';
 
-/* ─── TMDB data fetchers ─── */
 async function fetchTMDB(endpoint) {
   const res = await fetch(
     `https://api.themoviedb.org/3/${endpoint}`,
@@ -19,7 +18,6 @@ async function fetchTMDB(endpoint) {
   return res.json();
 }
 
-/* ─── Helpers ─── */
 function getRatingColor(r) {
   const n = parseFloat(r);
   if (n >= 7.5) return "#2d9b4e";
@@ -27,10 +25,9 @@ function getRatingColor(r) {
   return "#8b5a2b";
 }
 
-/* ─── Page ─── */
 export default async function Home() {
   const [trendingData, popularData, topRatedData, trendingTVData] = await Promise.all([
-    fetchTMDB('trending/movie/day?language=en-US&page=1'),
+    fetchTMDB('trending/movie/week?language=en-US&page=1'),
     fetchTMDB('movie/popular?language=en-US&page=1'),
     fetchTMDB('movie/top_rated?language=en-US&page=1'),
     fetchTMDB('trending/tv/day?language=en-US&page=1'),
@@ -42,6 +39,24 @@ export default async function Home() {
   const topRatedMovies = topRatedData.results.slice(0, 12);
   const trendingTV = trendingTVData.results.slice(0, 12);
 
+  let titleLogoPath = null;
+  try {
+    const heroImages = await fetchTMDB(`movie/${heroMovie.id}/images?include_image_language=en,null`);
+    const titleLogo = heroImages.logos?.find(
+      (logo) => logo.iso_639_1 === 'en' || logo.iso_639_1 === null
+    );
+    titleLogoPath = titleLogo ? titleLogo.file_path : null;
+  } catch (error) {
+    console.error("Failed to fetch hero movie logo:", error);
+  }
+
+  const rows = [
+    { title: "What's Hot", iconName: "Flame", color: "#2d9b4e", data: trendingMovies, type: "movie" },
+    { title: "Binge Material", iconName: "Tv", color: "#c9a84c", data: trendingTV, type: "tv" },
+    { title: "Critics' Choice", iconName: "Trophy", color: "#e8808a", data: topRatedMovies, type: "movie" },
+    { title: "Crowd Favorites", iconName: "Popcorn", color: "#7bc9a8", data: popularMovies, type: "movie" },
+  ];
+
   return (
     <div style={{
       minHeight: "100vh",
@@ -51,7 +66,6 @@ export default async function Home() {
       flexDirection: "column"
     }}>
       <Header />
-
       <main style={{ flex: 1, position: "relative" }}>
         <div style={{
           position: "fixed",
@@ -63,9 +77,7 @@ export default async function Home() {
           backgroundSize: "256px 256px",
           zIndex: 1
         }} />
-
-        <HeroBanner movie={heroMovie} />
-
+        <HeroBanner movie={heroMovie} logoPath={titleLogoPath} />
         <div style={{
           maxWidth: 1400,
           margin: "0 auto",
@@ -73,20 +85,24 @@ export default async function Home() {
           position: "relative",
           zIndex: 2
         }}>
-          <ContentRow title="Trending Today" items={trendingMovies} type="movie" icon={<Flame size={16} color="#2d9b4e" />} />
-          <ContentRow title="Popular on TV" items={trendingTV} type="tv" icon={<Tv size={16} color="#2d9b4e" />} />
-          <ContentRow title="Top Rated" items={topRatedMovies} type="movie" icon={<Star size={16} color="#c9a84c" />} />
-          <ContentRow title="Popular Movies" items={popularMovies} type="movie" icon={<Film size={16} color="#2d9b4e" />} />
+          {rows.map((row) => (
+            <ContentRow
+              key={row.title}
+              title={row.title}
+              iconName={row.iconName}
+              color={row.color}
+              items={row.data}
+              type={row.type}
+            />
+          ))}
         </div>
       </main>
-
       <Footer />
     </div>
   );
 }
 
-/* ─── Hero Banner ─────────────────────────────────────────── */
-function HeroBanner({ movie }) {
+function HeroBanner({ movie, logoPath }) {
   if (!movie) return null;
 
   const backdrop = movie.backdrop_path
@@ -94,8 +110,7 @@ function HeroBanner({ movie }) {
     : null;
   const title = movie.title || movie.name;
   const overview = movie.overview || "";
-  const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "0.0";
-  const year = (movie.release_date || movie.first_air_date || "").split("-")[0];
+  const logoUrl = logoPath ? `https://image.tmdb.org/t/p/w500${logoPath}` : null;
 
   return (
     <div style={{
@@ -116,29 +131,27 @@ function HeroBanner({ movie }) {
             height: "100%",
             objectFit: "cover",
             objectPosition: "center 20%",
-            filter: "brightness(0.75) saturate(0.9)"
+            filter: "brightness(0.6) saturate(0.9)"
           }}
         />
       )}
-
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "linear-gradient(135deg, rgba(10,15,10,0.92) 0%, rgba(10,15,10,0.6) 50%, rgba(10,15,10,0.2) 100%)"
+        background: "linear-gradient(135deg, rgba(10,15,10,0.9) 0%, rgba(10,15,10,0.5) 50%, rgba(10,15,10,0.1) 100%)"
       }} />
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "linear-gradient(to top, rgba(10,15,10,0.95) 0%, rgba(10,15,10,0) 60%)"
+        background: "linear-gradient(to top, rgba(10,15,10,0.95) 0%, rgba(10,15,10,0) 50%)"
       }} />
-
       <div style={{
         position: "absolute",
         bottom: 0,
         left: "10%",
         width: "80%",
         height: "40%",
-        background: "radial-gradient(ellipse at center, rgba(45,155,78,0.06) 0%, transparent 70%)",
+        background: "radial-gradient(ellipse at center, rgba(45,155,78,0.05) 0%, transparent 70%)",
         pointerEvents: "none"
       }} />
 
@@ -151,216 +164,56 @@ function HeroBanner({ movie }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
-        paddingBottom: "3.5rem"
+        paddingBottom: "4.5rem"
       }}>
-        <div style={{ maxWidth: 560 }} className="fade-up">
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            marginBottom: "0.75rem"
-          }}>
-            <span style={{
-              fontSize: "0.6rem",
-              fontWeight: 600,
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              color: "#2d9b4e",
-              background: "rgba(45,155,78,0.1)",
-              padding: "0.15rem 0.6rem",
-              borderRadius: "2px",
-              border: "1px solid rgba(45,155,78,0.15)",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.4rem"
+        <div style={{ flex: 1, maxWidth: 640, display: "flex", flexDirection: "column", justifyContent: "flex-end" }} className="fade-up">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={title}
+              style={{
+                maxHeight: "clamp(70px, 14vh, 130px)",
+                maxWidth: "100%",
+                objectFit: "contain",
+                objectPosition: "left bottom",
+                marginBottom: "1.5rem",
+                display: "block"
+              }}
+            />
+          ) : (
+            <h1 style={{
+              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontWeight: 800,
+              marginBottom: "1rem",
+              color: "#e8ddd0",
+              letterSpacing: "-0.02em"
             }}>
-              <Film size={12} />
-              Featured
-            </span>
-            <span style={{ fontSize: "0.6rem", fontWeight: 400, color: "rgba(232,221,208,0.3)", letterSpacing: "0.1em" }}>
-              {year}
-            </span>
-            <span style={{ fontSize: "0.6rem", fontWeight: 600, color: getRatingColor(rating), letterSpacing: "0.05em" }}>
-              ★ {rating}
-            </span>
-          </div>
-
-          <h1 style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(2.6rem, 6vw, 4.8rem)",
-            letterSpacing: "0.02em",
-            lineHeight: 1.05,
-            marginBottom: "0.75rem",
-            fontWeight: 700,
-            color: "#e8ddd0"
-          }}>
-            {title}
-          </h1>
+              {title}
+            </h1>
+          )}
 
           <p style={{
-            fontSize: "0.9rem",
+            fontSize: "clamp(0.85rem, 1.1vw, 1rem)",
             lineHeight: 1.8,
-            color: "rgba(232,221,208,0.65)",
-            marginBottom: "1.5rem",
-            maxWidth: "90%",
-            fontStyle: "italic"
+            color: "rgba(232,221,208,0.75)",
+            marginBottom: "1.75rem",
+            maxWidth: "100%"
           }}>
-            "{overview}"
+            {overview}
           </p>
 
-          <Link href={`/watch/movie/${movie.id}`} className="hero-btn">
-            <Play size={18} />
-            Watch Now
-          </Link>
+          <div>
+            <Link href={`/watch/movie/${movie.id}`} className="hero-btn">
+              <Play size={18} />
+              Watch Now
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-/* ─── Content Row ─────────────────────────────────────────── */
-function ContentRow({ title, items, type, icon }) {
-  return (
-    <section style={{ marginTop: "3rem" }}>
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        marginBottom: "0.75rem",
-        padding: "0 0.25rem"
-      }}>
-        {icon}
-        <h2 style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "1.2rem",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "#e8ddd0",
-          fontWeight: 700,
-          position: "relative"
-        }}>
-          {title}
-          <span style={{
-            position: "absolute",
-            bottom: "-2px",
-            left: 0,
-            width: "40%",
-            height: "2px",
-            background: "linear-gradient(90deg, rgba(45,155,78,0.3), transparent)"
-          }} />
-        </h2>
-      </div>
-      <div className="scroll-row">
-        {items.map((item) => (
-          <MovieCard key={item.id} item={item} type={type} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ─── Movie Card ──────────────────────────────────────────── */
-function MovieCard({ item, type }) {
-  const poster = item.poster_path
-    ? `https://image.tmdb.org/t/p/w400${item.poster_path}`
-    : `https://placehold.co/400x600/1a221a/8a7a6a?text=No+Image`;
-
-  const title = item.title || item.name;
-  const year = (item.release_date || item.first_air_date || "").split("-")[0];
-  const rating = item.vote_average ? item.vote_average.toFixed(1) : "0.0";
-  const href = `/watch/${type || item.media_type || "movie"}/${item.id}`;
-
-  return (
-    <Link href={href} style={{
-      display: "block",
-      width: 160,
-      textDecoration: "none",
-      flexShrink: 0,
-      transition: "all 0.3s ease"
-    }}>
-      <div className="card-hover" style={{
-        background: "#111811",
-        borderRadius: 8,
-        overflow: "hidden",
-        border: "1px solid rgba(150,200,150,0.06)",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
-      }}>
-        <div style={{
-          position: "relative",
-          width: "100%",
-          aspectRatio: "2/3",
-          overflow: "hidden",
-          background: "#0a0f0a"
-        }}>
-          <img
-            src={poster}
-            alt={title}
-            loading="lazy"
-            className="poster-img"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-              filter: "brightness(0.92) saturate(0.95)"
-            }}
-          />
-
-          <div style={{
-            position: "absolute",
-            bottom: 8,
-            left: 8,
-            background: "rgba(0,0,0,0.7)",
-            backdropFilter: "blur(6px)",
-            borderRadius: 4,
-            padding: "0.15rem 0.5rem",
-            fontSize: "0.6rem",
-            fontWeight: 600,
-            color: getRatingColor(rating),
-            display: "flex",
-            alignItems: "center",
-            gap: 3,
-            border: "1px solid rgba(255,255,255,0.05)"
-          }}>
-            ★ {rating}
-          </div>
-
-          <div className="play-overlay">
-            <div className="play-btn">
-              <Play size={18} fill="white" style={{ marginLeft: 2 }} />
-            </div>
-          </div>
-        </div>
-
-        <div style={{ padding: "0.6rem 0.7rem 0.7rem" }}>
-          <p style={{
-            fontWeight: 500,
-            fontSize: "0.8rem",
-            color: "#e8ddd0",
-            lineHeight: 1.3,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            marginBottom: "0.2rem",
-            letterSpacing: "0.02em"
-          }}>
-            {title}
-          </p>
-          <p style={{
-            fontSize: "0.65rem",
-            color: "rgba(232,221,208,0.3)",
-            letterSpacing: "0.08em"
-          }}>
-            {year || "Coming Soon"}
-          </p>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-/* ─── Footer ──────────────────────────────────────────────── */
 function Footer() {
   return (
     <footer style={{
@@ -386,28 +239,34 @@ function Footer() {
           marginBottom: "0.25rem"
         }}>
           <span style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-sans)",
             fontSize: "1.6rem",
             color: "#2d9b4e",
             letterSpacing: "0.08em",
             fontWeight: 700
           }}>ILOVE</span>
           <span style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-sans)",
             fontSize: "1.6rem",
             color: "#e8ddd0",
             letterSpacing: "0.08em",
             fontWeight: 400
           }}>BIRYANI</span>
         </Link>
-
         <p style={{
           fontSize: "0.7rem",
           color: "rgba(232,221,208,0.2)",
           marginTop: "0.25rem",
           letterSpacing: "0.04em"
         }}>
-          ILoveBiryani hosts no content itself. All content is provided by third parties.
+          Data from{" "}
+          <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" style={{
+            color: "#2d9b4e",
+            textDecoration: "none",
+            transition: "color 0.2s ease"
+          }}>TMDB</a>.
+          <span style={{ display: "inline-block", margin: "0 0.5rem", opacity: 0.3 }}>·</span>
+          All content is provided by third parties.
         </p>
       </div>
     </footer>
