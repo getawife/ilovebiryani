@@ -5,15 +5,15 @@ import { Play, X, Clock, Film } from "lucide-react";
 
 function buildServers(type, id, season, episode) {
   return {
-    "Watch Now": type === "tv"
+    "Server 1": type === "tv"
       ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`
       : `https://vidsrc.to/embed/movie/${id}`,
-    "Alt Stream": type === "tv"
+    "Server 2": type === "tv"
       ? `https://vidsuper.net/embed/tv/${id}/${season}/${episode}`
       : `https://vidsuper.net/embed/movie/${id}`,
-    "Backup": type === "tv"
-      ? `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${season}&episode=${episode}`
-      : `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
+    "Server 3": type === "tv"
+      ? `https://vidrock.ru/tv/${id}/${season}/${episode}`
+      : `https://vidrock.ru/movie/${id}`,
   };
 }
 
