@@ -18,13 +18,6 @@ async function fetchTMDB(endpoint) {
   return res.json();
 }
 
-function getRatingColor(r) {
-  const n = parseFloat(r);
-  if (n >= 7.5) return "#2d9b4e";
-  if (n >= 6) return "#c9a84c";
-  return "#8b5a2b";
-}
-
 export default async function Home() {
   const [trendingData, popularData, topRatedData, trendingTVData] = await Promise.all([
     fetchTMDB('trending/movie/week?language=en-US&page=1'),
@@ -57,16 +50,24 @@ export default async function Home() {
     { title: "Crowd Favorites", iconName: "Popcorn", color: "#7bc9a8", data: popularMovies, type: "movie" },
   ];
 
+  const backdrop = heroMovie?.backdrop_path
+    ? `https://image.tmdb.org/t/p/original${heroMovie.backdrop_path}`
+    : null;
+
   return (
     <div style={{
       minHeight: "100vh",
       background: "#0a0f0a",
       color: "#e8ddd0",
       display: "flex",
-      flexDirection: "column"
+      flexDirection: "column",
+      position: "relative",
+      isolation: "isolate"
     }}>
       <Header />
+
       <main style={{ flex: 1, position: "relative" }}>
+        {/* Grain Noise Overlay */}
         <div style={{
           position: "fixed",
           inset: 0,
@@ -75,13 +76,75 @@ export default async function Home() {
           backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 256 256\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noise)\" opacity=\"1\"/%3E%3C/svg%3E')",
           backgroundRepeat: "repeat",
           backgroundSize: "256px 256px",
-          zIndex: 1
+          zIndex: 5
         }} />
+
+        {/* FIXED BACKGROUND CANVASES */}
+        {backdrop && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "65vh",
+            zIndex: -2,
+            overflow: "hidden",
+            pointerEvents: "none"
+          }}>
+            <img
+              src={backdrop}
+              alt=""
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center 20%",
+                filter: "brightness(0.22) saturate(0.75)"
+              }}
+            />
+            <div style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to bottom, transparent 20%, #0a0f0a 100%)"
+            }} />
+          </div>
+        )}
+
+        {/* AMBIENT GLOW LAYER */}
+        {backdrop && (
+          <div style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: `url(${backdrop})`,
+            backgroundSize: "100% auto",
+            backgroundPosition: "center -10%",
+            filter: "blur(150px) opacity(0.14) saturate(2)",
+            pointerEvents: "none",
+            zIndex: -1
+          }} />
+        )}
+
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "linear-gradient(to right, rgba(10,15,10,0.5) 0%, transparent 50%)",
+          pointerEvents: "none",
+          zIndex: -1
+        }} />
+
         <HeroBanner movie={heroMovie} logoPath={titleLogoPath} />
+
+        {/* Content Rows Content Wrapper aligned to uniform max-width */}
         <div style={{
           maxWidth: 1400,
           margin: "0 auto",
-          padding: "0 1.5rem 4rem",
+          padding: "0 1rem 4rem",
           position: "relative",
           zIndex: 2
         }}>
@@ -97,6 +160,7 @@ export default async function Home() {
           ))}
         </div>
       </main>
+
       <Footer />
     </div>
   );
@@ -105,9 +169,6 @@ export default async function Home() {
 function HeroBanner({ movie, logoPath }) {
   if (!movie) return null;
 
-  const backdrop = movie.backdrop_path
-    ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
-    : null;
   const title = movie.title || movie.name;
   const overview = movie.overview || "";
   const logoUrl = logoPath ? `https://image.tmdb.org/t/p/w500${logoPath}` : null;
@@ -116,95 +177,72 @@ function HeroBanner({ movie, logoPath }) {
     <div style={{
       position: "relative",
       width: "100%",
-      height: "clamp(440px, 65vh, 720px)",
-      overflow: "hidden",
-      isolation: "isolate"
+      height: "clamp(440px, 62vh, 700px)",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-end"
     }}>
-      {backdrop && (
-        <img
-          src={backdrop}
-          alt={title}
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center 20%",
-            filter: "brightness(0.6) saturate(0.9)"
-          }}
-        />
-      )}
       <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "linear-gradient(135deg, rgba(10,15,10,0.9) 0%, rgba(10,15,10,0.5) 50%, rgba(10,15,10,0.1) 100%)"
-      }} />
-      <div style={{
-        position: "absolute",
-        inset: 0,
-        background: "linear-gradient(to top, rgba(10,15,10,0.95) 0%, rgba(10,15,10,0) 50%)"
-      }} />
-      <div style={{
-        position: "absolute",
-        bottom: 0,
-        left: "10%",
-        width: "80%",
-        height: "40%",
-        background: "radial-gradient(ellipse at center, rgba(45,155,78,0.05) 0%, transparent 70%)",
-        pointerEvents: "none"
-      }} />
-
-      <div style={{
-        position: "relative",
-        height: "100%",
+        width: "100%",
         maxWidth: 1400,
         margin: "0 auto",
-        padding: "0 1.5rem",
+        padding: "0 1rem 4.5rem",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "flex-end",
-        paddingBottom: "4.5rem"
+        justifyContent: "flex-end"
       }}>
-        <div style={{ flex: 1, maxWidth: 640, display: "flex", flexDirection: "column", justifyContent: "flex-end" }} className="fade-up">
+        <div style={{ flex: 1, maxWidth: 650, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
           {logoUrl ? (
             <img
               src={logoUrl}
               alt={title}
               style={{
-                maxHeight: "clamp(70px, 14vh, 130px)",
-                maxWidth: "100%",
+                maxHeight: "clamp(65px, 12vh, 110px)",
+                maxWidth: "85%",
                 objectFit: "contain",
                 objectPosition: "left bottom",
-                marginBottom: "1.5rem",
+                marginBottom: "1.25rem",
                 display: "block"
               }}
             />
           ) : (
             <h1 style={{
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontFamily: "var(--font-sans)",
+              fontSize: "clamp(1.8rem, 4vw, 3.2rem)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              marginBottom: "0.85rem",
               fontWeight: 800,
-              marginBottom: "1rem",
-              color: "#e8ddd0",
-              letterSpacing: "-0.02em"
+              color: "#e8ddd0"
             }}>
               {title}
             </h1>
           )}
 
           <p style={{
-            fontSize: "clamp(0.85rem, 1.1vw, 1rem)",
+            fontSize: "clamp(0.85rem, 1.1vw, 0.95rem)",
             lineHeight: 1.8,
-            color: "rgba(232,221,208,0.75)",
-            marginBottom: "1.75rem",
+            color: "rgba(232,221,208,0.7)",
+            marginBottom: "1.5rem",
             maxWidth: "100%"
           }}>
             {overview}
           </p>
 
           <div>
-            <Link href={`/watch/movie/${movie.id}`} className="hero-btn">
-              <Play size={18} />
+            <Link href={`/watch/movie/${movie.id}`} className="hero-btn" style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.6rem 1.2rem",
+              borderRadius: "6px",
+              background: "#2d9b4e",
+              color: "#0a0f0a",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              textDecoration: "none"
+            }}>
+              <Play size={16} fill="#0a0f0a" />
               Watch Now
             </Link>
           </div>
@@ -217,8 +255,8 @@ function HeroBanner({ movie, logoPath }) {
 function Footer() {
   return (
     <footer style={{
-      borderTop: "1px solid rgba(150,200,150,0.05)",
-      padding: "2.5rem 1.5rem 2rem",
+      borderTop: "1px solid rgba(255,255,255,0.05)",
+      padding: "2.5rem 1rem 2rem",
       textAlign: "center",
       background: "linear-gradient(180deg, transparent, rgba(10,15,10,0.9))",
       position: "relative"
@@ -262,8 +300,7 @@ function Footer() {
           Data from{" "}
           <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" style={{
             color: "#2d9b4e",
-            textDecoration: "none",
-            transition: "color 0.2s ease"
+            textDecoration: "none"
           }}>TMDB</a>.
           <span style={{ display: "inline-block", margin: "0 0.5rem", opacity: 0.3 }}>·</span>
           All content is provided by third parties.
