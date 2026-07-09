@@ -1,8 +1,9 @@
+
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('query');
+    const query = searchParams.get('q');
 
     if (!query) {
         return NextResponse.json({ results: [] });
@@ -21,18 +22,13 @@ export async function GET(request) {
 
         const data = await res.json();
 
+        // Return the full data structure that header expects
+        // Filter but keep the original structure
         const filteredResults = (data.results || [])
-            .filter(item => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path)
-            .map(item => ({
-                id: item.id,
-                title: item.title || item.name,
-                type: item.media_type,
-                year: (item.release_date || item.first_air_date || '').split('-')[0],
-                poster: `https://image.tmdb.org/t/p/w200${item.poster_path}`
-            }));
+            .filter(item => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path);
 
         return NextResponse.json({ results: filteredResults });
     } catch (error) {
-        return NextResponse.json({ error: 'Failed to fetch from TMDB' }, { status: 500 });
+        return NextResponse.json({ results: [] }, { status: 500 });
     }
 }
