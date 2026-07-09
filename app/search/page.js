@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Play, Star, SlidersHorizontal, ChevronDown } from 'lucide-react';
@@ -106,7 +106,7 @@ function CustomSelect({ label, value, options, onChange }) {
     );
 }
 
-export default function SearchPage() {
+function SearchContent() {
     const searchParams = useSearchParams();
     const queryParam = searchParams.get('q') || '';
 
@@ -231,6 +231,129 @@ export default function SearchPage() {
     }, [queryParam, filters]);
 
     return (
+        <div className="search-layout-container" style={{
+            maxWidth: 1400,
+            width: "100%",
+            margin: "0 auto",
+            display: "flex",
+            gap: "2.5rem",
+            flex: 1,
+            position: "relative",
+            zIndex: 2
+        }}>
+            <aside className="search-sidebar-panel" style={{
+                width: 260,
+                flexShrink: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+                alignSelf: "flex-start",
+                position: "sticky",
+                top: "110px"
+            }}>
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    color: "#2d9b4e",
+                    fontSize: "0.8rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.06em"
+                }}>
+                    <SlidersHorizontal size={14} />
+                    <span>FILTERS</span>
+                </div>
+
+                <div className="type-toggle-container" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <label style={{ fontSize: "0.7rem", color: "rgba(232,221,208,0.4)", fontWeight: 700, letterSpacing: "0.06em" }}>TYPE</label>
+                    <div className="type-toggle-row" style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                        {[
+                            { id: 'all', label: 'All Titles' },
+                            { id: 'movie', label: 'Movies' },
+                            { id: 'tv', label: 'TV Series' }
+                        ].map((t) => {
+                            const isSelected = filters.type === t.id;
+                            return (
+                                <div
+                                    key={t.id}
+                                    onClick={() => handleFilterChange('type', t.id)}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.75rem",
+                                        padding: "0.6rem 0.75rem",
+                                        borderRadius: "8px",
+                                        background: isSelected ? "rgba(45,155,78,0.08)" : "transparent",
+                                        border: isSelected ? "1px solid rgba(45,155,78,0.3)" : "1px solid rgba(232,221,208,0.05)",
+                                        color: isSelected ? "#2d9b4e" : "#e8ddd0",
+                                        cursor: "pointer",
+                                        transition: "all 0.2s ease",
+                                        fontSize: "0.85rem",
+                                        fontWeight: isSelected ? 600 : 400
+                                    }}
+                                >
+                                    <div style={{
+                                        width: 14,
+                                        height: 14,
+                                        borderRadius: "50%",
+                                        border: isSelected ? "4px solid #2d9b4e" : "2px solid rgba(232,221,208,0.2)",
+                                        background: isSelected ? "#0a0f0a" : "transparent",
+                                        transition: "all 0.2s ease"
+                                    }} />
+                                    <span>{t.label}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className="select-dropdowns-wrapper" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                    <CustomSelect label="GENRE" value={filters.genre} options={filterOptions.genres} onChange={(val) => handleFilterChange('genre', val)} />
+                    <CustomSelect label="YEAR" value={filters.year} options={filterOptions.years} onChange={(val) => handleFilterChange('year', val)} />
+                    <CustomSelect label="COUNTRY" value={filters.country} options={filterOptions.countries} onChange={(val) => handleFilterChange('country', val)} />
+                    <CustomSelect label="LANGUAGE" value={filters.language} options={filterOptions.languages} onChange={(val) => handleFilterChange('language', val)} />
+                    <CustomSelect label="MINIMUM RATING" value={filters.rating} options={filterOptions.ratings} onChange={(val) => handleFilterChange('rating', val)} />
+                </div>
+            </aside>
+
+            <main style={{ flex: 1, minWidth: 0 }}>
+                <h1 className="search-results-heading" style={{
+                    fontSize: "1.1rem",
+                    color: "#e8ddd0",
+                    fontWeight: 500,
+                    marginBottom: "1.75rem"
+                }}>
+                    Search Results for: <span style={{ color: "#2d9b4e", fontWeight: 700 }}>"{queryParam}"</span>
+                </h1>
+
+                {loading ? (
+                    <div className="search-results-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: "1.5rem" }}>
+                        {[...Array(8)].map((_, i) => (
+                            <div key={`sk-${i}`} style={{ background: "#111811", borderRadius: 8, aspectRatio: "2/3", border: "1px solid rgba(150,200,150,0.05)", animation: "pulse 1.5s infinite" }} />
+                        ))}
+                    </div>
+                ) : items.length === 0 ? (
+                    <div style={{ textAlign: "center", padding: "5rem 2rem", background: "#111811", borderRadius: 10, border: "1px solid rgba(45,155,78,0.05)" }}>
+                        <p style={{ color: "rgba(232,221,208,0.3)", fontSize: "0.85rem" }}>No matching records matched your criteria.</p>
+                    </div>
+                ) : (
+                    <div className="search-results-grid" style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))",
+                        gap: "1.5rem"
+                    }}>
+                        {items.map((item) => (
+                            <SearchCard key={item.id} item={item} defaultType={filters.type !== 'all' ? filters.type : 'movie'} />
+                        ))}
+                    </div>
+                )}
+            </main>
+        </div>
+    );
+}
+
+export default function SearchPage() {
+    return (
         <div style={{ background: "#0a0f0a", minHeight: "100vh", display: "flex", flexDirection: "column", fontFamily: "Inter, var(--font-sans), sans-serif", position: "relative" }}>
             <div style={{
                 position: "fixed",
@@ -243,124 +366,13 @@ export default function SearchPage() {
 
             <Header />
 
-            <div className="search-layout-container" style={{
-                maxWidth: 1400,
-                width: "100%",
-                margin: "0 auto",
-                display: "flex",
-                gap: "2.5rem",
-                flex: 1,
-                position: "relative",
-                zIndex: 2
-            }}>
-                <aside className="search-sidebar-panel" style={{
-                    width: 260,
-                    flexShrink: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "1.5rem",
-                    alignSelf: "flex-start",
-                    position: "sticky",
-                    top: "90px"
-                }}>
-                    <div style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                        color: "#2d9b4e",
-                        fontSize: "0.8rem",
-                        fontWeight: 700,
-                        letterSpacing: "0.06em"
-                    }}>
-                        <SlidersHorizontal size={14} />
-                        <span>FILTERS</span>
-                    </div>
-
-                    <div className="type-toggle-container" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                        <label style={{ fontSize: "0.7rem", color: "rgba(232,221,208,0.4)", fontWeight: 700, letterSpacing: "0.06em" }}>TYPE</label>
-                        <div className="type-toggle-row" style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-                            {[
-                                { id: 'all', label: 'All Titles' },
-                                { id: 'movie', label: 'Movies' },
-                                { id: 'tv', label: 'TV Series' }
-                            ].map((t) => {
-                                const isSelected = filters.type === t.id;
-                                return (
-                                    <div
-                                        key={t.id}
-                                        onClick={() => handleFilterChange('type', t.id)}
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: "0.75rem",
-                                            padding: "0.6rem 0.75rem",
-                                            borderRadius: "8px",
-                                            background: isSelected ? "rgba(45,155,78,0.08)" : "transparent",
-                                            border: isSelected ? "1px solid rgba(45,155,78,0.3)" : "1px solid rgba(232,221,208,0.05)",
-                                            color: isSelected ? "#2d9b4e" : "#e8ddd0",
-                                            cursor: "pointer",
-                                            transition: "all 0.2s ease",
-                                            fontSize: "0.85rem",
-                                            fontWeight: isSelected ? 600 : 400
-                                        }}
-                                    >
-                                        <div style={{
-                                            width: 14,
-                                            height: 14,
-                                            borderRadius: "50%",
-                                            border: isSelected ? "4px solid #2d9b4e" : "2px solid rgba(232,221,208,0.2)",
-                                            background: isSelected ? "#0a0f0a" : "transparent",
-                                            transition: "all 0.2s ease"
-                                        }} />
-                                        <span>{t.label}</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    <div className="select-dropdowns-wrapper" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                        <CustomSelect label="GENRE" value={filters.genre} options={filterOptions.genres} onChange={(val) => handleFilterChange('genre', val)} />
-                        <CustomSelect label="YEAR" value={filters.year} options={filterOptions.years} onChange={(val) => handleFilterChange('year', val)} />
-                        <CustomSelect label="COUNTRY" value={filters.country} options={filterOptions.countries} onChange={(val) => handleFilterChange('country', val)} />
-                        <CustomSelect label="LANGUAGE" value={filters.language} options={filterOptions.languages} onChange={(val) => handleFilterChange('language', val)} />
-                        <CustomSelect label="MINIMUM RATING" value={filters.rating} options={filterOptions.ratings} onChange={(val) => handleFilterChange('rating', val)} />
-                    </div>
-                </aside>
-
-                <main style={{ flex: 1, minWidth: 0 }}>
-                    <h1 className="search-results-heading" style={{
-                        fontSize: "1.1rem",
-                        color: "#e8ddd0",
-                        fontWeight: 500,
-                        marginBottom: "1.75rem"
-                    }}>
-                        Search Results for: <span style={{ color: "#2d9b4e", fontWeight: 700 }}>"{queryParam}"</span>
-                    </h1>
-
-                    {loading ? (
-                        <div className="search-results-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: "1.5rem" }}>
-                            {[...Array(8)].map((_, i) => (
-                                <div key={`sk-${i}`} style={{ background: "#111811", borderRadius: 8, aspectRatio: "2/3", border: "1px solid rgba(150,200,150,0.05)", animation: "pulse 1.5s infinite" }} />
-                            ))}
-                        </div>
-                    ) : items.length === 0 ? (
-                        <div style={{ textAlign: "center", padding: "5rem 2rem", background: "#111811", borderRadius: 10, border: "1px solid rgba(45,155,78,0.05)" }}>
-                            <p style={{ color: "rgba(232,221,208,0.3)", fontSize: "0.85rem" }}>No matching records matched your criteria.</p>
-                        </div>
-                    ) : (
-                        <div className="search-results-grid" style={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))",
-                            gap: "1.5rem"
-                        }}>
-                            {items.map((item) => (
-                                <SearchCard key={item.id} item={item} defaultType={filters.type !== 'all' ? filters.type : 'movie'} />
-                            ))}
-                        </div>
-                    )}
-                </main>
-            </div>
+            <Suspense fallback={
+                <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "8rem 2rem" }}>
+                    <div style={{ background: "#111811", width: "40px", height: "40px", borderRadius: "50%", border: "2px solid rgba(45,155,78,0.2)", borderTopColor: "#2d9b4e", animation: "pulse 1s infinite" }} />
+                </div>
+            }>
+                <SearchContent />
+            </Suspense>
 
             <footer style={{
                 borderTop: "1px solid rgba(255,255,255,0.05)",
@@ -394,17 +406,18 @@ export default function SearchPage() {
                     opacity: 1 !important;
                 }
                 
-                .search-layout-container {
-                    padding: 8rem 2rem 5rem 2rem;
+                /* Layout padding shifted down to let header stay perfectly transparent over content */
+                :global(.search-layout-container) {
+                    padding: 7.5rem 2rem 5rem 2rem;
                 }
 
                 @media (max-width: 900px) {
-                    .search-layout-container {
+                    :global(.search-layout-container) {
                         flex-direction: column;
                         gap: 1.5rem !important;
                         padding: 6.5rem 1rem 4rem 1rem !important;
                     }
-                    .search-sidebar-panel {
+                    :global(.search-sidebar-panel) {
                         width: 100% !important;
                         position: relative !important;
                         top: 0 !important;
@@ -413,47 +426,47 @@ export default function SearchPage() {
                         border-radius: 12px;
                         border: 1px solid rgba(45,155,78,0.08);
                     }
-                    .type-toggle-row {
+                    :global(.type-toggle-row) {
                         flex-direction: row !important;
                         flex-wrap: wrap;
                     }
-                    .type-toggle-row > div {
+                    :global(.type-toggle-row > div) {
                         flex: 1;
                         min-width: 100px;
                         justify-content: center;
                     }
-                    .select-dropdowns-wrapper {
+                    :global(.select-dropdowns-wrapper) {
                         display: grid !important;
                         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
                         gap: 1rem !important;
                     }
-                    .search-results-heading {
+                    :global(.search-results-heading) {
                         margin-top: 0.5rem;
                         margin-bottom: 1.25rem !important;
                     }
                 }
 
                 @media (max-width: 500px) {
-                    .select-dropdowns-wrapper {
+                    :global(.select-dropdowns-wrapper) {
                         grid-template-columns: repeat(2, 1fr) !important;
                     }
-                    .filter-select-group:last-child {
+                    :global(.filter-select-group:last-child) {
                         grid-column: span 2;
                     }
-                    .search-results-grid {
+                    :global(.search-results-grid) {
                         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
                         gap: 1rem !important;
                     }
                 }
                 
                 @media (max-width: 360px) {
-                    .select-dropdowns-wrapper {
+                    :global(.select-dropdowns-wrapper) {
                         grid-template-columns: 1fr !important;
                     }
-                    .filter-select-group:last-child {
+                    :global(.filter-select-group:last-child) {
                         grid-column: auto;
                     }
-                    .search-results-grid {
+                    :global(.search-results-grid) {
                         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
                     }
                 }
