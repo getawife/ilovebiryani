@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -9,19 +8,11 @@ export default function Header() {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const dropdownRef = useRef(null);
     const searchTimeout = useRef(null);
     const mobileMenuRef = useRef(null);
-
-    // Detect scroll for header blur effect
-    useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 20);
-        window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
 
     useEffect(() => {
         if (!query.trim()) {
@@ -81,8 +72,14 @@ export default function Header() {
         return () => document.removeEventListener("mousedown", handler);
     }, [isMobileMenuOpen]);
 
+    // Freeze body scrolling only when mobile menu is active
     useEffect(() => {
-        document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
+        const isMobileScreen = window.innerWidth <= 768;
+        if (isMobileMenuOpen && isMobileScreen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
         return () => { document.body.style.overflow = ""; };
     }, [isMobileMenuOpen]);
 
@@ -99,28 +96,21 @@ export default function Header() {
                 position: "sticky",
                 top: 0,
                 zIndex: 50,
-                transition: "all 0.4s ease",
-                background: scrolled
-                    ? "rgba(10,15,10,0.92)"
-                    : "rgba(10,15,10,0.4)",
-                backdropFilter: scrolled ? "blur(20px) saturate(140%)" : "blur(8px)",
-                borderBottom: scrolled
-                    ? "1px solid rgba(45,155,78,0.06)"
-                    : "1px solid transparent",
-                boxShadow: scrolled
-                    ? "0 4px 32px rgba(0,0,0,0.4)"
-                    : "none"
+                background: "transparent",
+                backdropFilter: "none",
+                borderBottom: "1px solid transparent",
+                boxShadow: "none"
             }}
         >
             <div style={{
                 maxWidth: 1400,
                 margin: "0 auto",
-                padding: "0.7rem 1.5rem",
+                padding: "0.7rem 1rem",
                 display: "flex",
                 alignItems: "center",
                 gap: "1.5rem",
                 position: "relative",
-                flexWrap: "wrap"
+                flexWrap: "nowrap"
             }}>
 
                 <Link href="/" style={{
@@ -131,7 +121,7 @@ export default function Header() {
                     flexShrink: 0
                 }}>
                     <span style={{
-                        fontFamily: "var(--font-display)",
+                        fontFamily: "var(--font-sans)",
                         fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
                         color: "#2d9b4e",
                         fontWeight: 700,
@@ -140,7 +130,7 @@ export default function Header() {
                         ILOVE
                     </span>
                     <span style={{
-                        fontFamily: "var(--font-display)",
+                        fontFamily: "var(--font-sans)",
                         fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
                         color: "#e8ddd0",
                         fontWeight: 400,
@@ -153,9 +143,8 @@ export default function Header() {
                 <div ref={dropdownRef} style={{
                     position: "relative",
                     flex: 1,
-                    maxWidth: "clamp(180px, 40vw, 420px)",
-                    minWidth: "clamp(120px, 20vw, 160px)",
-                    order: 2
+                    maxWidth: 420,
+                    minWidth: 140
                 }}>
                     <div style={{
                         position: "relative",
@@ -186,8 +175,7 @@ export default function Header() {
                                 fontSize: "clamp(0.75rem, 1vw, 0.85rem)",
                                 outline: "none",
                                 transition: "all 0.25s ease",
-                                fontFamily: "var(--font-sans)",
-                                minWidth: "clamp(80px, 15vw, 120px)"
+                                fontFamily: "var(--font-sans)"
                             }}
                             onFocus={(e) => {
                                 e.currentTarget.style.borderColor = "rgba(45,155,78,0.2)";
@@ -361,68 +349,64 @@ export default function Header() {
                     gap: "clamp(0.4rem, 1vw, 0.75rem)",
                     alignItems: "center",
                     flexShrink: 0,
-                    marginLeft: "auto",
-                    order: 3
+                    marginLeft: "auto"
                 }}>
-                    <Link href="/" style={{
-                        color: "rgba(232,221,208,0.5)",
-                        textDecoration: "none",
-                        fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
-                        fontWeight: 500,
-                        letterSpacing: "0.04em",
-                        transition: "color 0.2s ease",
-                        padding: "0.3rem 0.5rem",
-                        borderRadius: 4,
-                        whiteSpace: "nowrap"
-                    }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
-                        onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
-                    >
-                        Home
-                    </Link>
-                    <span style={{
-                        color: "rgba(45,155,78,0.06)",
-                        fontSize: "clamp(0.6rem, 0.8vw, 0.8rem)"
-                    }}>|</span>
-                    <Link href="/movies" style={{
-                        color: "rgba(232,221,208,0.5)",
-                        textDecoration: "none",
-                        fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
-                        fontWeight: 500,
-                        letterSpacing: "0.04em",
-                        transition: "color 0.2s ease",
-                        padding: "0.3rem 0.5rem",
-                        borderRadius: 4,
-                        whiteSpace: "nowrap"
-                    }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
-                        onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
-                    >
-                        Films
-                    </Link>
-                    <span style={{
-                        color: "rgba(45,155,78,0.06)",
-                        fontSize: "clamp(0.6rem, 0.8vw, 0.8rem)"
-                    }}>|</span>
-                    <Link href="/tv" style={{
-                        color: "rgba(232,221,208,0.5)",
-                        textDecoration: "none",
-                        fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
-                        fontWeight: 500,
-                        letterSpacing: "0.04em",
-                        transition: "color 0.2s ease",
-                        padding: "0.3rem 0.5rem",
-                        borderRadius: 4,
-                        whiteSpace: "nowrap"
-                    }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
-                        onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
-                    >
-                        Series
-                    </Link>
+                    <div className="desktop-links" style={{ display: "flex", alignItems: "center", gap: "clamp(0.4rem, 1vw, 0.75rem)" }}>
+                        <Link href="/" style={{
+                            color: "rgba(232,221,208,0.5)",
+                            textDecoration: "none",
+                            fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
+                            fontWeight: 500,
+                            letterSpacing: "0.04em",
+                            transition: "color 0.2s ease",
+                            padding: "0.3rem 0.5rem",
+                            borderRadius: 4,
+                            whiteSpace: "nowrap"
+                        }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
+                            onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
+                        >
+                            Home
+                        </Link>
+                        <span style={{ color: "rgba(45,155,78,0.06)", fontSize: "clamp(0.6rem, 0.8vw, 0.8rem)" }}>|</span>
+                        <Link href="/movies" style={{
+                            color: "rgba(232,221,208,0.5)",
+                            textDecoration: "none",
+                            fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
+                            fontWeight: 500,
+                            letterSpacing: "0.04em",
+                            transition: "color 0.2s ease",
+                            padding: "0.3rem 0.5rem",
+                            borderRadius: 4,
+                            whiteSpace: "nowrap"
+                        }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
+                            onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
+                        >
+                            Films
+                        </Link>
+                        <span style={{ color: "rgba(45,155,78,0.06)", fontSize: "clamp(0.6rem, 0.8vw, 0.8rem)" }}>|</span>
+                        <Link href="/tv" style={{
+                            color: "rgba(232,221,208,0.5)",
+                            textDecoration: "none",
+                            fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
+                            fontWeight: 500,
+                            letterSpacing: "0.04em",
+                            transition: "color 0.2s ease",
+                            padding: "0.3rem 0.5rem",
+                            borderRadius: 4,
+                            whiteSpace: "nowrap"
+                        }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
+                            onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
+                        >
+                            Series
+                        </Link>
+                    </div>
 
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="mobile-toggle-btn"
                         style={{
                             display: "none",
                             background: "none",
@@ -431,14 +415,13 @@ export default function Header() {
                             cursor: "pointer",
                             padding: "0.3rem",
                             borderRadius: 4,
-                            transition: "background 0.2s ease",
-                            marginLeft: "0.5rem"
+                            transition: "background 0.2s ease"
                         }}
                         onMouseEnter={(e) => e.currentTarget.style.background = "rgba(45,155,78,0.06)"}
                         onMouseLeave={(e) => e.currentTarget.style.background = "none"}
                         aria-label="Toggle menu"
                     >
-                        <Menu size={22} />
+                        <Menu size={20} />
                     </button>
                 </nav>
             </div>
@@ -455,7 +438,7 @@ export default function Header() {
                         backdropFilter: "blur(20px)",
                         borderBottom: "1px solid rgba(45,155,78,0.06)",
                         padding: "1rem 1.5rem",
-                        display: "none",
+                        display: "flex",
                         flexDirection: "column",
                         gap: "0.5rem",
                         boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
@@ -469,7 +452,7 @@ export default function Header() {
                         style={{
                             color: "#e8ddd0",
                             textDecoration: "none",
-                            fontSize: "1rem",
+                            fontSize: "0.9rem",
                             padding: "0.6rem 0.8rem",
                             borderRadius: 4,
                             transition: "background 0.2s ease",
@@ -486,7 +469,7 @@ export default function Header() {
                         style={{
                             color: "#e8ddd0",
                             textDecoration: "none",
-                            fontSize: "1rem",
+                            fontSize: "0.9rem",
                             padding: "0.6rem 0.8rem",
                             borderRadius: 4,
                             transition: "background 0.2s ease",
@@ -503,7 +486,7 @@ export default function Header() {
                         style={{
                             color: "#e8ddd0",
                             textDecoration: "none",
-                            fontSize: "1rem",
+                            fontSize: "0.9rem",
                             padding: "0.6rem 0.8rem",
                             borderRadius: 4,
                             transition: "background 0.2s ease",
@@ -527,48 +510,12 @@ export default function Header() {
                     to { opacity: 1; transform: translateY(0); }
                 }
 
-                @media (max-width: 768px) {
-                    nav .mobile-menu-toggle {
-                        display: flex !important;
-                    }
-                    
-                    .mobile-menu-dropdown {
-                        display: flex !important;
-                    }
-                }
-
-                @media (min-width: 769px) {
-                    button[aria-label="Toggle menu"] {
+                @media (max-width: 680px) {
+                    .desktop-links {
                         display: none !important;
                     }
-                }
-
-                
-                @media (max-width: 768px) {
-                    button[aria-label="Toggle menu"] {
+                    .mobile-toggle-btn {
                         display: flex !important;
-                    }
-                    
-                    /* Hide desktop nav links on mobile */
-                    nav a:not(:last-child),
-                    nav span {
-                        display: none !important;
-                    }
-                }
-
-                @media (max-width: 480px) {
-                    .header-content {
-                        gap: 0.75rem !important;
-                        padding: 0.5rem 1rem !important;
-                    }
-                    
-                    .mobile-menu-dropdown {
-                        padding: 0.75rem 1rem !important;
-                    }
-                    
-                    .mobile-menu-dropdown a {
-                        font-size: 0.9rem !important;
-                        padding: 0.5rem 0.6rem !important;
                     }
                 }
             `}</style>
