@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Header from "../../../components/header";
 import PlayerSection from "./PlayerSection";
+import { notFound } from 'next/navigation';
 
 async function getMediaData(type, id) {
   const url = `https://api.themoviedb.org/3/${type}/${id}?append_to_response=credits,images,watch/providers,recommendations&language=en-US`;
@@ -35,15 +36,7 @@ export default async function WatchPage({ params }) {
   const data = await getMediaData(type, id);
 
   if (!data) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#0a0f0a", color: "#e8ddd0", display: "flex", flexDirection: "column" }}>
-        <Header />
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1rem", padding: "2rem" }}>
-          <span style={{ fontSize: "3rem", opacity: 0.6 }}>🎬</span>
-          <p style={{ color: "rgba(232,221,208,0.4)", fontSize: "0.95rem", fontStyle: "italic", textAlign: "center" }}>This reel seems to be missing. Try another.</p>
-        </div>
-      </div>
-    );
+    notFound()
   }
 
   const isReleased = ["Released", "Returning Series", "Ended"].includes(data.status);
