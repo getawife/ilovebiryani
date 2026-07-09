@@ -78,7 +78,6 @@ export default function SeasonSelector({ seasons, selectedSeason, onSeasonChange
                                 </div>
                             )}
 
-                            {/* Always visible label */}
                             <div style={{
                                 position: "absolute",
                                 bottom: 0,
@@ -111,7 +110,6 @@ export default function SeasonSelector({ seasons, selectedSeason, onSeasonChange
                                 )}
                             </div>
 
-                            {/* Hover overlay */}
                             <div style={{
                                 position: "absolute",
                                 inset: 0,
@@ -141,7 +139,6 @@ export default function SeasonSelector({ seasons, selectedSeason, onSeasonChange
                                 </span>
                             </div>
 
-                            {/* Active indicator */}
                             {isActive && (
                                 <div style={{
                                     position: "absolute",

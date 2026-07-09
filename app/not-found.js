@@ -82,7 +82,6 @@ export default function NotFound() {
                         </div>
                     </div>
 
-                    {/* Title */}
                     <h1 style={{
                         fontFamily: "var(--font-display)",
                         fontSize: "clamp(1.8rem, 4vw, 3rem)",
@@ -94,7 +93,6 @@ export default function NotFound() {
                         This Page is Missing
                     </h1>
 
-                    {/* Action Buttons*/}
                     <Link href="/" className="hero-btn" style={{
                         display: "inline-flex",
                         alignItems: "center",
@@ -118,7 +116,6 @@ export default function NotFound() {
                 </div>
             </main>
 
-            {/* Animations */}
             <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px) scale(0.98); }

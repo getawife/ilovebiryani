@@ -23,7 +23,6 @@ export default function Header() {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    // Debounced search
     useEffect(() => {
         if (!query.trim()) {
             setResults([]);
@@ -59,7 +58,6 @@ export default function Header() {
         return () => clearTimeout(searchTimeout.current);
     }, [query]);
 
-    // Click outside for search dropdown
     useEffect(() => {
         const handler = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -83,7 +81,6 @@ export default function Header() {
         return () => document.removeEventListener("mousedown", handler);
     }, [isMobileMenuOpen]);
 
-    // Lock body scroll when mobile menu is open
     useEffect(() => {
         document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
         return () => { document.body.style.overflow = ""; };
@@ -126,7 +123,6 @@ export default function Header() {
                 flexWrap: "wrap"
             }}>
 
-                {/* Logo — Emerald & Cream */}
                 <Link href="/" style={{
                     textDecoration: "none",
                     display: "flex",
@@ -154,7 +150,6 @@ export default function Header() {
                     </span>
                 </Link>
 
-                {/* Search Input — responsive */}
                 <div ref={dropdownRef} style={{
                     position: "relative",
                     flex: 1,
@@ -238,7 +233,6 @@ export default function Header() {
                         )}
                     </div>
 
-                    {/* Search dropdown */}
                     {isOpen && results.length > 0 && (
                         <div style={{
                             position: "absolute",
@@ -337,7 +331,6 @@ export default function Header() {
                         </div>
                     )}
 
-                    {/* No results message */}
                     {isOpen && results.length === 0 && query && !isLoading && (
                         <div style={{
                             position: "absolute",
@@ -363,7 +356,6 @@ export default function Header() {
                     )}
                 </div>
 
-                {/* Desktop Navigation */}
                 <nav style={{
                     display: "flex",
                     gap: "clamp(0.4rem, 1vw, 0.75rem)",
@@ -429,7 +421,6 @@ export default function Header() {
                         Series
                     </Link>
 
-                    {/* Mobile Menu Toggle Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         style={{
@@ -452,7 +443,6 @@ export default function Header() {
                 </nav>
             </div>
 
-            {/* Mobile Menu Dropdown */}
             {isMobileMenuOpen && (
                 <div
                     ref={mobileMenuRef}
@@ -527,7 +517,6 @@ export default function Header() {
                 </div>
             )}
 
-            {/* Media Queries - CSS-in-JS with style tag */}
             <style jsx>{`
                 @keyframes spin {
                     to { transform: rotate(360deg); }
@@ -538,7 +527,6 @@ export default function Header() {
                     to { opacity: 1; transform: translateY(0); }
                 }
 
-                /* Mobile styles */
                 @media (max-width: 768px) {
                     nav .mobile-menu-toggle {
                         display: flex !important;
@@ -549,14 +537,13 @@ export default function Header() {
                     }
                 }
 
-                /* Hide mobile menu toggle on desktop */
                 @media (min-width: 769px) {
                     button[aria-label="Toggle menu"] {
                         display: none !important;
                     }
                 }
 
-                /* Show mobile menu toggle on mobile */
+                
                 @media (max-width: 768px) {
                     button[aria-label="Toggle menu"] {
                         display: flex !important;
@@ -569,7 +556,6 @@ export default function Header() {
                     }
                 }
 
-                /* Very small screens */
                 @media (max-width: 480px) {
                     .header-content {
                         gap: 0.75rem !important;

@@ -1,4 +1,3 @@
-/* video-player.js — With Lucide Icons */
 
 "use client";
 

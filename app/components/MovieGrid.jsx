@@ -31,7 +31,6 @@ export default function MovieGrid({ items, type }) {
             const nextPage = page + 1;
             const res = await fetch(`/api/${type}?page=${nextPage}&language=en-US`);
 
-            // Parse the response safely
             let data;
             const text = await res.text();
 

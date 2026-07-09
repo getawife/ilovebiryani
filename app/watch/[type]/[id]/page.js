@@ -76,7 +76,6 @@ export default async function WatchPage({ params }) {
       position: "relative",
       isolation: "isolate"
     }}>
-      {/* Dynamic Global CSS Overrides injected safely to cleanly rewrite layouts on mobile viewports */}
       <style dangerouslySetInnerHTML={{
         __html: `
         .responsive-hero-grid {
@@ -110,7 +109,6 @@ export default async function WatchPage({ params }) {
 
       <Header />
 
-      {/* FIXED BACKGROUND CANVASES */}
       {backdropUrl && (
         <div style={{
           position: "fixed",

@@ -67,7 +67,6 @@ export default async function Home() {
       <Header />
 
       <main style={{ flex: 1, position: "relative" }}>
-        {/* Grain Noise Overlay */}
         <div style={{
           position: "fixed",
           inset: 0,
@@ -79,7 +78,6 @@ export default async function Home() {
           zIndex: 5
         }} />
 
-        {/* FIXED BACKGROUND CANVASES */}
         {backdrop && (
           <div style={{
             position: "fixed",
@@ -110,7 +108,6 @@ export default async function Home() {
           </div>
         )}
 
-        {/* AMBIENT GLOW LAYER */}
         {backdrop && (
           <div style={{
             position: "fixed",
@@ -140,7 +137,6 @@ export default async function Home() {
 
         <HeroBanner movie={heroMovie} logoPath={titleLogoPath} />
 
-        {/* Content Rows Content Wrapper aligned to uniform max-width */}
         <div style={{
           maxWidth: 1400,
           margin: "0 auto",
