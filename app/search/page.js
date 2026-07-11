@@ -125,11 +125,22 @@ function SearchContent() {
     const filterOptions = {
         genres: [
             { value: 'all', label: 'All Genres' },
-            { value: 'action', label: 'Action' },
+            { value: 'adventure', label: 'Adventure' },
+            { value: 'animation', label: 'Animation' },
+            { value: 'crime', label: 'Crime' },
+            { value: 'documentary', label: 'Documentary' },
             { value: 'drama', label: 'Drama' },
-            { value: 'comedy', label: 'Comedy' },
-            { value: 'sci-fi', label: 'Sci-Fi' },
-            { value: 'horror', label: 'Horror' }
+            { value: 'family', label: 'Family' },
+            { value: 'fantasy', label: 'Fantasy' },
+            { value: 'horror', label: 'Horror' },
+            { value: 'history', label: 'History' },
+            { value: 'music', label: 'Music' },
+            { value: 'mystery', label: 'Mystery' },
+            { value: 'romance', label: 'Romance' },
+            { value: 'thriller', label: 'Thriller' },
+            { value: 'tv_movie', label: 'TV Movie' },
+            { value: 'war', label: 'War' },
+            { value: 'western', label: 'Western' }
         ],
         years: [
             { value: 'all', label: 'All Years' },
@@ -164,8 +175,8 @@ function SearchContent() {
         ],
         ratings: [
             { value: 'all', label: 'Any Rating' },
-            { value: '7.5', label: '★ 7.5+ Premium' },
-            { value: '6.0', label: '★ 6.0+ Casual' }
+            { value: '7.5', label: '★ 7.5+' },
+            { value: '6.0', label: '★ 6.0+' }
         ]
     };
 
