@@ -48,307 +48,105 @@ export default function Header() {
     }, []);
 
     return (
-        <header
-            style={{
-                position: "sticky",
-                top: 0,
-                zIndex: 50,
-                background: "transparent",
-                backdropFilter: "none",
-                borderBottom: "1px solid transparent",
-                boxShadow: "none"
-            }}
-        >
-            <div style={{
-                maxWidth: 1400,
-                margin: "0 auto",
-                padding: "0.7rem 1rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "1.5rem",
-                position: "relative",
-                flexWrap: "nowrap"
-            }}>
+        <header className="sticky top-0 z-50 w-full bg-black/[0.01] backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">            <div className="mx-auto flex max-w-[1400px] items-center gap-6 px-4 py-3 sm:px-6">
 
-                <Link href="/" style={{
-                    textDecoration: "none",
-                    display: "flex",
-                    alignItems: "baseline",
-                    gap: "0.1rem",
-                    flexShrink: 0
-                }}>
-                    <span style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
-                        color: "#2d9b4e",
-                        fontWeight: 700,
-                        letterSpacing: "0.06em"
-                    }}>
-                        ILOVE
-                    </span>
-                    <span style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "clamp(1.1rem, 2.5vw, 1.4rem)",
-                        color: "#e8ddd0",
-                        fontWeight: 400,
-                        letterSpacing: "0.06em"
-                    }}>
-                        BIRYANI
-                    </span>
-                </Link>
+            <Link href="/" className="flex items-baseline gap-0.5 shrink-0 select-none">
+                <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-bold tracking-wider text-[#2d9b4e]">
+                    ILOVE
+                </span>
+                <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-normal tracking-wider text-[#e8ddd0]">
+                    BIRYANI
+                </span>
+            </Link>
 
-                {/* Input Area */}
-                <div style={{
-                    position: "relative",
-                    flex: 1,
-                    maxWidth: 420,
-                    minWidth: 140
-                }}>
-                    <div style={{
-                        position: "relative",
-                        display: "flex",
-                        alignItems: "center"
-                    }}>
-                        <Search
-                            size={16}
-                            style={{
-                                position: "absolute",
-                                left: "0.8rem",
-                                color: "rgba(232,221,208,0.25)",
-                                pointerEvents: "none"
-                            }}
-                        />
-                        <input
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            onKeyDown={handleSearchSubmit}
-                            placeholder="Search films and press Enter..."
-                            style={{
-                                width: "100%",
-                                padding: "0.4rem 0.8rem 0.4rem 2.2rem",
-                                borderRadius: 6,
-                                background: "rgba(45,155,78,0.04)",
-                                border: "1px solid rgba(45,155,78,0.06)",
-                                color: "#e8ddd0",
-                                fontSize: "clamp(0.75rem, 1vw, 0.85rem)",
-                                outline: "none",
-                                transition: "all 0.25s ease",
-                                fontFamily: "var(--font-sans)"
-                            }}
-                            onFocus={(e) => {
-                                e.currentTarget.style.borderColor = "rgba(45,155,78,0.2)";
-                                e.currentTarget.style.background = "rgba(45,155,78,0.06)";
-                            }}
-                            onBlur={(e) => {
-                                e.currentTarget.style.borderColor = "rgba(45,155,78,0.06)";
-                                e.currentTarget.style.background = "rgba(45,155,78,0.04)";
-                            }}
-                        />
-                        {query && (
-                            <button
-                                onClick={clearSearch}
-                                style={{
-                                    position: "absolute",
-                                    right: "0.6rem",
-                                    background: "none",
-                                    border: "none",
-                                    color: "rgba(232,221,208,0.2)",
-                                    cursor: "pointer",
-                                    padding: "0.2rem",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    transition: "color 0.2s ease"
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
-                                onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.2)"}
-                            >
-                                <X size={14} />
-                            </button>
-                        )}
-                    </div>
+            <div className="relative flex-1 max-w-[420px] min-w-[140px]">
+                <div className="relative flex items-center">
+                    <Search
+                        size={16}
+                        className="absolute left-3 text-white/20 pointer-events-none"
+                    />
+                    <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={handleSearchSubmit}
+                        placeholder="Search films and press Enter..."
+                        className="w-full font-sans text-[clamp(0.75rem,1vw,0.85rem)] text-[#e8ddd0] bg-white/[0.03] border border-white/[0.06] rounded-md pl-9 pr-8 py-1.5 outline-none placeholder:text-white/20 transition-all duration-200 focus:border-emerald-500/30 focus:bg-white/[0.06]"
+                    />
+                    {query && (
+                        <button
+                            onClick={clearSearch}
+                            className="absolute right-2.5 p-0.5 flex items-center justify-center text-white/20 hover:text-white/50 transition-colors duration-200"
+                        >
+                            <X size={14} />
+                        </button>
+                    )}
                 </div>
-
-                <nav style={{
-                    display: "flex",
-                    gap: "clamp(0.4rem, 1vw, 0.75rem)",
-                    alignItems: "center",
-                    flexShrink: 0,
-                    marginLeft: "auto"
-                }}>
-                    <div className="desktop-links" style={{ display: "flex", alignItems: "center", gap: "clamp(0.4rem, 1vw, 0.75rem)" }}>
-                        <Link href="/" style={{
-                            color: "rgba(232,221,208,0.5)",
-                            textDecoration: "none",
-                            fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
-                            fontWeight: 500,
-                            letterSpacing: "0.04em",
-                            transition: "color 0.2s ease",
-                            padding: "0.3rem 0.5rem",
-                            borderRadius: 4,
-                            whiteSpace: "nowrap"
-                        }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
-                            onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
-                        >
-                            Home
-                        </Link>
-                        <span style={{ color: "rgba(45,155,78,0.06)", fontSize: "clamp(0.6rem, 0.8vw, 0.8rem)" }}>|</span>
-                        <Link href="/movies" style={{
-                            color: "rgba(232,221,208,0.5)",
-                            textDecoration: "none",
-                            fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
-                            fontWeight: 500,
-                            letterSpacing: "0.04em",
-                            transition: "color 0.2s ease",
-                            padding: "0.3rem 0.5rem",
-                            borderRadius: 4,
-                            whiteSpace: "nowrap"
-                        }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
-                            onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
-                        >
-                            Films
-                        </Link>
-                        <span style={{ color: "rgba(45,155,78,0.06)", fontSize: "clamp(0.6rem, 0.8vw, 0.8rem)" }}>|</span>
-                        <Link href="/tv" style={{
-                            color: "rgba(232,221,208,0.5)",
-                            textDecoration: "none",
-                            fontSize: "clamp(0.65rem, 0.9vw, 0.75rem)",
-                            fontWeight: 500,
-                            letterSpacing: "0.04em",
-                            transition: "color 0.2s ease",
-                            padding: "0.3rem 0.5rem",
-                            borderRadius: 4,
-                            whiteSpace: "nowrap"
-                        }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = "#e8ddd0"}
-                            onMouseLeave={(e) => e.currentTarget.style.color = "rgba(232,221,208,0.5)"}
-                        >
-                            Series
-                        </Link>
-                    </div>
-
-                    <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="mobile-toggle-btn"
-                        style={{
-                            display: "none",
-                            background: "none",
-                            border: "none",
-                            color: "#e8ddd0",
-                            cursor: "pointer",
-                            padding: "0.3rem",
-                            borderRadius: 4,
-                            transition: "background 0.2s ease"
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = "rgba(45,155,78,0.06)"}
-                        onMouseLeave={(e) => e.currentTarget.style.background = "none"}
-                        aria-label="Toggle menu"
-                    >
-                        <Menu size={20} />
-                    </button>
-                </nav>
             </div>
 
-            {isMobileMenuOpen && (
-                <div
-                    ref={mobileMenuRef}
-                    style={{
-                        position: "absolute",
-                        top: "100%",
-                        left: 0,
-                        right: 0,
-                        background: "rgba(10,15,10,0.98)",
-                        backdropFilter: "blur(20px)",
-                        borderBottom: "1px solid rgba(45,155,78,0.06)",
-                        padding: "1rem 1.5rem",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.5rem",
-                        boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
-                        animation: "slideDown 0.3s ease",
-                        zIndex: 100
-                    }}
-                >
+            <nav className="flex items-center ml-auto shrink-0 gap-3">
+                <div className="hidden md:flex items-center gap-2 lg:gap-3">
                     <Link
                         href="/"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                            color: "#e8ddd0",
-                            textDecoration: "none",
-                            fontSize: "0.9rem",
-                            padding: "0.6rem 0.8rem",
-                            borderRadius: 4,
-                            transition: "background 0.2s ease",
-                            fontWeight: 500,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.6rem"
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = "rgba(45,155,78,0.06)"}
-                        onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                        className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
                     >
-                        <Home size={16} style={{ color: "rgba(232,221,208,0.7)" }} /> Home
+                        Home
                     </Link>
+                    <span className="text-white/[0.06] text-[clamp(0.6rem,0.8vw,0.8rem)] select-none">|</span>
                     <Link
                         href="/movies"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                            color: "#e8ddd0",
-                            textDecoration: "none",
-                            fontSize: "0.9rem",
-                            padding: "0.6rem 0.8rem",
-                            borderRadius: 4,
-                            transition: "background 0.2s ease",
-                            fontWeight: 500,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.6rem"
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = "rgba(45,155,78,0.06)"}
-                        onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                        className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
                     >
-                        <Film size={16} style={{ color: "rgba(232,221,208,0.7)" }} /> Films
+                        Films
                     </Link>
+                    <span className="text-white/[0.06] text-[clamp(0.6rem,0.8vw,0.8rem)] select-none">|</span>
                     <Link
                         href="/tv"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        style={{
-                            color: "#e8ddd0",
-                            textDecoration: "none",
-                            fontSize: "0.9rem",
-                            padding: "0.6rem 0.8rem",
-                            borderRadius: 4,
-                            transition: "background 0.2s ease",
-                            fontWeight: 500,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.6rem"
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = "rgba(45,155,78,0.06)"}
-                        onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                        className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
                     >
-                        <Tv size={16} style={{ color: "rgba(232,221,208,0.7)" }} /> Series
+                        Series
                     </Link>
                 </div>
-            )}
 
-            <style jsx>{`
-                @keyframes slideDown {
-                    from { opacity: 0; transform: translateY(-10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
+                <button
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="md:hidden flex items-center p-1.5 text-[#e8ddd0] rounded transition-colors duration-200 hover:bg-white/[0.06]"
+                    aria-label="Toggle menu"
+                >
+                    <Menu size={20} />
+                </button>
+            </nav>
+        </div>
 
-                @media (max-width: 680px) {
-                    .desktop-links {
-                        display: none !important;
-                    }
-                    .mobile-toggle-btn {
-                        display: flex !important;
-                    }
-                }
-            `}</style>
+            <div
+                ref={mobileMenuRef}
+                className={`absolute top-full left-0 right-0 w-full bg-black/[0.85] backdrop-blur-2xl border-b border-white/[0.06] p-4 flex flex-col gap-2 shadow-2xl z-[100] transition-all duration-300 md:hidden ${isMobileMenuOpen
+                    ? "opacity-100 translate-y-0 pointer-events-auto"
+                    : "opacity-0 -translate-y-2 pointer-events-none"
+                    }`}
+            >
+                <Link
+                    href="/"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 font-medium text-sm text-[#e8ddd0] rounded-md px-3 py-2.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                >
+                    <Home size={16} className="text-white/60" /> Home
+                </Link>
+                <Link
+                    href="/movies"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 font-medium text-sm text-[#e8ddd0] rounded-md px-3 py-2.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                >
+                    <Film size={16} className="text-white/60" /> Films
+                </Link>
+                <Link
+                    href="/tv"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 font-medium text-sm text-[#e8ddd0] rounded-md px-3 py-2.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                >
+                    <Tv size={16} className="text-white/60" /> Series
+                </Link>
+            </div>
         </header>
     );
 }

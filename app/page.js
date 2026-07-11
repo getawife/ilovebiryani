@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Header from './components/header';
 import { Flame, Tv, Trophy, Popcorn, Play } from 'lucide-react';
 import { ContentRow } from './components/ContentRow';
-import ChangelogNotification from "./components/ChangelogNotification";
 
 async function fetchTMDB(endpoint) {
   const res = await fetch(
