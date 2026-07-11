@@ -114,7 +114,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
         <button
           id="watch-now-btn"
           onClick={() => setShowPlayer(true)}
-          className="hero-btn min-w-[140px] px-7 py-3 text-xs"
+          className="hero-btn min-w-35 px-7 py-3 text-xs cursor-pointer"
         >
           <Play size={18} />
           Start watching

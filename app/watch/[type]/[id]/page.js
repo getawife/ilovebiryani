@@ -205,7 +205,7 @@ export default async function WatchPage({ params }) {
         )}
 
         {backdrops.length > 0 && (
-          <Section title="Stills">
+          <Section title="Gallery">
             <div className="scroll-row flex overflow-x-auto gap-[clamp(0.5rem,1vw,0.75rem)] py-2 px-1 [scrollbar-width:none]">
               {backdrops.map((img, i) => (
                 <div key={i} className="aspect-video w-[clamp(180px,30vw,260px)] flex-shrink-0 overflow-hidden rounded-md border border-white/5">
@@ -220,10 +220,9 @@ export default async function WatchPage({ params }) {
             </div>
           </Section>
         )}
-
         {recommendations.length > 0 && (
           <Section title="You might also enjoy">
-            <div className="scroll-row flex overflow-x-auto gap-[clamp(0.75rem,1.5vw,1rem)] py-2 px-1 [scrollbar-width:none]">
+            <div className="scroll-row flex overflow-x-auto gap-[clamp(0.75rem,1.5vw,1rem)] py-4 px-2 [scrollbar-width:none]">
               {recommendations.map((item) => {
                 const rPoster = item.poster_path
                   ? `https://image.tmdb.org/t/p/w400${item.poster_path}`
@@ -231,18 +230,52 @@ export default async function WatchPage({ params }) {
                 const rTitle = item.title || item.name;
                 const rYear = (item.release_date || item.first_air_date || "").split("-")[0];
                 const rRating = item.vote_average ? item.vote_average.toFixed(1) : "0.0";
+
+                const computedAccent = type === "tv" ? "#c9a84c" : "#2d9b4e";
+
                 return (
-                  <Link key={item.id} href={`/watch/${type}/${item.id}`} className="block w-[clamp(120px,18vw,150px)] flex-shrink-0 no-underline">
-                    <div className="overflow-hidden rounded-md border border-white/5 bg-[#111811]">
-                      <div className="relative aspect-[2/3]">
-                        <img src={rPoster} alt="" loading="lazy" className="block h-full w-full object-cover" />
-                        <div className={`absolute bottom-1.5 left-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold backdrop-blur-[4px] ${getRatingColor(rRating)}`}>
-                          ★ {rRating}
+                  <Link
+                    key={item.id}
+                    href={`/watch/${type}/${item.id}`}
+                    className="group block w-[160px] flex-shrink-0 no-underline transition-all duration-300 ease-out hover:-translate-y-1"
+                  >
+                    <div
+                      style={{ border: `1px solid ${computedAccent}15` }}
+                      className="overflow-hidden rounded-lg bg-[#111811] transition-all duration-300 group-hover:shadow-[0_12px_32px_rgba(0,0,0,0.6)]"
+                    >
+                      <div className="relative w-full aspect-[2/3] overflow-hidden bg-[#0a0f0a]">
+                        <img
+                          src={rPoster}
+                          alt={rTitle}
+                          loading="lazy"
+                          className="block h-full w-full object-cover transition-all duration-500 ease-out filter brightness-[0.92] saturate-[0.95] group-hover:scale-105 group-hover:brightness-[0.4]"
+                        />
+
+
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 ease-out group-hover:opacity-100 z-20">
+                          <div
+                            style={{ background: `${computedAccent}E6` }}
+                            className="flex h-14 w-14 scale-75 items-center justify-center rounded-full text-white shadow-[0_8px_24px_rgba(0,0,0,0.4)] transition-all duration-300 ease-out group-hover:scale-100"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="white"
+                              className="ml-0.5 h-6 w-6"
+                            >
+                              <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
+                            </svg>
+                          </div>
                         </div>
                       </div>
-                      <div className="p-2">
-                        <p className="line-clamp-2 text-xs font-medium leading-tight text-[#e8ddd0]">{rTitle}</p>
-                        <p className="mt-0.5 text-[10px] text-[rgba(232,221,208,0.25)]">{rYear}</p>
+
+                      <div className="p-[0.6rem_0.7rem_0.7rem]">
+                        <p className="line-clamp-2 text-[0.8rem] font-medium leading-[1.3] text-[#e8ddd0] tracking-[0.02em] transition-colors duration-300 group-hover:text-white">
+                          {rTitle}
+                        </p>
+                        <p className="mt-[0.2rem] text-[0.65rem] text-[rgba(232,221,208,0.3)] tracking-[0.08em]">
+                          {rYear || "Coming Soon"}
+                        </p>
                       </div>
                     </div>
                   </Link>

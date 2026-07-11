@@ -59,7 +59,7 @@ export default function Header() {
                 </span>
             </Link>
 
-            <div className="relative flex-1 max-w-[420px] min-w-[140px]">
+            <div className="relative flex-1 max-w-[420px] min-w-35">
                 <div className="relative flex items-center">
                     <Search
                         size={16}
