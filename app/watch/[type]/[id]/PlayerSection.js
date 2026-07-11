@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from "react";
-import { Play, X, Clock, Film } from "lucide-react";
+import { Play, X, Clock, Film, EyeOff } from "lucide-react";
 
 // Move utility outside the component scope to avoid re-creation on every render
 function getEmbedUrl(server, type, id, season, episode) {
@@ -156,7 +156,8 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
               </div>
             </div>
 
-            <div className="flex flex-1 min-h-0 overflow-hidden bg-black">
+            {/* Added relative layout context here so child sidebar can calculate dimensions seamlessly */}
+            <div className="relative flex flex-1 min-h-0 overflow-hidden bg-black">
               <div className="relative flex-1 min-w-0 aspect-video bg-black">
                 <iframe
                   key={`${activeServer}-${season}-${episode}`}
@@ -169,8 +170,9 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
               </div>
 
               {type === "tv" && showEpisodes && (
-                <div className="flex w-[clamp(200px,30vw,260px)] flex-shrink-0 flex-col overflow-hidden bg-[#060c06]/95 border-l border-emerald-500/5">
-                  <div className="flex flex-wrap gap-1 bg-[#0a0f0a]/50 px-2.5 py-2 border-b border-emerald-500/5">
+                /* Switched container to absolute right placement so it locks overlay without reshaping the layout window */
+                <div className="absolute right-0 top-0 bottom-0 z-20 flex w-[clamp(220px,32vw,280px)] flex-shrink-0 flex-col overflow-hidden bg-[#060c06]/94 border-l border-emerald-500/10 backdrop-blur-md shadow-2xl animate-fade-in">
+                  <div className="flex flex-wrap gap-1 bg-[#0a0f0a]/80 px-2.5 py-2 border-b border-emerald-500/5">
                     {validSeasons.slice(0, 12).map((s) => {
                       const isCurrentSeason = season === s.season_number;
                       return (
@@ -206,30 +208,41 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                     ) : (
                       episodesList.map((ep) => {
                         const isActive = ep.episode_number === episode;
+                        // Spoiler condition: any upcoming episode in the current season list index
+                        const isSpoiler = ep.episode_number > episode;
+
                         return (
                           <button
                             key={ep.episode_number}
                             id={`episode-${ep.episode_number}`}
                             onClick={() => setEpisode(ep.episode_number)}
-                            className={`mb-[6px] flex w-full items-start gap-1.5 rounded p-1.5 text-left transition-all duration-150 border cursor-pointer hover:bg-emerald-500/[0.03] ${isActive
+                            className={`group mb-[6px] flex w-full items-start gap-1.5 rounded p-1.5 text-left transition-all duration-150 border cursor-pointer hover:bg-emerald-500/[0.03] ${isActive
                               ? "border-emerald-500/15 bg-emerald-500/5"
                               : "border-transparent bg-transparent"
                               }`}
                           >
-                            {ep.still_path ? (
-                              <img
-                                src={`https://image.tmdb.org/t/p/w185${ep.still_path}`}
-                                alt={ep.name}
-                                className="h-[34px] w-[60px] flex-shrink-0 rounded object-cover border border-emerald-500/5 brightness-[0.9]"
-                              />
-                            ) : (
-                              <div className="flex h-[34px] w-[60px] flex-shrink-0 items-center justify-center rounded bg-[#111811] text-[8px] border border-emerald-500/5 text-[rgba(232,221,208,0.15)]">
-                                E{ep.episode_number}
-                              </div>
-                            )}
-                            <div className="flex-1 overflow-hidden">
-                              <p className={`line-clamp-1 text-[11px] font-semibold leading-tight tracking-wide ${isActive ? "text-[#2d9b4e]" : "text-[rgba(232,221,208,0.6)]"
-                                }`}>
+                            <div className="relative h-[34px] w-[60px] flex-shrink-0 overflow-hidden rounded border border-emerald-500/5 bg-[#111811]">
+                              {ep.still_path ? (
+                                <img
+                                  src={`https://image.tmdb.org/t/p/w185${ep.still_path}`}
+                                  alt={ep.name}
+                                  className={`h-full w-full object-cover brightness-[0.9] transition-all duration-300 ${isSpoiler ? "blur-md scale-105 group-hover:blur-sm" : ""}`}
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center text-[8px] text-[rgba(232,221,208,0.15)]">
+                                  E{ep.episode_number}
+                                </div>
+                              )}
+
+                              {isSpoiler && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10">
+                                  <EyeOff size={10} className="text-[rgba(232,221,208,0.4)] group-hover:opacity-0 transition-opacity duration-200" />
+                                </div>
+                              )}
+                            </div>
+
+                            <div className={`flex-1 overflow-hidden transition-all duration-300 ${isSpoiler ? "blur-[3.5px] group-hover:blur-0 select-none opacity-40 group-hover:opacity-80" : ""}`}>
+                              <p className={`line-clamp-1 text-[11px] font-semibold leading-tight tracking-wide ${isActive ? "text-[#2d9b4e]" : "text-[rgba(232,221,208,0.6)]"}`}>
                                 {ep.episode_number}. {ep.name}
                               </p>
                               {ep.runtime && (

@@ -139,23 +139,7 @@ export default function SeasonSelector({ seasons, selectedSeason, onSeasonChange
                                 </span>
                             </div>
 
-                            {isActive && (
-                                <div style={{
-                                    position: "absolute",
-                                    top: 8,
-                                    right: 8,
-                                    background: "#2d9b4e",
-                                    borderRadius: 4,
-                                    padding: "0.15rem 0.5rem",
-                                    fontSize: "0.55rem",
-                                    fontWeight: 700,
-                                    color: "#fff",
-                                    letterSpacing: "0.04em",
-                                    textTransform: "uppercase"
-                                }}>
-                                    Active
-                                </div>
-                            )}
+
 
                             <style jsx>{`
                 .season-card:hover {
