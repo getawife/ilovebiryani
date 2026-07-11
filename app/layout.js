@@ -1,7 +1,5 @@
-// app/layout.js
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ChangelogNotification from "./components/ChangelogNotification";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -23,7 +21,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body className="min-h-screen flex flex-col">{children}
-        <ChangelogNotification />
       </body>
     </html>
   );
