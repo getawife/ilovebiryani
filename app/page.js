@@ -69,26 +69,26 @@ export default async function Home() {
         />
 
         {backdrop && (
-          <div className="fixed top-0 left-0 right-0 h-[65vh] -z-20 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-[80vh] min-h-[550px] -z-20 overflow-hidden pointer-events-none">
             <Image
               src={backdrop}
               alt=""
               fill
               priority
-              className="object-cover object-[center_20%] brightness-[0.7] saturate-[0.85]"
+              className="object-cover object-[center_20%] brightness-[0.22] saturate-[0.7]"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0f0a]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f0a]/40 to-[#0a0f0a] to-[98%]" />
           </div>
         )}
 
         {backdrop && (
           <div
-            className="fixed inset-0 bg-[length:100%_auto] bg-[center_-10%] blur-[150px] opacity-14 saturate-200 pointer-events-none -z-10"
+            className="absolute top-0 left-0 right-0 h-[90vh] bg-[length:100%_auto] bg-[center_-10%] blur-[140px] opacity-12 saturate-150 pointer-events-none -z-10"
             style={{ backgroundImage: `url(${backdrop})` }}
           />
         )}
 
-        <div className="fixed inset-0 bg-gradient-to-r from-[#0a0f0a]/50 via-transparent to-transparent pointer-events-none -z-10" />
+        <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-gradient-to-r from-[#0a0f0a]/60 via-transparent to-transparent pointer-events-none -z-10" />
 
         <HeroBanner movie={heroMovie} logoPath={titleLogoPath} />
 
