@@ -75,7 +75,7 @@ export default async function Home() {
               alt=""
               fill
               priority
-              className="object-cover object-[center_20%] brightness-[0.22] saturate-[0.7]"
+              className="object-cover object-[center_20%] brightness-[0.45] saturate-[0.7]"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f0a]/40 to-[#0a0f0a] to-[98%]" />
           </div>
