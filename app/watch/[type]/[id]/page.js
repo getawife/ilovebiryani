@@ -4,6 +4,37 @@ import Header from "../../../components/header";
 import WatchPageClient from "./WatchPageClient";
 import { User, Clock } from 'lucide-react';
 
+async function getMediaDetails(id, type = "movie") {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/${type}/${id}?language=en-US`,
+    {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${process.env.TMDB_READ_ACCESS_TOKEN}`,
+      },
+    }
+  );
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export async function generateMetadata({ params }) {
+  const { type, id } = await params;
+  const media = await getMediaDetails(id, type);
+
+  if (!media) {
+    return {
+      title: "Not Found | ILoveBiryani",
+    };
+  }
+  const mediaTitle = media.title || media.name;
+
+  return {
+    title: `${mediaTitle}`,
+    description: media.overview || `Watch ${mediaTitle} in HD on ILoveBiryani.`,
+  };
+}
+
 async function getMediaData(type, id) {
   const url = `https://api.themoviedb.org/3/${type}/${id}?append_to_response=credits,images,watch/providers,recommendations&language=en-US`;
   const res = await fetch(url, {
