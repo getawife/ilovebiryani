@@ -24,80 +24,47 @@ export default async function MoviesPage() {
         const popularMovies = popularData.results || [];
 
         return (
-            <div style={{
-                minHeight: "100vh",
-                background: "#0a0f0a",
-                color: "#e8ddd0",
-                display: "flex",
-                flexDirection: "column"
-            }}>
+            <div className="min-h-screen bg-[#0a0f0a] text-[#e8ddd0] flex flex-col font-sans selection:bg-[#2d9b4e]/30 selection:text-white">
                 <Header />
-                <main style={{ flex: 1, position: "relative", paddingTop: "1.5rem" }}>
-                    <div style={{
-                        position: "fixed",
-                        inset: 0,
-                        pointerEvents: "none",
-                        opacity: 0.015,
-                        backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 256 256\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noise)\" opacity=\"1\"/%3E%3C/svg%3E')",
-                        backgroundRepeat: "repeat",
-                        backgroundSize: "256px 256px",
-                        zIndex: 1
-                    }} />
 
-                    <div style={{
-                        maxWidth: 1400,
-                        margin: "0 auto",
-                        padding: "0 1.5rem 4rem",
-                        position: "relative",
-                        zIndex: 2
-                    }}>
-                        <div style={{ marginBottom: "2rem" }}>
-                            <h1 style={{
-                                fontFamily: "var(--font-sans)",
-                                fontSize: "clamp(2rem, 4vw, 3rem)",
-                                fontWeight: 700,
-                                color: "#e8ddd0",
-                                letterSpacing: "0.02em",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.75rem"
-                            }}>
-                                <Film size={32} color="#2d9b4e" />
+                <main className="flex-1 relative pt-6">
+                    {/* SVG Noise Grain Overlay */}
+                    <div
+                        className="fixed inset-0 pointer-events-none opacity-[0.015] z-10 bg-[size:256px_256px] bg-repeat"
+                        style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 256 256\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noise)\" opacity=\"1\"/%3E%3C/svg%3E')" }}
+                    />
+
+                    <div className="max-w-[1400px] mx-auto px-6 pb-16 relative z-20">
+                        {/* Heading Section */}
+                        <div className="mb-8">
+                            <h1 className="text-[clamp(2rem,4vw,3rem)] font-bold text-[#e8ddd0] tracking-wide flex items-center gap-3">
+                                <Film size={32} className="text-[#2d9b4e]" />
                                 Films
                             </h1>
-                            <p style={{
-                                fontSize: "0.9rem",
-                                color: "rgba(232,221,208,0.4)",
-                                fontStyle: "italic",
-                                marginTop: "0.25rem"
-                            }}>
+                            <p className="text-sm text-[#e8ddd0]/40 italic mt-1">
                                 Discover your next favorite film
                             </p>
                         </div>
 
+                        {/* Movies Grid Component */}
                         <MovieGrid
-                            initialItems={popularMovies}
+                            items={popularMovies}
                             type="movie"
                         />
                     </div>
                 </main>
+
                 <Footer />
             </div>
         );
     } catch (error) {
         return (
-            <div style={{
-                minHeight: "100vh",
-                background: "#0a0f0a",
-                color: "#e8ddd0",
-                display: "flex",
-                flexDirection: "column"
-            }}>
+            <div className="min-h-screen bg-[#0a0f0a] text-[#e8ddd0] flex flex-col font-sans">
                 <Header />
-                <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-                    <div style={{ textAlign: "center" }}>
-                        <Film size={48} color="#2d9b4e" style={{ opacity: 0.3, marginBottom: "1rem" }} />
-                        <p style={{ color: "rgba(232,221,208,0.4)", fontSize: "0.95rem", fontStyle: "italic" }}>
+                <main className="flex-1 flex items-center justify-content-center p-8">
+                    <div className="text-center">
+                        <Film size={48} className="text-[#2d9b4e] opacity-30 mx-auto mb-4" />
+                        <p className="text-sm text-[#e8ddd0]/40 italic">
                             Could not load films. Please try again later.
                         </p>
                     </div>
@@ -110,57 +77,24 @@ export default async function MoviesPage() {
 
 function Footer() {
     return (
-        <footer style={{
-            borderTop: "1px solid rgba(150,200,150,0.05)",
-            padding: "2.5rem 1.5rem 2rem",
-            textAlign: "center",
-            background: "linear-gradient(180deg, transparent, rgba(10,15,10,0.9))",
-            position: "relative"
-        }}>
-            <div style={{
-                maxWidth: 1400,
-                margin: "0 auto",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "0.5rem"
-            }}>
-                <Link href="/" style={{
-                    display: "inline-flex",
-                    alignItems: "baseline",
-                    gap: "0.1rem",
-                    textDecoration: "none",
-                    marginBottom: "0.25rem"
-                }}>
-                    <span style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "1.6rem",
-                        color: "#2d9b4e",
-                        letterSpacing: "0.08em",
-                        fontWeight: 700
-                    }}>ILOVE</span>
-                    <span style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "1.6rem",
-                        color: "#e8ddd0",
-                        letterSpacing: "0.08em",
-                        fontWeight: 400
-                    }}>BIRYANI</span>
+        <footer className="border-t border-[#96c896]/5 px-6 py-10 text-center bg-gradient-to-b from-transparent to-[#0a0f0a]/90 relative z-20">
+            <div className="max-w-[1400px] mx-auto flex flex-col items-center gap-2">
+                <Link href="/" className="inline-flex items-baseline gap-[0.1rem] no-underline mb-1 group">
+                    <span className="text-2xl font-bold text-[#2d9b4e] tracking-widest transition-colors duration-200 group-hover:text-[#39c262]">ILOVE</span>
+                    <span className="text-2xl font-normal text-[#e8ddd0] tracking-widest">BIRYANI</span>
                 </Link>
-                <p style={{
-                    fontSize: "0.7rem",
-                    color: "rgba(232,221,208,0.2)",
-                    marginTop: "0.25rem",
-                    letterSpacing: "0.04em"
-                }}>
+                <p className="text-[0.7rem] text-[#e8ddd0]/20 mt-1 tracking-wider">
                     Data from{" "}
-                    <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" style={{
-                        color: "#2d9b4e",
-                        textDecoration: "none",
-                        transition: "color 0.2s ease"
-                    }}>TMDB</a>.
-                    <span style={{ display: "inline-block", margin: "0 0.5rem", opacity: 0.3 }}>·</span>
-                    For the love of cinema.
+                    <a
+                        href="https://www.themoviedb.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#2d9b4e] no-underline transition-colors duration-200 hover:text-[#39c262] hover:underline"
+                    >
+                        TMDB
+                    </a>
+                    <span className="inline-block mx-2 opacity-30">·</span>
+                    All content provided by third parties
                 </p>
             </div>
         </footer>

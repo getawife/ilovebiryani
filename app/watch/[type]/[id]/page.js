@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Header from "../../../components/header";
-import PlayerSection from "./PlayerSection";
 import WatchPageClient from "./WatchPageClient";
-import { Film, User, Star, Clock, Play, Calendar } from 'lucide-react';
+import { User, Clock } from 'lucide-react';
 
 async function getMediaData(type, id) {
   const url = `https://api.themoviedb.org/3/${type}/${id}?append_to_response=credits,images,watch/providers,recommendations&language=en-US`;
@@ -20,9 +19,9 @@ async function getMediaData(type, id) {
 
 function getRatingColor(r) {
   const n = parseFloat(r);
-  if (n >= 7.5) return "#2d9b4e";
-  if (n >= 6) return "#c9a84c";
-  return "#8b5a2b";
+  if (n >= 7.5) return "text-[#2d9b4e]";
+  if (n >= 6) return "text-[#c9a84c]";
+  return "text-[#8b5a2b]";
 }
 
 function formatRuntime(minutes) {
@@ -67,173 +66,63 @@ export default async function WatchPage({ params }) {
   const logoUrl = logoAsset ? `https://image.tmdb.org/t/p/w500${logoAsset.file_path}` : null;
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#0a0f0a",
-      color: "#e8ddd0",
-      display: "flex",
-      flexDirection: "column",
-      position: "relative",
-      isolation: "isolate"
-    }}>
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        .responsive-hero-grid {
-          display: grid;
-          grid-template-columns: minmax(140px, 220px) 1fr;
-          gap: clamp(1.5rem, 4vw, 3rem);
-          alignItems: flex-end;
-        }
-        @media (max-width: 680px) {
-          .responsive-hero-grid {
-            grid-template-columns: 1fr !important;
-            text-align: center !important;
-            justify-items: center !important;
-          }
-          .responsive-hero-grid .poster-container {
-            width: clamp(140px, 45vw, 180px) !important;
-            margin: 0 auto !important;
-          }
-          .responsive-hero-grid .meta-pills-row {
-            justify-content: center !important;
-          }
-          .responsive-hero-grid .logo-img {
-            margin: 0 auto 1.25rem !important;
-          }
-          .responsive-hero-grid .synopsis-text {
-            margin-left: auto !important;
-            margin-right: auto !important;
-          }
-        }
-      `}} />
-
+    <div className="isolate flex min-h-screen flex-col bg-[#0a0f0a] text-[#e8ddd0]">
       <Header />
 
+      {/* FIXED BACKDROP LAYER */}
       {backdropUrl && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "65vh",
-          zIndex: -2,
-          overflow: "hidden",
-          pointerEvents: "none"
-        }}>
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-[-2] h-[65vh] overflow-hidden">
           <img
             src={backdropUrl}
             alt=""
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center 20%",
-              filter: "brightness(0.18) saturate(0.65)"
-            }}
+            className="h-full w-full object-cover object-[center_20%] brightness-[0.18] saturate-[0.65]"
           />
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, transparent 10%, #0a0f0a 95%)"
-          }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0f0a] to-[95%]" />
         </div>
       )}
 
       {/* AMBIENT GLOW LAYER */}
       {posterUrl && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundImage: `url(${posterUrl})`,
-          backgroundSize: "100% auto",
-          backgroundPosition: "center -10%",
-          filter: "blur(140px) opacity(0.12) saturate(1.8)",
-          pointerEvents: "none",
-          zIndex: -1
-        }} />
+        <div
+          className="pointer-events-none fixed inset-0 z-[-1] bg-[length:100%_auto] bg-[center_-10%] opacity-12 blur-[140px] saturate-[1.8]"
+          style={{ backgroundImage: `url(${posterUrl})` }}
+        />
       )}
 
-      {/* Layout Grid Container */}
-      <div style={{
-        maxWidth: 1400,
-        margin: "0 auto",
-        width: "100%",
-        padding: "clamp(80px, 12vh, 150px) 1rem 0rem"
-      }}>
-        <div className="responsive-hero-grid">
+      {/* Hero Header Section */}
+      <div className="mx-auto w-full max-w-[1400px] px-4 pt-[clamp(80px,12vh,150px)]">
+        <div className="grid items-end gap-x-[clamp(1.5rem,4vw,3rem)] gap-y-6 grid-cols-1 sm:grid-cols-[minmax(140px,220px)_1fr] sm:text-left text-center justify-items-center sm:justify-items-start">
+
           {/* Movie Poster Wrapper */}
-          <div className="poster-container" style={{ flexShrink: 0, width: "100%" }}>
+          <div className="w-[clamp(140px,45vw,180px)] sm:w-full flex-shrink-0">
             {posterUrl ? (
               <img
                 src={posterUrl}
                 alt={title}
-                style={{
-                  width: "100%",
-                  aspectRatio: "2/3",
-                  objectFit: "cover",
-                  borderRadius: 8,
-                  boxShadow: "0 24px 64px rgba(0,0,0,0.8)",
-                  border: "1px solid rgba(255,255,255,0.05)"
-                }}
+                className="aspect-[2/3] w-full rounded-grow object-cover rounded-lg border border-white/5 shadow-[0_24px_64px_rgba(0,0,0,0.8)]"
               />
             ) : (
-              <div style={{
-                width: "100%",
-                aspectRatio: "2/3",
-                borderRadius: 8,
-                background: "#111811",
-                border: "1px solid rgba(255,255,255,0.05)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "rgba(232,221,208,0.2)",
-                fontSize: "0.8rem"
-              }}>
+              <div className="flex aspect-[2/3] w-full items-center justify-center rounded-lg border border-white/5 bg-[#111811] text-xs text-[rgba(232,221,208,0.2)]">
                 No image
               </div>
             )}
           </div>
 
           {/* Details Metadata Content Wrapper */}
-          <div style={{ paddingBottom: "0.5rem", minWidth: 0 }}>
+          <div className="min-w-0 pb-2">
             {logoUrl ? (
               <img
                 src={logoUrl}
                 alt={title}
-                className="logo-img"
-                style={{
-                  maxHeight: "clamp(55px, 10vh, 100px)",
-                  maxWidth: "85%",
-                  objectFit: "contain",
-                  objectPosition: "left bottom",
-                  marginBottom: "1.25rem",
-                  display: "block"
-                }}
+                className="mx-auto mb-5 block max-h-[clamp(55px,10vh,100px)] max-w-[85%] object-contain object-left-bottom sm:mx-0"
               />
             ) : (
-              <h1 style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "clamp(1.6rem, 4vw, 3rem)",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.1,
-                marginBottom: "0.85rem",
-                fontWeight: 800,
-                color: "#e8ddd0"
-              }}>
+              <h1 className="mb-3.5 font-sans text-[clamp(1.6rem,4vw,3rem)] font-extrabold leading-none tracking-tight text-[#e8ddd0]">
                 {title}
               </h1>
             )}
 
-            <div className="meta-pills-row" style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: "0.4rem",
-              marginBottom: "1.25rem"
-            }}>
+            <div className="mb-5 flex flex-wrap items-center justify-center gap-1.5 sm:justify-start">
               <StatPill color={getRatingColor(rating)}>★ {rating}</StatPill>
               {year && <StatPill>{year}</StatPill>}
               {runtime && <StatPill>{runtime}</StatPill>}
@@ -242,17 +131,11 @@ export default async function WatchPage({ params }) {
               {genres.slice(0, 3).map((g) => <StatPill key={g.id}>{g.name}</StatPill>)}
             </div>
 
-            <p className="synopsis-text" style={{
-              fontSize: "clamp(0.85rem, 1.1vw, 0.95rem)",
-              lineHeight: 1.7,
-              color: "rgba(232,221,208,0.65)",
-              marginBottom: "1.5rem",
-              maxWidth: "680px"
-            }}>
+            <p className="mx-auto mb-6 max-w-[680px] text-[clamp(0.85rem,1.1vw,0.95rem)] leading-relaxed text-[rgba(232,221,208,0.65)] sm:mx-0">
               {overview}
             </p>
 
-            <div style={{ marginBottom: "0.5rem" }}>
+            <div className="mb-2">
               <WatchPageClient
                 type={type}
                 id={id}
@@ -264,51 +147,26 @@ export default async function WatchPage({ params }) {
         </div>
       </div>
 
-      <main style={{
-        maxWidth: 1400,
-        margin: "0 auto",
-        width: "100%",
-        padding: "0 1rem 4rem",
-        position: "relative",
-        zIndex: 2
-      }}>
+      {/* Main Secondary Content Rails */}
+      <main className="relative z-10 mx-auto w-full max-w-[1400px] px-4 pb-16">
         {cast.length > 0 && (
           <Section title="The Cast">
-            <div className="scroll-row" style={{ gap: "clamp(1rem, 2vw, 1.5rem)", padding: "0.5rem 0.25rem 1.25rem" }}>
+            <div className="scroll-row flex overflow-x-auto gap-[clamp(1rem,2vw,1.5rem)] py-2 px-1 [scrollbar-width:none]">
               {cast.map((actor) => (
-                <div key={actor.id} style={{ flexShrink: 0, width: "clamp(80px, 12vw, 100px)", textAlign: "center" }}>
+                <div key={actor.id} className="w-[clamp(80px,12vw,100px)] flex-shrink-0 text-center">
                   {actor.profile_path ? (
                     <img
                       src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
                       alt={actor.name}
-                      style={{
-                        width: "clamp(56px, 8vw, 68px)",
-                        height: "clamp(56px, 8vw, 68px)",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        border: "2px solid rgba(255,255,255,0.05)",
-                        margin: "0 auto 0.4rem",
-                        display: "block"
-                      }}
+                      className="mx-auto mb-1.5 block h-[clamp(56px,8vw,68px)] w-[clamp(56px,8vw,68px)] rounded-full border-2 border-white/5 object-cover"
                     />
                   ) : (
-                    <div style={{
-                      width: "clamp(56px, 8vw, 68px)",
-                      height: "clamp(56px, 8vw, 68px)",
-                      borderRadius: "50%",
-                      background: "#111811",
-                      border: "2px solid rgba(255,255,255,0.05)",
-                      margin: "0 auto 0.4rem",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      opacity: 0.3
-                    }}>
+                    <div className="mx-auto mb-1.5 flex h-[clamp(56px,8vw,68px)] w-[clamp(56px,8vw,68px)] items-center justify-center rounded-full border-2 border-white/5 bg-[#111811] opacity-30">
                       <User size={24} />
                     </div>
                   )}
-                  <p style={{ fontSize: "clamp(0.6rem, 0.8vw, 0.7rem)", fontWeight: 600, color: "#e8ddd0", lineHeight: 1.3 }} className="line-clamp-2">{actor.name}</p>
-                  <p style={{ fontSize: "clamp(0.5rem, 0.7vw, 0.6rem)", color: "rgba(232,221,208,0.3)", marginTop: 2, fontStyle: "italic" }} className="line-clamp-1">{actor.character}</p>
+                  <p className="line-clamp-2 text-[clamp(0.6rem,0.8vw,0.7rem)] font-semibold leading-tight text-[#e8ddd0]">{actor.name}</p>
+                  <p className="line-clamp-1 mt-0.5 text-[clamp(0.5rem,0.7vw,0.6rem)] italic text-[rgba(232,221,208,0.3)]">{actor.character}</p>
                 </div>
               ))}
             </div>
@@ -317,21 +175,14 @@ export default async function WatchPage({ params }) {
 
         {backdrops.length > 0 && (
           <Section title="Stills">
-            <div className="scroll-row" style={{ gap: "clamp(0.5rem, 1vw, 0.75rem)", padding: "0.5rem 0.25rem 1.25rem" }}>
+            <div className="scroll-row flex overflow-x-auto gap-[clamp(0.5rem,1vw,0.75rem)] py-2 px-1 [scrollbar-width:none]">
               {backdrops.map((img, i) => (
-                <div key={i} style={{
-                  flexShrink: 0,
-                  width: "clamp(180px, 30vw, 260px)",
-                  aspectRatio: "16/9",
-                  borderRadius: 6,
-                  overflow: "hidden",
-                  border: "1px solid rgba(255,255,255,0.05)"
-                }}>
+                <div key={i} className="aspect-video w-[clamp(180px,30vw,260px)] flex-shrink-0 overflow-hidden rounded-md border border-white/5">
                   <img
                     src={`https://image.tmdb.org/t/p/w780${img.file_path}`}
                     alt=""
                     loading="lazy"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    className="h-full w-full object-cover"
                   />
                 </div>
               ))}
@@ -341,7 +192,7 @@ export default async function WatchPage({ params }) {
 
         {recommendations.length > 0 && (
           <Section title="You might also enjoy">
-            <div className="scroll-row" style={{ gap: "clamp(0.75rem, 1.5vw, 1rem)", padding: "0.5rem 0.25rem 1.25rem" }}>
+            <div className="scroll-row flex overflow-x-auto gap-[clamp(0.75rem,1.5vw,1rem)] py-2 px-1 [scrollbar-width:none]">
               {recommendations.map((item) => {
                 const rPoster = item.poster_path
                   ? `https://image.tmdb.org/t/p/w400${item.poster_path}`
@@ -350,28 +201,17 @@ export default async function WatchPage({ params }) {
                 const rYear = (item.release_date || item.first_air_date || "").split("-")[0];
                 const rRating = item.vote_average ? item.vote_average.toFixed(1) : "0.0";
                 return (
-                  <Link key={item.id} href={`/watch/${type}/${item.id}`} style={{ display: "block", width: "clamp(120px, 18vw, 150px)", textDecoration: "none", flexShrink: 0 }}>
-                    <div style={{ background: "#111811", borderRadius: 6, overflow: "hidden", border: "1px solid rgba(255,255,255,0.05)" }}>
-                      <div style={{ position: "relative", aspectRatio: "2/3" }}>
-                        <img src={rPoster} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                        <div style={{
-                          position: "absolute",
-                          bottom: 6,
-                          left: 6,
-                          background: "rgba(0,0,0,0.7)",
-                          backdropFilter: "blur(4px)",
-                          borderRadius: 4,
-                          padding: "0.1rem 0.4rem",
-                          fontSize: "0.6rem",
-                          fontWeight: 600,
-                          color: getRatingColor(rRating)
-                        }}>
+                  <Link key={item.id} href={`/watch/${type}/${item.id}`} className="block w-[clamp(120px,18vw,150px)] flex-shrink-0 no-underline">
+                    <div className="overflow-hidden rounded-md border border-white/5 bg-[#111811]">
+                      <div className="relative aspect-[2/3]">
+                        <img src={rPoster} alt="" loading="lazy" className="block h-full w-full object-cover" />
+                        <div className={`absolute bottom-1.5 left-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold backdrop-blur-[4px] ${getRatingColor(rRating)}`}>
                           ★ {rRating}
                         </div>
                       </div>
-                      <div style={{ padding: "0.5rem" }}>
-                        <p style={{ fontWeight: 500, fontSize: "0.75rem", color: "#e8ddd0", lineHeight: 1.3 }} className="line-clamp-2">{rTitle}</p>
-                        <p style={{ fontSize: "0.6rem", color: "rgba(232,221,208,0.25)", marginTop: 2 }}>{rYear}</p>
+                      <div className="p-2">
+                        <p className="line-clamp-2 text-xs font-medium leading-tight text-[#e8ddd0]">{rTitle}</p>
+                        <p className="mt-0.5 text-[10px] text-[rgba(232,221,208,0.25)]">{rYear}</p>
                       </div>
                     </div>
                   </Link>
@@ -387,18 +227,7 @@ export default async function WatchPage({ params }) {
 
 function StatPill({ children, color }) {
   return (
-    <span style={{
-      display: "inline-flex",
-      alignItems: "center",
-      padding: "0.2rem 0.5rem",
-      borderRadius: 4,
-      fontSize: "0.65rem",
-      fontWeight: 500,
-      background: "rgba(255,255,255,0.03)",
-      border: "1px solid rgba(255,255,255,0.05)",
-      color: color || "rgba(232,221,208,0.5)",
-      letterSpacing: "0.04em"
-    }}>
+    <span className={`inline-flex items-center rounded border border-white/5 bg-white/[0.03] px-2 py-1 text-[10px] font-medium tracking-wide text-[rgba(232,221,208,0.5)] ${color || ''}`}>
       {children}
     </span>
   );
@@ -406,12 +235,12 @@ function StatPill({ children, color }) {
 
 function Section({ title, children }) {
   return (
-    <section style={{ marginTop: "2.5rem" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1rem" }}>
-        <h2 style={{ fontFamily: "var(--font-sans)", fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "#e8ddd0", fontWeight: 600 }}>
+    <section className="mt-10">
+      <div className="mb-4 flex items-center gap-4">
+        <h2 className="font-sans text-xs font-semibold uppercase tracking-widest text-[#e8ddd0]">
           {title}
         </h2>
-        <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,255,255,0.05), transparent)" }} />
+        <div className="h-px flex-1 bg-gradient-to-r from-white/5 to-transparent" />
       </div>
       {children}
     </section>

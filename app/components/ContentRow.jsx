@@ -41,7 +41,7 @@ export function ContentRow({ title, iconName, color, items, type }) {
                     {title}
                 </h2>
                 <Link
-                    href={`/browse/${type}`}
+                    href={`/${type}s`}
                     style={{
                         display: "flex",
                         alignItems: "center",

@@ -1,36 +1,39 @@
 'use client';
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Play, X, Clock, Film } from "lucide-react";
 
-function buildServers(type, id, season, episode) {
-  return {
-    "Server 1": type === "tv"
-      ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`
-      : `https://vidsrc.to/embed/movie/${id}`,
-    "Server 2": type === "tv"
-      ? `https://vidsuper.net/embed/tv/${id}/${season}/${episode}`
-      : `https://vidsuper.net/embed/movie/${id}`,
-    "Server 3": type === "tv"
-      ? `https://vidrock.ru/tv/${id}/${season}/${episode}`
-      : `https://vidrock.ru/movie/${id}`,
-  };
+// Move utility outside the component scope to avoid re-creation on every render
+function getEmbedUrl(server, type, id, season, episode) {
+  const isTv = type === "tv";
+  switch (server) {
+    case "Server 1":
+      return isTv ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}`;
+    case "Server 2":
+      return isTv ? `https://vidsuper.net/embed/tv/${id}/${season}/${episode}` : `https://vidsuper.net/embed/movie/${id}`;
+    case "Server 3":
+      return isTv ? `https://vidrock.ru/tv/${id}/${season}/${episode}` : `https://vidrock.ru/movie/${id}`;
+    default:
+      return "";
+  }
 }
+
+const SERVER_NAMES = ["Server 1", "Server 2", "Server 3"];
 
 export default function PlayerSection({ type, id, seasonsData = [], isReleased = true, selectedSeason = 1 }) {
   const [showPlayer, setShowPlayer] = useState(false);
   const [showEpisodes, setShowEpisodes] = useState(false);
 
-  const validSeasons = seasonsData.filter((s) => s.season_number > 0);
-  const [season, setSeason] = useState(selectedSeason || (validSeasons.length > 0 ? validSeasons[0].season_number : 1));
+  // Memoize filtered seasons array to prevent repetitive array filtering cycles on render
+  const validSeasons = useMemo(() => seasonsData.filter((s) => s.season_number > 0), [seasonsData]);
+
+  const [season, setSeason] = useState(() => selectedSeason || (validSeasons.length > 0 ? validSeasons[0].season_number : 1));
   const [episode, setEpisode] = useState(1);
-  const [activeServer, setActiveServer] = useState("Watch Now");
+  const [activeServer, setActiveServer] = useState(SERVER_NAMES[0]);
   const [episodesList, setEpisodesList] = useState([]);
   const [loadingEpisodes, setLoadingEpisodes] = useState(false);
 
-  const servers = buildServers(type, id, season, episode);
-
-  // Update season when prop changes
+  // Sync external parent season selection changes smoothly
   useEffect(() => {
     if (selectedSeason && selectedSeason !== season) {
       setSeason(selectedSeason);
@@ -39,15 +42,28 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
     }
   }, [selectedSeason]);
 
+  // Handle data fetching for TV Episodes safely with cleanup logic to handle component unmount/race conditions
   useEffect(() => {
     if (type !== "tv" || !showPlayer || !isReleased) return;
+
+    let isMounted = true;
     setLoadingEpisodes(true);
 
     fetch(`/api/episodes?showId=${id}&season=${season}`)
       .then((r) => r.ok ? r.json() : [])
-      .then((data) => setEpisodesList(Array.isArray(data) ? data : []))
-      .catch(() => setEpisodesList([]))
-      .finally(() => setLoadingEpisodes(false));
+      .then((data) => {
+        if (isMounted) setEpisodesList(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (isMounted) setEpisodesList([]);
+      })
+      .finally(() => {
+        if (isMounted) setLoadingEpisodes(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [season, id, type, showPlayer, isReleased]);
 
   useEffect(() => {
@@ -56,44 +72,31 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
   }, [showPlayer]);
 
   useEffect(() => {
+    if (!showPlayer) return;
     const handler = (e) => { if (e.key === "Escape") setShowPlayer(false); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
+  }, [showPlayer]);
 
   if (!isReleased) {
     return (
-      <div style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "0.6rem",
-        background: "rgba(45,155,78,0.04)",
-        border: "1px solid rgba(45,155,78,0.06)",
-        borderRadius: 6,
-        padding: "0.7rem 1.25rem",
-        fontSize: "0.8rem",
-        fontWeight: 500,
-        color: "rgba(232,221,208,0.4)",
-        letterSpacing: "0.04em"
-      }}>
-        <Clock size={16} style={{ opacity: 0.5 }} />
+      <div className="inline-flex items-center gap-2 rounded-md border border-emerald-500/5 bg-emerald-500/[0.04] px-5 py-3 text-xs font-medium text-[rgba(232,221,208,0.4)] tracking-wider">
+        <Clock size={16} className="opacity-50" />
         Coming soon to the silver screen
       </div>
     );
   }
 
+  const activeEpisodeData = episodesList.find((e) => e.episode_number === episode);
+  const currentEmbedUrl = getEmbedUrl(activeServer, type, id, season, episode);
+
   return (
     <>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center" }}>
+      <div className="flex flex-wrap items-center gap-3">
         <button
           id="watch-now-btn"
           onClick={() => setShowPlayer(true)}
-          className="hero-btn"
-          style={{
-            minWidth: 140,
-            fontSize: "0.8rem",
-            padding: "0.7rem 1.8rem"
-          }}
+          className="hero-btn min-w-[140px] px-7 py-3 text-xs"
         >
           <Play size={18} />
           Start watching
@@ -101,103 +104,43 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
       </div>
 
       {showPlayer && (
-        <div
-          className="overlay-enter"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 200,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
+        <div className="overlay-enter fixed inset-0 z-[200] flex items-center justify-center">
           <div
             onClick={() => setShowPlayer(false)}
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(6,12,6,0.92)",
-              backdropFilter: "blur(14px)",
-              cursor: "pointer"
-            }}
+            className="absolute inset-0 cursor-pointer bg-[#060c06]/92 backdrop-blur-xl"
           />
 
-          <div
-            className="panel-enter"
-            style={{
-              position: "relative",
-              width: "100%",
-              maxWidth: "min(1100px, calc(100vw - 1.5rem))",
-              background: "linear-gradient(145deg, #0e180e, #0a120a)",
-              borderRadius: 12,
-              overflow: "hidden",
-              border: "1px solid rgba(45,155,78,0.06)",
-              boxShadow: "0 48px 128px rgba(0,0,0,0.9), 0 0 0 1px rgba(45,155,78,0.04)",
-              display: "flex",
-              flexDirection: "column",
-              maxHeight: "calc(100vh - 1.5rem)",
-              zIndex: 1,
-            }}
-          >
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "0.5rem 0.75rem",
-              borderBottom: "1px solid rgba(45,155,78,0.04)",
-              flexShrink: 0,
-              background: "rgba(10,15,10,0.5)"
-            }}>
-              <div style={{ display: "flex", gap: "0.2rem" }}>
-                {Object.keys(servers).map((name) => (
-                  <button
-                    key={name}
-                    id={`server-${name.toLowerCase().replace(/\s/g, "-")}`}
-                    onClick={() => setActiveServer(name)}
-                    style={{
-                      padding: "0.25rem 0.7rem",
-                      borderRadius: 4,
-                      fontSize: "0.6rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      border: "1px solid",
-                      transition: "all 0.2s ease",
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                      borderColor: activeServer === name ? "rgba(45,155,78,0.2)" : "rgba(45,155,78,0.04)",
-                      background: activeServer === name ? "rgba(45,155,78,0.08)" : "rgba(45,155,78,0.02)",
-                      color: activeServer === name ? "#2d9b4e" : "rgba(232,221,208,0.3)",
-                      fontFamily: "var(--font-sans)"
-                    }}
-                  >
-                    {name}
-                  </button>
-                ))}
+          <div className="panel-enter relative flex max-h-[calc(100vh-1.5rem)] w-full max-w-[min(1100px,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-xl border border-emerald-500/5 bg-gradient-to-br from-[#0e180e] to-[#0a120a] shadow-[0_48px_128px_rgba(0,0,0,0.9),0_0_0_1px_rgba(45,155,78,0.04)] z-10">
+
+            <div className="flex flex-shrink-0 items-center justify-between bg-[#0a0f0a]/50 px-3 py-2 border-b border-emerald-500/5">
+              <div className="flex gap-1">
+                {SERVER_NAMES.map((name) => {
+                  const isActive = activeServer === name;
+                  return (
+                    <button
+                      key={name}
+                      id={`server-${name.toLowerCase().replace(/\s/g, "-")}`}
+                      onClick={() => setActiveServer(name)}
+                      className={`cursor-pointer rounded px-3 py-1 text-[10px] font-semibold uppercase tracking-widest font-sans transition-all duration-200 border ${isActive
+                        ? "border-emerald-500/20 bg-emerald-500/5 text-[#2d9b4e]"
+                        : "border-emerald-500/5 bg-emerald-500/[0.02] text-[rgba(232,221,208,0.3)]"
+                        }`}
+                    >
+                      {name}
+                    </button>
+                  );
+                })}
               </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
+              <div className="flex items-center gap-1">
                 {type === "tv" && (
                   <button
                     onClick={() => setShowEpisodes((v) => !v)}
                     id="toggle-episodes-btn"
-                    style={{
-                      padding: "0.25rem 0.7rem",
-                      borderRadius: 4,
-                      fontSize: "0.6rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      border: "1px solid rgba(45,155,78,0.04)",
-                      background: showEpisodes ? "rgba(45,155,78,0.06)" : "rgba(45,155,78,0.02)",
-                      color: showEpisodes ? "rgba(232,221,208,0.6)" : "rgba(232,221,208,0.25)",
-                      transition: "all 0.2s ease",
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                      fontFamily: "var(--font-sans)",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.3rem"
-                    }}
+                    className={`flex cursor-pointer items-center gap-1 rounded border px-3 py-1 text-[10px] font-semibold uppercase tracking-widest font-sans transition-all duration-200 ${showEpisodes
+                      ? "border-emerald-500/5 bg-emerald-500/5 text-[rgba(232,221,208,0.6)]"
+                      : "border-emerald-500/5 bg-emerald-500/[0.02] text-[rgba(232,221,208,0.25)]"
+                      }`}
                   >
                     <Film size={12} />
                     Episodes
@@ -206,60 +149,19 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                 <button
                   id="close-player-btn"
                   onClick={() => setShowPlayer(false)}
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 4,
-                    background: "rgba(45,155,78,0.02)",
-                    border: "1px solid rgba(45,155,78,0.04)",
-                    color: "rgba(232,221,208,0.3)",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.2s ease"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(45,155,78,0.1)";
-                    e.currentTarget.style.borderColor = "rgba(45,155,78,0.2)";
-                    e.currentTarget.style.color = "rgba(45,155,78,0.6)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(45,155,78,0.02)";
-                    e.currentTarget.style.borderColor = "rgba(45,155,78,0.04)";
-                    e.currentTarget.style.color = "rgba(232,221,208,0.3)";
-                  }}
+                  className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded border border-emerald-500/5 bg-emerald-500/[0.02] text-[rgba(232,221,208,0.3)] transition-all duration-200 hover:border-emerald-500/20 hover:bg-emerald-500/10 hover:text-emerald-500/60"
                 >
                   <X size={18} />
                 </button>
               </div>
             </div>
 
-            <div style={{
-              display: "flex",
-              flex: 1,
-              minHeight: 0,
-              overflow: "hidden",
-              background: "#000"
-            }}>
-              <div style={{
-                flex: 1,
-                aspectRatio: "16/9",
-                background: "#000",
-                position: "relative",
-                minWidth: 0
-              }}>
+            <div className="flex flex-1 min-h-0 overflow-hidden bg-black">
+              <div className="relative flex-1 min-w-0 aspect-video bg-black">
                 <iframe
                   key={`${activeServer}-${season}-${episode}`}
-                  src={servers[activeServer]}
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    border: "none",
-                    background: "#000"
-                  }}
+                  src={currentEmbedUrl}
+                  className="absolute inset-0 h-full w-full border-none bg-black"
                   allowFullScreen
                   allow="autoplay; encrypted-media"
                   scrolling="no"
@@ -267,70 +169,38 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
               </div>
 
               {type === "tv" && showEpisodes && (
-                <div style={{
-                  width: "clamp(200px, 30vw, 260px)",
-                  flexShrink: 0,
-                  borderLeft: "1px solid rgba(45,155,78,0.04)",
-                  background: "rgba(6,12,6,0.95)",
-                  display: "flex",
-                  flexDirection: "column",
-                  overflow: "hidden"
-                }}>
-                  <div style={{
-                    padding: "0.5rem 0.6rem",
-                    borderBottom: "1px solid rgba(45,155,78,0.04)",
-                    display: "flex",
-                    gap: "0.2rem",
-                    flexWrap: "wrap",
-                    background: "rgba(10,15,10,0.5)"
-                  }}>
-                    {validSeasons.slice(0, 12).map((s) => (
-                      <button
-                        key={s.season_number}
-                        onClick={() => {
-                          setSeason(s.season_number);
-                          setEpisode(1);
-                          setEpisodesList([]);
-                        }}
-                        style={{
-                          padding: "0.15rem 0.5rem",
-                          borderRadius: 4,
-                          fontSize: "0.6rem",
-                          fontWeight: 600,
-                          cursor: "pointer",
-                          border: "1px solid",
-                          transition: "all 0.15s ease",
-                          borderColor: season === s.season_number ? "rgba(45,155,78,0.2)" : "rgba(45,155,78,0.04)",
-                          background: season === s.season_number ? "rgba(45,155,78,0.08)" : "rgba(45,155,78,0.02)",
-                          color: season === s.season_number ? "#2d9b4e" : "rgba(232,221,208,0.25)",
-                          fontFamily: "var(--font-sans)"
-                        }}
-                      >
-                        S{s.season_number}
-                      </button>
-                    ))}
+                <div className="flex w-[clamp(200px,30vw,260px)] flex-shrink-0 flex-col overflow-hidden bg-[#060c06]/95 border-l border-emerald-500/5">
+                  <div className="flex flex-wrap gap-1 bg-[#0a0f0a]/50 px-2.5 py-2 border-b border-emerald-500/5">
+                    {validSeasons.slice(0, 12).map((s) => {
+                      const isCurrentSeason = season === s.season_number;
+                      return (
+                        <button
+                          key={s.season_number}
+                          onClick={() => {
+                            setSeason(s.season_number);
+                            setEpisode(1);
+                            setEpisodesList([]);
+                          }}
+                          className={`cursor-pointer rounded px-2 py-0.5 text-[10px] font-semibold font-sans transition-all duration-150 border ${isCurrentSeason
+                            ? "border-emerald-500/20 bg-emerald-500/5 text-[#2d9b4e]"
+                            : "border-emerald-500/5 bg-emerald-500/[0.02] text-[rgba(232,221,208,0.25)]"
+                            }`}
+                        >
+                          S{s.season_number}
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  <div style={{
-                    flex: 1,
-                    overflowY: "auto",
-                    padding: "0.4rem",
-                    scrollbarWidth: "thin"
-                  }}>
+                  <div className="flex-1 overflow-y-auto p-1.5 [scrollbar-width:thin]">
                     {loadingEpisodes ? (
-                      <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                      <div className="flex flex-col gap-1.5 p-4">
                         {[1, 2, 3, 4, 5].map((i) => (
-                          <div key={i} className="skeleton" style={{ height: 48, borderRadius: 4 }} />
+                          <div key={i} className="skeleton h-12 rounded" />
                         ))}
                       </div>
                     ) : episodesList.length === 0 ? (
-                      <p style={{
-                        padding: "1.5rem",
-                        fontSize: "0.7rem",
-                        color: "rgba(232,221,208,0.2)",
-                        textAlign: "center",
-                        fontStyle: "italic"
-                      }}>
+                      <p className="p-6 text-center text-[11px] italic text-[rgba(232,221,208,0.2)]">
                         No episodes listed.
                       </p>
                     ) : (
@@ -341,84 +211,34 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                             key={ep.episode_number}
                             id={`episode-${ep.episode_number}`}
                             onClick={() => setEpisode(ep.episode_number)}
-                            style={{
-                              width: "100%",
-                              display: "flex",
-                              alignItems: "flex-start",
-                              gap: "0.4rem",
-                              padding: "0.4rem 0.5rem",
-                              borderRadius: 4,
-                              border: isActive ? "1px solid rgba(45,155,78,0.15)" : "1px solid transparent",
-                              background: isActive ? "rgba(45,155,78,0.04)" : "transparent",
-                              cursor: "pointer",
-                              textAlign: "left",
-                              transition: "all 0.15s ease",
-                              marginBottom: "0.15rem",
-                            }}
-                            onMouseEnter={(e) => {
-                              if (!isActive) e.currentTarget.style.background = "rgba(45,155,78,0.03";
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!isActive) e.currentTarget.style.background = "transparent";
-                            }}
+                            className={`mb-[6px] flex w-full items-start gap-1.5 rounded p-1.5 text-left transition-all duration-150 border cursor-pointer hover:bg-emerald-500/[0.03] ${isActive
+                              ? "border-emerald-500/15 bg-emerald-500/5"
+                              : "border-transparent bg-transparent"
+                              }`}
                           >
                             {ep.still_path ? (
                               <img
                                 src={`https://image.tmdb.org/t/p/w185${ep.still_path}`}
                                 alt={ep.name}
-                                style={{
-                                  width: 60,
-                                  height: 34,
-                                  borderRadius: 4,
-                                  objectFit: "cover",
-                                  flexShrink: 0,
-                                  border: "1px solid rgba(45,155,78,0.04)",
-                                  filter: "brightness(0.9)"
-                                }}
+                                className="h-[34px] w-[60px] flex-shrink-0 rounded object-cover border border-emerald-500/5 brightness-[0.9]"
                               />
                             ) : (
-                              <div style={{
-                                width: 60,
-                                height: 34,
-                                borderRadius: 4,
-                                background: "#111811",
-                                flexShrink: 0,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: "0.5rem",
-                                color: "rgba(232,221,208,0.15)",
-                                border: "1px solid rgba(45,155,78,0.04)"
-                              }}>
+                              <div className="flex h-[34px] w-[60px] flex-shrink-0 items-center justify-center rounded bg-[#111811] text-[8px] border border-emerald-500/5 text-[rgba(232,221,208,0.15)]">
                                 E{ep.episode_number}
                               </div>
                             )}
-                            <div style={{ overflow: "hidden", flex: 1 }}>
-                              <p style={{
-                                fontSize: "0.65rem",
-                                fontWeight: 600,
-                                color: isActive ? "#2d9b4e" : "rgba(232,221,208,0.6)",
-                                lineHeight: 1.3,
-                                letterSpacing: "0.02em"
-                              }} className="line-clamp-1">
+                            <div className="flex-1 overflow-hidden">
+                              <p className={`line-clamp-1 text-[11px] font-semibold leading-tight tracking-wide ${isActive ? "text-[#2d9b4e]" : "text-[rgba(232,221,208,0.6)]"
+                                }`}>
                                 {ep.episode_number}. {ep.name}
                               </p>
                               {ep.runtime && (
-                                <p style={{
-                                  fontSize: "0.55rem",
-                                  color: "rgba(232,221,208,0.2)",
-                                  marginTop: 1,
-                                  letterSpacing: "0.04em"
-                                }}>{ep.runtime}m</p>
+                                <p className="mt-px text-[9px] tracking-widest text-[rgba(232,221,208,0.2)]">
+                                  {ep.runtime}m
+                                </p>
                               )}
                               {ep.overview && (
-                                <p style={{
-                                  fontSize: "0.55rem",
-                                  color: "rgba(232,221,208,0.2)",
-                                  marginTop: 2,
-                                  lineHeight: 1.3,
-                                  fontStyle: "italic"
-                                }} className="line-clamp-2">
+                                <p className="line-clamp-2 mt-0.5 text-[9px] italic leading-tight text-[rgba(232,221,208,0.2)]">
                                   {ep.overview}
                                 </p>
                               )}
@@ -433,38 +253,16 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
             </div>
 
             {type === "tv" && (
-              <div style={{
-                padding: "0.4rem 0.75rem",
-                borderTop: "1px solid rgba(45,155,78,0.04)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                flexShrink: 0,
-                background: "rgba(10,15,10,0.5)"
-              }}>
-                <span style={{
-                  fontSize: "0.65rem",
-                  color: "rgba(232,221,208,0.2)",
-                  fontWeight: 500,
-                  letterSpacing: "0.08em"
-                }}>
+              <div className="flex flex-shrink-0 items-center gap-2 bg-[#0a0f0a]/50 px-3 py-1.5 border-t border-emerald-500/5">
+                <span className="text-[10px] font-medium tracking-widest uppercase text-[rgba(232,221,208,0.2)]">
                   Now playing
                 </span>
-                <span style={{
-                  fontSize: "0.65rem",
-                  fontWeight: 600,
-                  color: "#2d9b4e",
-                  letterSpacing: "0.04em"
-                }}>
+                <span className="text-[10px] font-semibold tracking-wider text-[#2d9b4e]">
                   S{season} · E{episode}
                 </span>
-                {episodesList.find((e) => e.episode_number === episode)?.name && (
-                  <span style={{
-                    fontSize: "0.65rem",
-                    color: "rgba(232,221,208,0.3)",
-                    fontStyle: "italic"
-                  }}>
-                    — {episodesList.find((e) => e.episode_number === episode).name}
+                {activeEpisodeData?.name && (
+                  <span className="text-[10px] italic text-[rgba(232,221,208,0.3)]">
+                    — {activeEpisodeData.name}
                   </span>
                 )}
               </div>

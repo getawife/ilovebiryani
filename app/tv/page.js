@@ -23,53 +23,22 @@ export default async function TVPage() {
     const popularShows = popularData.results || [];
 
     return (
-        <div style={{
-            minHeight: "100vh",
-            background: "#0a0f0a",
-            color: "#e8ddd0",
-            display: "flex",
-            flexDirection: "column"
-        }}>
+        <div className="flex min-h-screen flex-col bg-[#0a0f0a] text-[#e8ddd0]">
             <Header />
-            <main style={{ flex: 1, position: "relative", paddingTop: "1.5rem" }}>
-                <div style={{
-                    position: "fixed",
-                    inset: 0,
-                    pointerEvents: "none",
-                    opacity: 0.015,
-                    backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 256 256\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noise)\" opacity=\"1\"/%3E%3C/svg%3E')",
-                    backgroundRepeat: "repeat",
-                    backgroundSize: "256px 256px",
-                    zIndex: 1
-                }} />
+            <main className="relative flex-1 pt-6">
+                {/* SVG Film Grain Noise Overlay */}
+                <div
+                    className="pointer-events-none fixed inset-0 z-[1] opacity-[0.015] bg-repeat bg-[size:256px_256px]"
+                    style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 256 256\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noise)\" opacity=\"1\"/%3E%3C/svg%3E')" }}
+                />
 
-                <div style={{
-                    maxWidth: 1400,
-                    margin: "0 auto",
-                    padding: "0 1.5rem 4rem",
-                    position: "relative",
-                    zIndex: 2
-                }}>
-                    <div style={{ marginBottom: "2rem" }}>
-                        <h1 style={{
-                            fontFamily: "var(--font-sans)",
-                            fontSize: "clamp(2rem, 4vw, 3rem)",
-                            fontWeight: 700,
-                            color: "#e8ddd0",
-                            letterSpacing: "0.02em",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.75rem"
-                        }}>
-                            <Tv size={32} color="#2d9b4e" />
+                <div className="relative z-[2] mx-auto max-w-[1400px] px-6 pb-16">
+                    <div className="mb-8">
+                        <h1 className="flex items-center gap-3 font-sans text-[clamp(2rem,4vw,3rem)] font-bold tracking-wide text-[#e8ddd0]">
+                            <Tv size={32} className="text-[#2d9b4e]" />
                             Series
                         </h1>
-                        <p style={{
-                            fontSize: "0.9rem",
-                            color: "rgba(232,221,208,0.4)",
-                            fontStyle: "italic",
-                            marginTop: "0.25rem"
-                        }}>
+                        <p className="mt-1 text-sm italic text-[rgba(232,221,208,0.4)]">
                             Binge-worthy shows worth your time
                         </p>
                     </div>
@@ -87,57 +56,28 @@ export default async function TVPage() {
 
 function Footer() {
     return (
-        <footer style={{
-            borderTop: "1px solid rgba(150,200,150,0.05)",
-            padding: "2.5rem 1.5rem 2rem",
-            textAlign: "center",
-            background: "linear-gradient(180deg, transparent, rgba(10,15,10,0.9))",
-            position: "relative"
-        }}>
-            <div style={{
-                maxWidth: 1400,
-                margin: "0 auto",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "0.5rem"
-            }}>
-                <Link href="/" style={{
-                    display: "inline-flex",
-                    alignItems: "baseline",
-                    gap: "0.1rem",
-                    textDecoration: "none",
-                    marginBottom: "0.25rem"
-                }}>
-                    <span style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "1.6rem",
-                        color: "#2d9b4e",
-                        letterSpacing: "0.08em",
-                        fontWeight: 700
-                    }}>ILOVE</span>
-                    <span style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "1.6rem",
-                        color: "#e8ddd0",
-                        letterSpacing: "0.08em",
-                        fontWeight: 400
-                    }}>BIRYANI</span>
+        <footer className="relative border-t border-emerald-500/5 bg-gradient-to-b from-transparent to-[#0a0f0a]/90 px-6 py-10 text-center">
+            <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-2">
+                <Link href="/" className="mb-1 inline-flex items-baseline gap-0.5 no-underline">
+                    <span className="font-sans text-2xl font-bold tracking-widest text-[#2d9b4e]">
+                        ILOVE
+                    </span>
+                    <span className="font-sans text-2xl font-normal tracking-widest text-[#e8ddd0]">
+                        BIRYANI
+                    </span>
                 </Link>
-                <p style={{
-                    fontSize: "0.7rem",
-                    color: "rgba(232,221,208,0.2)",
-                    marginTop: "0.25rem",
-                    letterSpacing: "0.04em"
-                }}>
+                <p className="mt-1 text-[11px] tracking-wide text-[rgba(232,221,208,0.2)]">
                     Data from{" "}
-                    <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" style={{
-                        color: "#2d9b4e",
-                        textDecoration: "none",
-                        transition: "color 0.2s ease"
-                    }}>TMDB</a>.
-                    <span style={{ display: "inline-block", margin: "0 0.5rem", opacity: 0.3 }}>·</span>
-                    For the love of cinema.
+                    <a
+                        href="https://www.themoviedb.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#2d9b4e] no-underline transition-colors duration-200 hover:text-emerald-400"
+                    >
+                        TMDB
+                    </a>
+                    <span className="mx-2 inline-block opacity-30">·</span>
+                    All content provided by third parties.
                 </p>
             </div>
         </footer>

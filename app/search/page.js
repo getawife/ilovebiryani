@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Play, Star, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { Play, SlidersHorizontal, ChevronDown } from 'lucide-react';
 import Header from '../components/header';
 
 function getRatingColor(r) {
@@ -150,18 +150,7 @@ function SearchContent() {
             { value: 'IN', label: 'India' },
             { value: 'CN', label: 'China' },
             { value: 'FR', label: 'France' },
-            { value: 'DE', label: 'Germany' },
-            { value: 'ES', label: 'Spain' },
-            { value: 'MX', label: 'Mexico' },
-            { value: 'BR', label: 'Brazil' },
-            { value: 'IT', label: 'Italy' },
-            { value: 'SE', label: 'Sweden' },
-            { value: 'NO', label: 'Norway' },
-            { value: 'DK', label: 'Denmark' },
-            { value: 'AU', label: 'Australia' },
-            { value: 'NZ', label: 'New Zealand' },
-            { value: 'TR', label: 'Turkey' },
-            { value: 'BD', label: 'Bangladesh' }
+            { value: 'DE', label: 'Germany' }
         ],
         languages: [
             { value: 'all', label: 'All Languages' },
@@ -169,16 +158,9 @@ function SearchContent() {
             { value: 'es', label: 'Spanish' },
             { value: 'fr', label: 'French' },
             { value: 'hi', label: 'Hindi' },
-            { value: 'zh', label: 'Mandarin' },
             { value: 'ja', label: 'Japanese' },
             { value: 'ko', label: 'Korean' },
-            { value: 'pt', label: 'Portuguese' },
-            { value: 'de', label: 'German' },
-            { value: 'sv', label: 'Swedish' },
-            { value: 'no', label: 'Norwegian' },
-            { value: 'da', label: 'Danish' },
-            { value: 'ur', label: 'Urdu' },
-            { value: 'bn', label: 'Bengali' }
+            { value: 'ur', label: 'Urdu' }
         ],
         ratings: [
             { value: 'all', label: 'Any Rating' },
@@ -334,7 +316,7 @@ function SearchContent() {
                     </div>
                 ) : items.length === 0 ? (
                     <div style={{ textAlign: "center", padding: "5rem 2rem", background: "#111811", borderRadius: 10, border: "1px solid rgba(45,155,78,0.05)" }}>
-                        <p style={{ color: "rgba(232,221,208,0.3)", fontSize: "0.85rem" }}>No matching records matched your criteria.</p>
+                        <p style={{ color: "rgba(232,221,208,0.3)", fontSize: "0.85rem" }}>No records matched your criteria.</p>
                     </div>
                 ) : (
                     <div className="search-results-grid" style={{
@@ -389,7 +371,7 @@ export default function SearchPage() {
                         <span style={{ fontSize: "1.5rem", color: "#e8ddd0", letterSpacing: "0.08em", fontWeight: 400 }}>BIRYANI</span>
                     </Link>
                     <p style={{ fontSize: "0.7rem", color: "rgba(232,221,208,0.2)", letterSpacing: "0.04em", marginTop: "0.25rem" }}>
-                        Data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" style={{ color: "#2d9b4e", textDecoration: "none" }}>TMDB</a>. Built natively with Next.js.
+                        Data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" style={{ color: "#2d9b4e", textDecoration: "none" }}>TMDB</a>. All content provided by third parties.
                     </p>
                 </div>
             </footer>
@@ -406,7 +388,6 @@ export default function SearchPage() {
                     opacity: 1 !important;
                 }
                 
-                /* Layout padding shifted down to let header stay perfectly transparent over content */
                 :global(.search-layout-container) {
                     padding: 7.5rem 2rem 5rem 2rem;
                 }
@@ -484,17 +465,19 @@ function SearchCard({ item, defaultType }) {
     const year = (item.release_date || item.first_air_date || "").split("-")[0];
     const rating = item.vote_average ? item.vote_average.toFixed(1) : "0.0";
 
-    const mediaType = item.release_date ? 'movie' : item.first_air_date ? 'tv' : defaultType;
+    const mediaType = item.media_type || (item.release_date ? 'movie' : item.first_air_date ? 'tv' : defaultType);
 
     return (
-        <Link href={`/watch/${mediaType}/${item.id}`} className="card-container-item" style={{ display: "block", textDecoration: "none" }}>
+        <Link href={`/watch/${mediaType}/${item.id}`} className="card-container-item" style={{ display: "flex", flexDirection: "column", height: "100%", textDecoration: "none" }}>
             <div style={{
                 background: "#111811",
                 borderRadius: 8,
                 overflow: "hidden",
                 border: "1px solid rgba(150,200,150,0.06)",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                height: "100%"
+                display: "flex",
+                flexDirection: "column",
+                flex: 1
             }}>
                 <div style={{ position: "relative", width: "100%", aspectRatio: "2/3", overflow: "hidden", background: "#0a0f0a" }}>
                     <img
@@ -558,7 +541,7 @@ function SearchCard({ item, defaultType }) {
                     </div>
                 </div>
 
-                <div style={{ padding: "0.6rem 0.7rem 0.7rem" }}>
+                <div style={{ padding: "0.6rem 0.7rem 0.7rem", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
                     <p style={{
                         fontWeight: 500,
                         fontSize: "0.8rem",
