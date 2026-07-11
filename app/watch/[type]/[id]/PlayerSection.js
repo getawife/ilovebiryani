@@ -3,22 +3,40 @@
 import { useState, useEffect, useMemo } from "react";
 import { Play, X, Clock, Film, EyeOff } from "lucide-react";
 
-// Move utility outside the component scope to avoid re-creation on every render
 function getEmbedUrl(server, type, id, season, episode) {
   const isTv = type === "tv";
+
   switch (server) {
     case "Server 1":
-      return isTv ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` : `https://vidsrc.to/embed/movie/${id}`;
+      if (isTv) {
+        return `https://thisiscinema.pages.dev/?type=tv&version=v3&id=${id}&season=${season}&episode=${episode}`;
+      } else {
+        return `https://thisiscinema.pages.dev/?type=movie&version=v3&id=${id}`;
+      }
+
     case "Server 2":
-      return isTv ? `https://vidsuper.net/embed/tv/${id}/${season}/${episode}` : `https://vidsuper.net/embed/movie/${id}`;
+      return isTv
+        ? `https://vidsuper.net/tv/${id}/${season}/${episode}?color=2d9b4e`
+        : `https://vidsuper.net/movie/${id}?color=2d9b4e`;
+
     case "Server 3":
-      return isTv ? `https://vidrock.ru/tv/${id}/${season}/${episode}` : `https://vidrock.ru/movie/${id}`;
+      return isTv
+        ? `https://vidrock.ru/tv/${id}/${season}/${episode}`
+        : `https://vidrock.ru/movie/${id}`;
+
+    case "Server 4":
+      if (isTv) {
+        return `https://vidfast.vc/tv/${id}/${season}/${episode}?theme=2d9b4e&nextButton=true&autoNext=true`;
+      } else {
+        return `https://vidfast.vc/movie/${id}?theme=2d9b4e`;
+      }
+
     default:
       return "";
   }
 }
 
-const SERVER_NAMES = ["Server 1", "Server 2", "Server 3"];
+const SERVER_NAMES = ["Server 1", "Server 2", "Server 3", "Server 4"];
 
 export default function PlayerSection({ type, id, seasonsData = [], isReleased = true, selectedSeason = 1 }) {
   const [showPlayer, setShowPlayer] = useState(false);
@@ -82,7 +100,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
     return (
       <div className="inline-flex items-center gap-2 rounded-md border border-emerald-500/5 bg-emerald-500/[0.04] px-5 py-3 text-xs font-medium text-[rgba(232,221,208,0.4)] tracking-wider">
         <Clock size={16} className="opacity-50" />
-        Coming soon to the silver screen
+        Coming soon
       </div>
     );
   }
