@@ -9,9 +9,9 @@ function getEmbedUrl(server, type, id, season, episode) {
   switch (server) {
     case "Server 1":
       if (isTv) {
-        return `https://thisiscinema.pages.dev/?type=tv&version=v3&id=${id}&season=${season}&episode=${episode}`;
+        return `https://thisiscinema.pages.dev/?type=tv&version=v3&id=${id}&season=${season}&episode=${episode}&color=2d9b4e`;
       } else {
-        return `https://thisiscinema.pages.dev/?type=movie&version=v3&id=${id}`;
+        return `https://thisiscinema.pages.dev/?type=movie&version=v3&id=${id}&color=2d9b4e`;
       }
 
     case "Server 2":
@@ -282,22 +282,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                 </div>
               )}
             </div>
-
-            {type === "tv" && (
-              <div className="flex flex-shrink-0 items-center gap-2 bg-[#0a0f0a]/50 px-3 py-1.5 border-t border-emerald-500/5">
-                <span className="text-[10px] font-medium tracking-widest uppercase text-[rgba(232,221,208,0.2)]">
-                  Now playing
-                </span>
-                <span className="text-[10px] font-semibold tracking-wider text-[#2d9b4e]">
-                  S{season} · E{episode}
-                </span>
-                {activeEpisodeData?.name && (
-                  <span className="text-[10px] italic text-[rgba(232,221,208,0.3)]">
-                    — {activeEpisodeData.name}
-                  </span>
-                )}
-              </div>
-            )}
           </div>
         </div>
       )}
