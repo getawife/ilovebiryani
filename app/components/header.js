@@ -48,75 +48,76 @@ export default function Header() {
     }, []);
 
     return (
-        <header className="sticky top-0 z-50 w-full bg-black/[0.01] backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">            <div className="mx-auto flex max-w-[1400px] items-center gap-6 px-4 py-3 sm:px-6">
+        <header className="sticky top-0 z-50 w-full bg-black/[0.01] backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
+            <div className="mx-auto flex max-w-[1400px] items-center gap-6 px-4 py-3 sm:px-6">
 
-            <Link href="/" className="flex items-baseline gap-0.5 shrink-0 select-none">
-                <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-bold tracking-wider text-[#2d9b4e]">
-                    ILOVE
-                </span>
-                <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-normal tracking-wider text-[#e8ddd0]">
-                    BIRYANI
-                </span>
-            </Link>
+                <Link href="/" className="flex items-baseline gap-0.5 shrink-0 select-none">
+                    <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-bold tracking-wider text-[#2d9b4e]">
+                        ILOVE
+                    </span>
+                    <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-normal tracking-wider text-[#e8ddd0]">
+                        BIRYANI
+                    </span>
+                </Link>
 
-            <div className="relative flex-1 max-w-[420px] min-w-35">
-                <div className="relative flex items-center">
-                    <Search
-                        size={16}
-                        className="absolute left-3 text-white/20 pointer-events-none"
-                    />
-                    <input
-                        type="text"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={handleSearchSubmit}
-                        placeholder="Search films and press Enter..."
-                        className="w-full font-sans text-[clamp(0.75rem,1vw,0.85rem)] text-[#e8ddd0] bg-white/[0.03] border border-white/[0.06] rounded-md pl-9 pr-8 py-1.5 outline-none placeholder:text-white/20 transition-all duration-200 focus:border-emerald-500/30 focus:bg-white/[0.06]"
-                    />
-                    {query && (
-                        <button
-                            onClick={clearSearch}
-                            className="absolute right-2.5 p-0.5 flex items-center justify-center text-white/20 hover:text-white/50 transition-colors duration-200"
+                <div className="relative flex-1 max-w-[420px] min-w-35">
+                    <div className="relative flex items-center">
+                        <Search
+                            size={16}
+                            className="absolute left-3 text-white/20 pointer-events-none"
+                        />
+                        <input
+                            type="text"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            onKeyDown={handleSearchSubmit}
+                            placeholder="Search films and press Enter..."
+                            className="w-full font-sans text-[clamp(0.75rem,1vw,0.85rem)] text-[#e8ddd0] bg-white/[0.03] border border-white/[0.06] rounded-md pl-9 pr-8 py-1.5 outline-none placeholder:text-white/20 transition-all duration-200 focus:border-emerald-500/30 focus:bg-white/[0.06]"
+                        />
+                        {query && (
+                            <button
+                                onClick={clearSearch}
+                                className="absolute right-2.5 p-0.5 flex items-center justify-center text-white/20 hover:text-white/50 transition-colors duration-200"
+                            >
+                                <X size={14} />
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                <nav className="flex items-center ml-auto shrink-0 gap-3">
+                    <div className="hidden md:flex items-center gap-2 lg:gap-3">
+                        <Link
+                            href="/"
+                            className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
                         >
-                            <X size={14} />
-                        </button>
-                    )}
-                </div>
+                            Home
+                        </Link>
+                        <span className="text-white/[0.06] text-[clamp(0.6rem,0.8vw,0.8rem)] select-none">|</span>
+                        <Link
+                            href="/movies"
+                            className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
+                        >
+                            Films
+                        </Link>
+                        <span className="text-white/[0.06] text-[clamp(0.6rem,0.8vw,0.8rem)] select-none">|</span>
+                        <Link
+                            href="/tv"
+                            className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
+                        >
+                            Series
+                        </Link>
+                    </div>
+
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="md:hidden flex items-center p-1.5 text-[#e8ddd0] rounded transition-colors duration-200 hover:bg-white/[0.06]"
+                        aria-label="Toggle menu"
+                    >
+                        <Menu size={20} />
+                    </button>
+                </nav>
             </div>
-
-            <nav className="flex items-center ml-auto shrink-0 gap-3">
-                <div className="hidden md:flex items-center gap-2 lg:gap-3">
-                    <Link
-                        href="/"
-                        className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
-                    >
-                        Home
-                    </Link>
-                    <span className="text-white/[0.06] text-[clamp(0.6rem,0.8vw,0.8rem)] select-none">|</span>
-                    <Link
-                        href="/movies"
-                        className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
-                    >
-                        Films
-                    </Link>
-                    <span className="text-white/[0.06] text-[clamp(0.6rem,0.8vw,0.8rem)] select-none">|</span>
-                    <Link
-                        href="/tv"
-                        className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
-                    >
-                        Series
-                    </Link>
-                </div>
-
-                <button
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="md:hidden flex items-center p-1.5 text-[#e8ddd0] rounded transition-colors duration-200 hover:bg-white/[0.06]"
-                    aria-label="Toggle menu"
-                >
-                    <Menu size={20} />
-                </button>
-            </nav>
-        </div>
 
             <div
                 ref={mobileMenuRef}

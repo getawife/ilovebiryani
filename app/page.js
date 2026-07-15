@@ -57,9 +57,37 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-[#0a0f0a] text-[#e8ddd0] flex flex-col relative isolate">
+
+      {/* 1. MOVED: Main Backdrop Image (Now spans under the header) */}
+      {backdrop && (
+        <div className="absolute top-0 left-0 right-0 h-[80vh] min-h-[550px] -z-20 overflow-hidden pointer-events-none">
+          <Image
+            src={backdrop}
+            alt=""
+            fill
+            priority
+            className="object-cover object-[center_20%] brightness-[0.45] saturate-[0.7]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f0a]/40 to-[#0a0f0a] to-[98%]" />
+        </div>
+      )}
+
+      {/* 2. MOVED: Glow Aura Backdrop */}
+      {backdrop && (
+        <div
+          className="absolute top-0 left-0 right-0 h-[90vh] bg-[length:100%_auto] bg-[center_-10%] blur-[140px] opacity-12 saturate-150 pointer-events-none -z-10"
+          style={{ backgroundImage: `url(${backdrop})` }}
+        />
+      )}
+
+      {/* 3. MOVED: Left-side Vignette Gradient */}
+      <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-gradient-to-r from-[#0a0f0a]/60 via-transparent to-transparent pointer-events-none -z-10" />
+
+      {/* 4. Header (Will now sit directly over the background image) */}
       <Header />
 
       <main className="flex-1 relative">
+        {/* Film grain noise overlay */}
         <div
           className="fixed inset-0 pointer-events-none opacity-[0.015] bg-repeat z-[5]"
           style={{
@@ -68,30 +96,10 @@ export default async function Home() {
           }}
         />
 
-        {backdrop && (
-          <div className="absolute top-0 left-0 right-0 h-[80vh] min-h-[550px] -z-20 overflow-hidden pointer-events-none">
-            <Image
-              src={backdrop}
-              alt=""
-              fill
-              priority
-              className="object-cover object-[center_20%] brightness-[0.45] saturate-[0.7]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f0a]/40 to-[#0a0f0a] to-[98%]" />
-          </div>
-        )}
-
-        {backdrop && (
-          <div
-            className="absolute top-0 left-0 right-0 h-[90vh] bg-[length:100%_auto] bg-[center_-10%] blur-[140px] opacity-12 saturate-150 pointer-events-none -z-10"
-            style={{ backgroundImage: `url(${backdrop})` }}
-          />
-        )}
-
-        <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-gradient-to-r from-[#0a0f0a]/60 via-transparent to-transparent pointer-events-none -z-10" />
-
+        {/* Hero banner elements */}
         <HeroBanner movie={heroMovie} logoPath={titleLogoPath} />
 
+        {/* Content Rows */}
         <div className="max-w-[1400px] mx-auto px-4 pb-16 relative z-20">
           {rows.map((row) => (
             <ContentRow
