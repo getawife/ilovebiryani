@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from './components/header';
-import { Flame, Tv, Trophy, Popcorn, Play } from 'lucide-react';
+import { Flame, Tv, Trophy, Popcorn, Play, History } from 'lucide-react';
 import { ContentRow } from './components/ContentRow';
-
+import { ContinueWatchingRow } from './components/ContinueWatchingRow';
 async function fetchTMDB(endpoint) {
   const res = await fetch(
     `https://api.themoviedb.org/3/${endpoint}`,
@@ -44,11 +44,11 @@ export default async function Home() {
     console.error("Failed to fetch hero movie logo:", error);
   }
 
-  const rows = [
-    { title: "What's Hot", iconName: "Flame", color: "#2d9b4e", data: trendingMovies, type: "movie" },
-    { title: "Binge Material", iconName: "Tv", color: "#c9a84c", data: trendingTV, type: "tv" },
-    { title: "Critics' Choice", iconName: "Trophy", color: "#e8808a", data: topRatedMovies, type: "movie" },
-    { title: "Crowd Favorites", iconName: "Popcorn", color: "#7bc9a8", data: popularMovies, type: "movie" },
+  // Define new server-side rows mapping to requested categories
+  const serverRows = [
+    { title: "Trending", iconName: "Flame", color: "#2d9b4e", data: trendingMovies, type: "movie" },
+    { title: "Highest Rated", iconName: "Trophy", color: "#e8808a", data: topRatedMovies, type: "movie" },
+    { title: "Personal Best", iconName: "Popcorn", color: "#7bc9a8", data: popularMovies, type: "movie" },
   ];
 
   const backdrop = heroMovie?.backdrop_path
@@ -58,7 +58,6 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#0a0f0a] text-[#e8ddd0] flex flex-col relative isolate">
 
-      {/* 1. MOVED: Main Backdrop Image (Now spans under the header) */}
       {backdrop && (
         <div className="absolute top-0 left-0 right-0 h-[80vh] min-h-[550px] -z-20 overflow-hidden pointer-events-none">
           <Image
@@ -72,7 +71,6 @@ export default async function Home() {
         </div>
       )}
 
-      {/* 2. MOVED: Glow Aura Backdrop */}
       {backdrop && (
         <div
           className="absolute top-0 left-0 right-0 h-[90vh] bg-[length:100%_auto] bg-[center_-10%] blur-[140px] opacity-12 saturate-150 pointer-events-none -z-10"
@@ -80,14 +78,11 @@ export default async function Home() {
         />
       )}
 
-      {/* 3. MOVED: Left-side Vignette Gradient */}
       <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-gradient-to-r from-[#0a0f0a]/60 via-transparent to-transparent pointer-events-none -z-10" />
 
-      {/* 4. Header (Will now sit directly over the background image) */}
       <Header />
 
       <main className="flex-1 relative">
-        {/* Film grain noise overlay */}
         <div
           className="fixed inset-0 pointer-events-none opacity-[0.015] bg-repeat z-[5]"
           style={{
@@ -96,12 +91,15 @@ export default async function Home() {
           }}
         />
 
-        {/* Hero banner elements */}
         <HeroBanner movie={heroMovie} logoPath={titleLogoPath} />
 
-        {/* Content Rows */}
         <div className="max-w-[1400px] mx-auto px-4 pb-16 relative z-20">
-          {rows.map((row) => (
+
+          {/* 1. CONTINUE WATCHING SHELF (Client Side Loader) */}
+          <ContinueWatchingRow />
+
+          {/* 2. SERVER FETCHED CONTENT ROWS */}
+          {serverRows.map((row) => (
             <ContentRow
               key={row.title}
               title={row.title}
@@ -145,7 +143,7 @@ function HeroBanner({ movie, logoPath }) {
             </h1>
           )}
 
-          <p className="text-[clamp(0.85rem,1.1vw,0.95rem)]Doc leading-1.8 text-[#e8ddd0]/70 mb-6 max-w-full">
+          <p className="text-[clamp(0.85rem,1.1vw,0.95rem)] leading-1.8 text-[#e8ddd0]/70 mb-6 max-w-full">
             {overview}
           </p>
 
@@ -154,7 +152,7 @@ function HeroBanner({ movie, logoPath }) {
               href={`/watch/movie/${movie.id}`}
               className="hero-btn inline-flex items-center gap-2 px-[1.2rem] py-[0.6rem] rounded-md bg-[#2d9b4e] text-[#0a0f0a] font-semibold text-[0.85rem] no-underline transition-colors hover:bg-[#258141]"
             >
-              <Play size={16} fill="currentColor" />              Watch Now
+              <Play size={16} fill="currentColor" /> Watch Now
             </Link>
           </div>
         </div>
@@ -168,7 +166,7 @@ function Footer() {
     <footer className="border-t border-white/5 py-10 px-4 text-center bg-gradient-to-b from-transparent to-[#0a0f0a]/90 relative">
       <div className="max-w-[1400px] mx-auto flex flex-col items-center gap-2">
         <Link href="/" className="inline-flex items-baseline gap-[0.1rem] no-underline mb-1">
-          <span className="font-sans text-[1.6rem] color-[#2d9b4e] tracking-[0.08em] font-bold">ILOVE</span>
+          <span className="font-sans text-[1.6rem] text-[#2d9b4e] tracking-[0.08em] font-bold">ILOVE</span>
           <span className="font-sans text-[1.6rem] text-[#e8ddd0] tracking-[0.08em] font-normal">BIRYANI</span>
         </Link>
         <p className="text-[0.7rem] text-[#e8ddd0]/20 mt-1 tracking-wide">

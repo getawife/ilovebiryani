@@ -47,7 +47,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
   const [episodesList, setEpisodesList] = useState([]);
   const [loadingEpisodes, setLoadingEpisodes] = useState(false);
 
-  // RESTORE PROGRESS FROM LOCALSTORAGE ON MOUNT
   useEffect(() => {
     if (type !== "tv" || typeof window === "undefined") return;
 
@@ -63,7 +62,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
     }
   }, [id, type]);
 
-  // SAVE PROGRESS TO LOCALSTORAGE WHEN EPISODE/SEASON CHANGES
   useEffect(() => {
     if (type !== "tv" || typeof window === "undefined") return;
 
@@ -151,10 +149,8 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
             className="absolute inset-0 cursor-pointer bg-[#060c06]/92 backdrop-blur-xl"
           />
 
-          {/* PANEL CONTAINER: Switched h-[95vh] to h-fit & overflow-hidden to prevent layout leaks */}
           <div className="panel-enter relative flex h-fit max-h-screen w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-emerald-500/5 bg-gradient-to-br from-[#0e180e] to-[#0a120a] shadow-[0_48px_128px_rgba(0,0,0,0.9),0_0_0_1px_rgba(45,155,78,0.04)] z-10">
 
-            {/* TOP HEADER MENU */}
             <div className="flex flex-shrink-0 items-center justify-between bg-[#0a0f0a]/50 px-3 py-2 border-b border-emerald-500/5">
               <div className="flex gap-1">
                 {SERVER_NAMES.map((name) => {
@@ -184,7 +180,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
               </button>
             </div>
 
-            {/* VIDEO ASPECT FRAME CONTAINER */}
             <div className="relative w-full aspect-video bg-black flex-shrink-0">
               <iframe
                 key={`${activeServer}-${season}-${episode}`}
@@ -196,11 +191,9 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
               />
             </div>
 
-            {/* EPISODE GRID: Removed vertical scrollbar styling, letting layout sit naturally with horizontal scroll only */}
             {type === "tv" && (
               <div className="w-full bg-[#050905]/60 p-4 border-t border-emerald-500/5 flex-shrink-0">
 
-                {/* EPISODES HORIZONTAL TRACK GRID */}
                 <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:thin]">
                   {loadingEpisodes ? (
                     <div className="flex gap-3 w-full">
@@ -227,7 +220,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                             : "border-emerald-500/5 bg-emerald-500/[0.01] hover:bg-emerald-500/[0.03]"
                             }`}
                         >
-                          {/* IMAGE EMBED BLOCK */}
                           <div className="relative h-[100px] w-full flex-shrink-0 overflow-hidden bg-[#111811] border-b border-emerald-500/5">
                             {ep.still_path ? (
                               <img
@@ -241,7 +233,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                               </div>
                             )}
 
-                            {/* VISIBLE ABSOLUTE EPISODE COUNTER BADGE */}
                             <div className={`absolute left-2 top-2 rounded px-1.5 py-0.5 text-[9px] font-black tracking-wider shadow-md backdrop-blur-md border ${isActive
                               ? "bg-emerald-950/80 border-emerald-500/30 text-[#2d9b4e]"
                               : "bg-black/60 border-white/5 text-[rgba(232,221,208,0.7)]"
@@ -256,7 +247,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                             )}
                           </div>
 
-                          {/* DESCRIPTION AND LABEL LABELS */}
                           <div className={`p-2 flex-1 flex flex-col justify-between transition-all duration-300 ${isSpoiler ? "blur-[3px] group-hover:blur-0 select-none opacity-40 group-hover:opacity-80" : ""}`}>
                             <div>
                               <p className={`line-clamp-1 text-[11px] font-bold tracking-wide ${isActive ? "text-[#2d9b4e]" : "text-[rgba(232,221,208,0.75)]"}`}>
