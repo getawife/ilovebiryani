@@ -3,15 +3,10 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Play, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { SlidersHorizontal, ChevronDown, Search } from 'lucide-react';
 import Header from '../components/header';
-
-function getRatingColor(r) {
-    const n = parseFloat(r);
-    if (n >= 7.5) return "#2d9b4e";
-    if (n >= 6) return "#c9a84c";
-    return "#8b5a2b";
-}
+import Footer from '../components/Footer';
+import MovieCard from '../components/MovieCard';
 
 function CustomSelect({ label, value, options, onChange }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -205,7 +200,7 @@ function SearchContent() {
 
     useEffect(() => {
         if (!queryParam.trim()) {
-            setItems([]);
+            queueMicrotask(() => setItems([]));
             return;
         }
 
@@ -329,19 +324,20 @@ function SearchContent() {
             </aside>
 
             <main style={{ flex: 1, minWidth: 0 }}>
-                <h1 className="search-results-heading" style={{
-                    fontSize: "1.1rem",
+                <h1 className="search-results-heading flex items-center gap-3" style={{
+                    fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)",
                     color: "#e8ddd0",
-                    fontWeight: 500,
+                    fontWeight: 700,
                     marginBottom: "1.75rem"
                 }}>
-                    Search Results for: <span style={{ color: "#2d9b4e", fontWeight: 700 }}>"{queryParam}"</span>
+                    <Search size={28} className="text-[#2d9b4e]" />
+                    <span>Search Results for: <span style={{ color: "#2d9b4e", fontWeight: 700 }}>&quot;{queryParam}&quot;</span></span>
                 </h1>
 
                 {loading ? (
-                    <div className="search-results-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: "1.5rem" }}>
+                    <div className="search-results-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "1.5rem" }}>
                         {[...Array(8)].map((_, i) => (
-                            <div key={`sk-${i}`} style={{ background: "#111811", borderRadius: 8, aspectRatio: "2/3", border: "1px solid rgba(150,200,150,0.05)", animation: "pulse 1.5s infinite" }} />
+                            <div key={`sk-${i}`} className="skeleton" style={{ borderRadius: 8, aspectRatio: "2/3" }} />
                         ))}
                     </div>
                 ) : items.length === 0 ? (
@@ -351,11 +347,11 @@ function SearchContent() {
                 ) : (
                     <div className="search-results-grid" style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
                         gap: "1.5rem"
                     }}>
                         {items.map((item) => (
-                            <SearchCard key={item.id} item={item} defaultType={filters.type !== 'all' ? filters.type : 'movie'} />
+                            <MovieCard key={item.id} item={item} type={filters.type !== 'all' ? filters.type : (item.media_type || 'movie')} fixedWidth={false} />
                         ))}
                     </div>
                 )}
@@ -380,44 +376,15 @@ export default function SearchPage() {
 
             <Suspense fallback={
                 <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "8rem 2rem" }}>
-                    <div style={{ background: "#111811", width: "40px", height: "40px", borderRadius: "50%", border: "2px solid rgba(45,155,78,0.2)", borderTopColor: "#2d9b4e", animation: "pulse 1s infinite" }} />
+                    <div className="skeleton" style={{ width: "40px", height: "40px", borderRadius: "50%" }} />
                 </div>
             }>
                 <SearchContent />
             </Suspense>
 
-            <footer style={{
-                borderTop: "1px solid rgba(255,255,255,0.05)",
-                padding: "2.5rem 1rem 2rem",
-                textAlign: "center",
-                background: "linear-gradient(180deg, transparent, rgba(10,15,10,0.9))",
-                marginTop: "auto",
-                position: "relative",
-                zIndex: 2
-            }}>
-                <div style={{ maxWidth: 1400, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}>
-                    <Link href="/" style={{ display: "inline-flex", alignItems: "baseline", gap: "0.1rem", textDecoration: "none" }}>
-                        <span style={{ fontSize: "1.5rem", color: "#2d9b4e", letterSpacing: "0.08em", fontWeight: 700 }}>ILOVE</span>
-                        <span style={{ fontSize: "1.5rem", color: "#e8ddd0", letterSpacing: "0.08em", fontWeight: 400 }}>BIRYANI</span>
-                    </Link>
-                    <p style={{ fontSize: "0.7rem", color: "rgba(232,221,208,0.2)", letterSpacing: "0.04em", marginTop: "0.25rem" }}>
-                        Data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" style={{ color: "#2d9b4e", textDecoration: "none" }}>TMDB</a>. All content provided by third parties.
-                    </p>
-                </div>
-            </footer>
+            <Footer />
 
             <style jsx>{`
-                @keyframes pulse {
-                    0%, 100% { opacity: 1; }
-                    50% { opacity: 0.4; }
-                }
-                :global(.card-container-item:hover .img-scaler) {
-                    transform: scale(1.04);
-                }
-                :global(.card-container-item:hover .overlay-play-view) {
-                    opacity: 1 !important;
-                }
-                
                 :global(.search-layout-container) {
                     padding: 7.5rem 2rem 5rem 2rem;
                 }
@@ -483,118 +450,5 @@ export default function SearchPage() {
                 }
             `}</style>
         </div>
-    );
-}
-
-function SearchCard({ item, defaultType }) {
-    const poster = item.poster_path
-        ? `https://image.tmdb.org/t/p/w400${item.poster_path}`
-        : `https://placehold.co/400x600/111811/8a7a6a?text=No+Poster`;
-
-    const title = item.title || item.name;
-    const year = (item.release_date || item.first_air_date || "").split("-")[0];
-    const rating = item.vote_average ? item.vote_average.toFixed(1) : "0.0";
-
-    const mediaType = item.media_type || (item.release_date ? 'movie' : item.first_air_date ? 'tv' : defaultType);
-
-    return (
-        <Link href={`/watch/${mediaType}/${item.id}`} className="card-container-item" style={{ display: "flex", flexDirection: "column", height: "100%", textDecoration: "none" }}>
-            <div style={{
-                background: "#111811",
-                borderRadius: 8,
-                overflow: "hidden",
-                border: "1px solid rgba(150,200,150,0.06)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-                display: "flex",
-                flexDirection: "column",
-                flex: 1
-            }}>
-                <div style={{ position: "relative", width: "100%", aspectRatio: "2/3", overflow: "hidden", background: "#0a0f0a" }}>
-                    <img
-                        src={poster}
-                        alt={title}
-                        loading="lazy"
-                        className="img-scaler"
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            display: "block",
-                            filter: "brightness(0.92) saturate(0.95)",
-                            transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)"
-                        }}
-                    />
-
-                    <div style={{
-                        position: "absolute",
-                        bottom: 8,
-                        left: 8,
-                        background: "rgba(0,0,0,0.7)",
-                        backdropFilter: "blur(6px)",
-                        borderRadius: 4,
-                        padding: "0.15rem 0.5rem",
-                        fontSize: "0.6rem",
-                        fontWeight: 600,
-                        color: getRatingColor(rating),
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 3,
-                        border: "1px solid rgba(255,255,255,0.05)",
-                        zIndex: 2
-                    }}>
-                        ★ {rating}
-                    </div>
-
-                    <div className="overlay-play-view" style={{
-                        position: "absolute",
-                        inset: 0,
-                        background: "rgba(10,15,10,0.45)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        opacity: 0,
-                        transition: "opacity 0.25s ease",
-                        zIndex: 1
-                    }}>
-                        <div style={{
-                            background: "#2d9b4e",
-                            width: 40,
-                            height: 40,
-                            borderRadius: "50%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            boxShadow: "0 4px 12px rgba(45,155,78,0.4)"
-                        }}>
-                            <Play size={16} fill="white" stroke="none" style={{ marginLeft: 2 }} />
-                        </div>
-                    </div>
-                </div>
-
-                <div style={{ padding: "0.6rem 0.7rem 0.7rem", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
-                    <p style={{
-                        fontWeight: 500,
-                        fontSize: "0.8rem",
-                        color: "#e8ddd0",
-                        lineHeight: 1.3,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        marginBottom: "0.2rem",
-                        letterSpacing: "0.02em"
-                    }}>
-                        {title}
-                    </p>
-                    <p style={{
-                        fontSize: "0.65rem",
-                        color: "rgba(232,221,208,0.3)",
-                        letterSpacing: "0.08em"
-                    }}>
-                        {year || "Coming Soon"}
-                    </p>
-                </div>
-            </div>
-        </Link>
     );
 }

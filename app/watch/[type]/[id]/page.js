@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import Header from "../../../components/header";
+import Footer from "../../../components/Footer";
+import MovieCard from "../../../components/MovieCard";
 import WatchPageClient from "./WatchPageClient";
-import { User, Clock } from 'lucide-react';
+import { User } from 'lucide-react';
+import { getRatingColor } from '../../../../lib/utils';
 
 async function getMediaDetails(id, type = "movie") {
   const res = await fetch(
@@ -48,13 +50,6 @@ async function getMediaData(type, id) {
   return res.json();
 }
 
-function getRatingColor(r) {
-  const n = parseFloat(r);
-  if (n >= 7.5) return "text-[#2d9b4e]";
-  if (n >= 6) return "text-[#c9a84c]";
-  return "text-[#8b5a2b]";
-}
-
 function formatRuntime(minutes) {
   if (!minutes) return null;
   const h = Math.floor(minutes / 60);
@@ -97,7 +92,7 @@ export default async function WatchPage({ params }) {
   const logoUrl = logoAsset ? `https://image.tmdb.org/t/p/w500${logoAsset.file_path}` : null;
 
   return (
-    <div className="isolate flex min-h-screen flex-col bg-[#0a0f0a] text-[#e8ddd0]">
+    <div className="isolate flex min-h-screen flex-col bg-bg text-[#e8ddd0]">
       <Header />
 
       {/* FIXED BACKDROP LAYER */}
@@ -179,7 +174,7 @@ export default async function WatchPage({ params }) {
       </div>
 
       {/* Main Secondary Content Rails */}
-      <main className="relative z-10 mx-auto w-full max-w-[1400px] px-4 pb-16">
+      <main className="relative z-10 mx-auto w-full max-w-[1400px] px-4 pb-16 flex-1">
         {cast.length > 0 && (
           <Section title="The Cast">
             <div className="scroll-row flex overflow-x-auto gap-[clamp(1rem,2vw,1.5rem)] py-2 px-1 [scrollbar-width:none]">
@@ -223,68 +218,21 @@ export default async function WatchPage({ params }) {
         {recommendations.length > 0 && (
           <Section title="You might also enjoy">
             <div className="scroll-row flex overflow-x-auto gap-[clamp(0.75rem,1.5vw,1rem)] py-4 px-2 [scrollbar-width:none]">
-              {recommendations.map((item) => {
-                const rPoster = item.poster_path
-                  ? `https://image.tmdb.org/t/p/w400${item.poster_path}`
-                  : `https://placehold.co/400x600/1a221a/8a7a6a?text=No+Image`;
-                const rTitle = item.title || item.name;
-                const rYear = (item.release_date || item.first_air_date || "").split("-")[0];
-                const rRating = item.vote_average ? item.vote_average.toFixed(1) : "0.0";
-
-                const computedAccent = type === "tv" ? "#c9a84c" : "#2d9b4e";
-
-                return (
-                  <Link
-                    key={item.id}
-                    href={`/watch/${type}/${item.id}`}
-                    className="group block w-[160px] flex-shrink-0 no-underline transition-all duration-300 ease-out hover:-translate-y-1"
-                  >
-                    <div
-                      style={{ border: `1px solid ${computedAccent}15` }}
-                      className="overflow-hidden rounded-lg bg-[#111811] transition-all duration-300 group-hover:shadow-[0_12px_32px_rgba(0,0,0,0.6)]"
-                    >
-                      <div className="relative w-full aspect-[2/3] overflow-hidden bg-[#0a0f0a]">
-                        <img
-                          src={rPoster}
-                          alt={rTitle}
-                          loading="lazy"
-                          className="block h-full w-full object-cover transition-all duration-500 ease-out filter brightness-[0.92] saturate-[0.95] group-hover:scale-105 group-hover:brightness-[0.4]"
-                        />
-
-
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 ease-out group-hover:opacity-100 z-20">
-                          <div
-                            style={{ background: `${computedAccent}E6` }}
-                            className="flex h-14 w-14 scale-75 items-center justify-center rounded-full text-white shadow-[0_8px_24px_rgba(0,0,0,0.4)] transition-all duration-300 ease-out group-hover:scale-100"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="white"
-                              className="ml-0.5 h-6 w-6"
-                            >
-                              <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-[0.6rem_0.7rem_0.7rem]">
-                        <p className="line-clamp-2 text-[0.8rem] font-medium leading-[1.3] text-[#e8ddd0] tracking-[0.02em] transition-colors duration-300 group-hover:text-white">
-                          {rTitle}
-                        </p>
-                        <p className="mt-[0.2rem] text-[0.65rem] text-[rgba(232,221,208,0.3)] tracking-[0.08em]">
-                          {rYear || "Coming Soon"}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
+              {recommendations.map((item) => (
+                <MovieCard
+                  key={item.id}
+                  item={item}
+                  type={type}
+                  accentColor={type === "tv" ? "#c9a84cE6" : "#2d9b4eE6"}
+                  fixedWidth={true}
+                />
+              ))}
             </div>
           </Section>
         )}
       </main>
+
+      <Footer />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { History, Play } from 'lucide-react';
+import { History } from 'lucide-react';
+import MovieCard from './MovieCard';
 
 export function ContinueWatchingRow() {
     const [historyItems, setHistoryItems] = useState([]);
@@ -29,7 +29,7 @@ export function ContinueWatchingRow() {
         }
 
         if (items.length === 0) {
-            setLoading(false);
+            queueMicrotask(() => setLoading(false));
             return;
         }
 
@@ -86,69 +86,15 @@ export function ContinueWatchingRow() {
                 padding: "0.5rem 0.25rem 1.25rem",
                 overflowX: "auto"
             }}>
-                {historyItems.map((item) => {
-                    const poster = item.poster_path
-                        ? `https://image.tmdb.org/t/p/w400${item.poster_path}`
-                        : `https://placehold.co/400x600/1a221a/8a7a6a?text=No+Image`;
-
-                    return (
-                        <Link key={item.id} href={`/watch/tv/${item.id}`} style={{
-                            display: "block",
-                            width: 160,
-                            textDecoration: "none",
-                            flexShrink: 0
-                        }}>
-                            <div className="card-hover" style={{
-                                background: "#111811",
-                                borderRadius: 8,
-                                overflow: "hidden",
-                                border: `1px solid #c9a84c15`,
-                                boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
-                            }}>
-                                <div style={{
-                                    position: "relative",
-                                    width: "100%",
-                                    aspectRatio: "2/3",
-                                    overflow: "hidden",
-                                    background: "#0a0f0a"
-                                }}>
-                                    <img
-                                        src={poster}
-                                        alt={item.title}
-                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                    />
-                                    <div className="play-overlay">
-                                        <div className="play-btn" style={{ background: `#c9a84cE6` }}>
-                                            <Play size={18} fill="white" style={{ marginLeft: 2 }} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style={{ padding: "0.6rem 0.7rem 0.7rem" }}>
-                                    <p style={{
-                                        fontWeight: 500,
-                                        fontSize: "0.8rem",
-                                        color: "#e8ddd0",
-                                        lineHeight: 1.3,
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap"
-                                    }}>
-                                        {item.title}
-                                    </p>
-                                    <p style={{
-                                        fontSize: "0.65rem",
-                                        color: "#c9a84c",
-                                        fontWeight: "600",
-                                        letterSpacing: "0.04em",
-                                        marginTop: "2px"
-                                    }}>
-                                        Season {item.season} · Ep {item.episode}
-                                    </p>
-                                </div>
-                            </div>
-                        </Link>
-                    );
-                })}
+                {historyItems.map((item) => (
+                    <MovieCard
+                        key={item.id}
+                        item={item}
+                        type="tv"
+                        accentColor="#c9a84cE6"
+                        fixedWidth={true}
+                    />
+                ))}
             </div>
         </section>
     );

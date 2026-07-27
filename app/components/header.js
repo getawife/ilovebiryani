@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Search, X, Menu, Home, Film, Tv } from "lucide-react";
 
 export default function Header() {
@@ -10,6 +10,7 @@ export default function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const mobileMenuRef = useRef(null);
     const router = useRouter();
+    const pathname = usePathname();
 
     // Handle form submission / Enter key press
     const handleSearchSubmit = useCallback((e) => {
@@ -52,7 +53,7 @@ export default function Header() {
             <div className="mx-auto flex max-w-[1400px] items-center gap-6 px-4 py-3 sm:px-6">
 
                 <Link href="/" className="flex items-baseline gap-0.5 shrink-0 select-none">
-                    <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-bold tracking-wider text-[#2d9b4e]">
+                    <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-bold tracking-wider text-primary">
                         ILOVE
                     </span>
                     <span className="font-sans text-[clamp(1.1rem,2.5vw,1.4rem)] font-normal tracking-wider text-[#e8ddd0]">
@@ -72,7 +73,7 @@ export default function Header() {
                             onChange={(e) => setQuery(e.target.value)}
                             onKeyDown={handleSearchSubmit}
                             placeholder="Search films and press Enter..."
-                            className="w-full font-sans text-[clamp(0.75rem,1vw,0.85rem)] text-[#e8ddd0] bg-white/[0.03] border border-white/[0.06] rounded-md pl-9 pr-8 py-1.5 outline-none placeholder:text-white/20 transition-all duration-200 focus:border-emerald-500/30 focus:bg-white/[0.06]"
+                            className="w-full font-sans text-[clamp(0.75rem,1vw,0.85rem)] text-[#e8ddd0] bg-white/[0.03] border border-white/[0.06] rounded-md pl-9 pr-8 py-1.5 outline-none placeholder:text-white/20 transition-all duration-200 focus:border-primary/30 focus:bg-white/[0.06]"
                         />
                         {query && (
                             <button
@@ -89,21 +90,27 @@ export default function Header() {
                     <div className="hidden md:flex items-center gap-2 lg:gap-3">
                         <Link
                             href="/"
-                            className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
+                            className={`text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide rounded px-2 py-1 transition-colors duration-200 ${
+                                pathname === '/' ? 'text-primary font-bold' : 'font-medium text-white/50 hover:text-[#e8ddd0]'
+                            }`}
                         >
                             Home
                         </Link>
                         <span className="text-white/[0.06] text-[clamp(0.6rem,0.8vw,0.8rem)] select-none">|</span>
                         <Link
                             href="/movies"
-                            className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
+                            className={`text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide rounded px-2 py-1 transition-colors duration-200 ${
+                                pathname === '/movies' ? 'text-primary font-bold' : 'font-medium text-white/50 hover:text-[#e8ddd0]'
+                            }`}
                         >
                             Films
                         </Link>
                         <span className="text-white/[0.06] text-[clamp(0.6rem,0.8vw,0.8rem)] select-none">|</span>
                         <Link
                             href="/tv"
-                            className="font-medium text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide text-white/50 rounded px-2 py-1 transition-colors duration-200 hover:text-[#e8ddd0]"
+                            className={`text-[clamp(0.65rem,0.9vw,0.75rem)] tracking-wide rounded px-2 py-1 transition-colors duration-200 ${
+                                pathname === '/tv' ? 'text-primary font-bold' : 'font-medium text-white/50 hover:text-[#e8ddd0]'
+                            }`}
                         >
                             Series
                         </Link>
@@ -129,23 +136,29 @@ export default function Header() {
                 <Link
                     href="/"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 font-medium text-sm text-[#e8ddd0] rounded-md px-3 py-2.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                    className={`flex items-center gap-2.5 text-sm rounded-md px-3 py-2.5 transition-colors duration-200 ${
+                        pathname === '/' ? 'text-primary font-bold bg-white/[0.04]' : 'font-medium text-[#e8ddd0] hover:bg-white/[0.06]'
+                    }`}
                 >
-                    <Home size={16} className="text-white/60" /> Home
+                    <Home size={16} className={pathname === '/' ? 'text-primary' : 'text-white/60'} /> Home
                 </Link>
                 <Link
                     href="/movies"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 font-medium text-sm text-[#e8ddd0] rounded-md px-3 py-2.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                    className={`flex items-center gap-2.5 text-sm rounded-md px-3 py-2.5 transition-colors duration-200 ${
+                        pathname === '/movies' ? 'text-primary font-bold bg-white/[0.04]' : 'font-medium text-[#e8ddd0] hover:bg-white/[0.06]'
+                    }`}
                 >
-                    <Film size={16} className="text-white/60" /> Films
+                    <Film size={16} className={pathname === '/movies' ? 'text-primary' : 'text-white/60'} /> Films
                 </Link>
                 <Link
                     href="/tv"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 font-medium text-sm text-[#e8ddd0] rounded-md px-3 py-2.5 transition-colors duration-200 hover:bg-white/[0.06]"
+                    className={`flex items-center gap-2.5 text-sm rounded-md px-3 py-2.5 transition-colors duration-200 ${
+                        pathname === '/tv' ? 'text-primary font-bold bg-white/[0.04]' : 'font-medium text-[#e8ddd0] hover:bg-white/[0.06]'
+                    }`}
                 >
-                    <Tv size={16} className="text-white/60" /> Series
+                    <Tv size={16} className={pathname === '/tv' ? 'text-primary' : 'text-white/60'} /> Series
                 </Link>
             </div>
         </header>

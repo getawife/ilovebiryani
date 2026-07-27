@@ -54,8 +54,10 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
       const savedProgress = localStorage.getItem(`watch-progress-${id}`);
       if (savedProgress) {
         const { season: savedSeason, episode: savedEpisode } = JSON.parse(savedProgress);
-        if (savedSeason) setSeason(savedSeason);
-        if (savedEpisode) setEpisode(savedEpisode);
+        queueMicrotask(() => {
+          if (savedSeason) setSeason(savedSeason);
+          if (savedEpisode) setEpisode(savedEpisode);
+        });
       }
     } catch (error) {
       console.error("Failed to load saved progress from localStorage:", error);
@@ -74,20 +76,22 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
   }, [season, episode, id, type]);
 
   // Sync external parent season selection changes smoothly
-  useEffect(() => {
-    if (selectedSeason && selectedSeason !== season) {
-      setSeason(selectedSeason);
-      setEpisode(1);
-      setEpisodesList([]);
-    }
-  }, [selectedSeason]);
+  const [prevSelectedSeason, setPrevSelectedSeason] = useState(selectedSeason);
+  if (selectedSeason && selectedSeason !== prevSelectedSeason) {
+    setPrevSelectedSeason(selectedSeason);
+    setSeason(selectedSeason);
+    setEpisode(1);
+    setEpisodesList([]);
+  }
 
   // Handle data fetching for TV Episodes safely
   useEffect(() => {
     if (type !== "tv" || !showPlayer || !isReleased) return;
 
     let isMounted = true;
-    setLoadingEpisodes(true);
+    queueMicrotask(() => {
+      if (isMounted) setLoadingEpisodes(true);
+    });
 
     fetch(`/api/episodes?showId=${id}&season=${season}`)
       .then((r) => r.ok ? r.json() : [])
@@ -120,7 +124,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
 
   if (!isReleased) {
     return (
-      <div className="inline-flex items-center gap-2 rounded-md border border-emerald-500/5 bg-emerald-500/[0.04] px-5 py-3 text-xs font-medium text-[rgba(232,221,208,0.4)] tracking-wider">
+      <div className="inline-flex items-center gap-2 rounded-md border border-primary/5 bg-primary/[0.04] px-5 py-3 text-xs font-medium text-[rgba(232,221,208,0.4)] tracking-wider">
         <Clock size={16} className="opacity-50" />
         Coming soon
       </div>
@@ -137,7 +141,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
           onClick={() => setShowPlayer(true)}
           className="hero-btn min-w-35 px-7 py-3 text-xs cursor-pointer"
         >
-          <Play size={18} />
+          <Play size={18} fill="currentColor" />
           {type === "tv" && (season > 1 || episode > 1) ? `Resume S${season}: E${episode}` : "Start watching"}
         </button>
       </div>
@@ -149,9 +153,9 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
             className="absolute inset-0 cursor-pointer bg-[#060c06]/92 backdrop-blur-xl"
           />
 
-          <div className="panel-enter relative flex h-fit max-h-screen w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-emerald-500/5 bg-gradient-to-br from-[#0e180e] to-[#0a120a] shadow-[0_48px_128px_rgba(0,0,0,0.9),0_0_0_1px_rgba(45,155,78,0.04)] z-10">
+          <div className="panel-enter relative flex h-fit max-h-screen w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-primary/5 bg-gradient-to-br from-[#0e180e] to-[#0a120a] shadow-[0_48px_128px_rgba(0,0,0,0.9),0_0_0_1px_rgba(45,155,78,0.04)] z-10">
 
-            <div className="flex flex-shrink-0 items-center justify-between bg-[#0a0f0a]/50 px-3 py-2 border-b border-emerald-500/5">
+            <div className="flex flex-shrink-0 items-center justify-between bg-[#0a0f0a]/50 px-3 py-2 border-b border-primary/5">
               <div className="flex gap-1">
                 {SERVER_NAMES.map((name) => {
                   const isActive = activeServer === name;
@@ -161,8 +165,8 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                       id={`server-${name.toLowerCase().replace(/\s/g, "-")}`}
                       onClick={() => setActiveServer(name)}
                       className={`cursor-pointer rounded px-3 py-1 text-[10px] font-semibold uppercase tracking-widest font-sans transition-all duration-200 border ${isActive
-                        ? "border-emerald-500/20 bg-emerald-500/5 text-[#2d9b4e]"
-                        : "border-emerald-500/5 bg-emerald-500/[0.02] text-[rgba(232,221,208,0.3)]"
+                        ? "border-primary/20 bg-primary/5 text-primary"
+                        : "border-primary/5 bg-primary/[0.02] text-[rgba(232,221,208,0.3)]"
                         }`}
                     >
                       {name}
@@ -174,7 +178,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
               <button
                 id="close-player-btn"
                 onClick={() => setShowPlayer(false)}
-                className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded border border-emerald-500/5 bg-emerald-500/[0.02] text-[rgba(232,221,208,0.3)] transition-all duration-200 hover:border-emerald-500/20 hover:bg-emerald-500/10 hover:text-emerald-500/60"
+                className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded border border-primary/5 bg-primary/[0.02] text-[rgba(232,221,208,0.3)] transition-all duration-200 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"
               >
                 <X size={18} />
               </button>
@@ -192,7 +196,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
             </div>
 
             {type === "tv" && (
-              <div className="w-full bg-[#050905]/60 p-4 border-t border-emerald-500/5 flex-shrink-0">
+              <div className="w-full bg-[#050905]/60 p-4 border-t border-primary/5 flex-shrink-0">
 
                 <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:thin]">
                   {loadingEpisodes ? (
@@ -216,11 +220,11 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                           id={`episode-${ep.episode_number}`}
                           onClick={() => setEpisode(ep.episode_number)}
                           className={`group flex w-[190px] flex-shrink-0 flex-col rounded overflow-hidden text-left transition-all duration-150 border cursor-pointer ${isActive
-                            ? "border-emerald-500/20 bg-emerald-500/[0.04]"
-                            : "border-emerald-500/5 bg-emerald-500/[0.01] hover:bg-emerald-500/[0.03]"
+                            ? "border-primary/20 bg-primary/[0.04]"
+                            : "border-primary/5 bg-primary/[0.01] hover:bg-primary/[0.03]"
                             }`}
                         >
-                          <div className="relative h-[100px] w-full flex-shrink-0 overflow-hidden bg-[#111811] border-b border-emerald-500/5">
+                          <div className="relative h-[100px] w-full flex-shrink-0 overflow-hidden bg-[#111811] border-b border-primary/5">
                             {ep.still_path ? (
                               <img
                                 src={`https://image.tmdb.org/t/p/w185${ep.still_path}`}
@@ -234,7 +238,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                             )}
 
                             <div className={`absolute left-2 top-2 rounded px-1.5 py-0.5 text-[9px] font-black tracking-wider shadow-md backdrop-blur-md border ${isActive
-                              ? "bg-emerald-950/80 border-emerald-500/30 text-[#2d9b4e]"
+                              ? "bg-emerald-950/80 border-primary/30 text-primary"
                               : "bg-black/60 border-white/5 text-[rgba(232,221,208,0.7)]"
                               }`}>
                               EP {ep.episode_number}
@@ -249,7 +253,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
 
                           <div className={`p-2 flex-1 flex flex-col justify-between transition-all duration-300 ${isSpoiler ? "blur-[3px] group-hover:blur-0 select-none opacity-40 group-hover:opacity-80" : ""}`}>
                             <div>
-                              <p className={`line-clamp-1 text-[11px] font-bold tracking-wide ${isActive ? "text-[#2d9b4e]" : "text-[rgba(232,221,208,0.75)]"}`}>
+                              <p className={`line-clamp-1 text-[11px] font-bold tracking-wide ${isActive ? "text-primary" : "text-[rgba(232,221,208,0.75)]"}`}>
                                 {ep.name}
                               </p>
                               {ep.overview && (
