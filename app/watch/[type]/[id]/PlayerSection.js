@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import { Play, X, Clock, EyeOff } from "lucide-react";
@@ -16,8 +16,8 @@ function getEmbedUrl(server, type, id, season, episode) {
 
     case "Server 2":
       return isTv
-        ? `https://vidsuper.net/tv/${id}/${season}/${episode}?color=2d9b4e`
-        : `https://vidsuper.net/movie/${id}?color=2d9b4e`;
+        ? `https://primesrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}&fallback=false`
+        : `https://primesrc.me/embed/movie?tmdb=${id}&fallback=false`;
 
     case "Server 3":
       return isTv
@@ -38,7 +38,13 @@ function getEmbedUrl(server, type, id, season, episode) {
 
 const SERVER_NAMES = ["Server 1", "Server 2", "Server 3", "Server 4"];
 
-export default function PlayerSection({ type, id, seasonsData = [], isReleased = true, selectedSeason = 1 }) {
+export default function PlayerSection({
+  type,
+  id,
+  seasonsData = [],
+  isReleased = true,
+  selectedSeason = 1,
+}) {
   const [showPlayer, setShowPlayer] = useState(false);
 
   const [season, setSeason] = useState(selectedSeason || 1);
@@ -53,7 +59,8 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
     try {
       const savedProgress = localStorage.getItem(`watch-progress-${id}`);
       if (savedProgress) {
-        const { season: savedSeason, episode: savedEpisode } = JSON.parse(savedProgress);
+        const { season: savedSeason, episode: savedEpisode } =
+          JSON.parse(savedProgress);
         queueMicrotask(() => {
           if (savedSeason) setSeason(savedSeason);
           if (savedEpisode) setEpisode(savedEpisode);
@@ -94,7 +101,7 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
     });
 
     fetch(`/api/episodes?showId=${id}&season=${season}`)
-      .then((r) => r.ok ? r.json() : [])
+      .then((r) => (r.ok ? r.json() : []))
       .then((data) => {
         if (isMounted) setEpisodesList(Array.isArray(data) ? data : []);
       })
@@ -112,12 +119,16 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
 
   useEffect(() => {
     document.body.style.overflow = showPlayer ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [showPlayer]);
 
   useEffect(() => {
     if (!showPlayer) return;
-    const handler = (e) => { if (e.key === "Escape") setShowPlayer(false); };
+    const handler = (e) => {
+      if (e.key === "Escape") setShowPlayer(false);
+    };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [showPlayer]);
@@ -142,7 +153,9 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
           className="hero-btn min-w-35 px-7 py-3 text-xs cursor-pointer"
         >
           <Play size={18} fill="currentColor" />
-          {type === "tv" && (season > 1 || episode > 1) ? `Resume S${season}: E${episode}` : "Start watching"}
+          {type === "tv" && (season > 1 || episode > 1)
+            ? `Resume S${season}: E${episode}`
+            : "Start watching"}
         </button>
       </div>
 
@@ -154,7 +167,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
           />
 
           <div className="panel-enter relative flex h-fit max-h-screen w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-primary/5 bg-gradient-to-br from-[#0e180e] to-[#0a120a] shadow-[0_48px_128px_rgba(0,0,0,0.9),0_0_0_1px_rgba(45,155,78,0.04)] z-10">
-
             <div className="flex flex-shrink-0 items-center justify-between bg-[#0a0f0a]/50 px-3 py-2 border-b border-primary/5">
               <div className="flex gap-1">
                 {SERVER_NAMES.map((name) => {
@@ -164,10 +176,11 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                       key={name}
                       id={`server-${name.toLowerCase().replace(/\s/g, "-")}`}
                       onClick={() => setActiveServer(name)}
-                      className={`cursor-pointer rounded px-3 py-1 text-[10px] font-semibold uppercase tracking-widest font-sans transition-all duration-200 border ${isActive
-                        ? "border-primary/20 bg-primary/5 text-primary"
-                        : "border-primary/5 bg-primary/[0.02] text-[rgba(232,221,208,0.3)]"
-                        }`}
+                      className={`cursor-pointer rounded px-3 py-1 text-[10px] font-semibold uppercase tracking-widest font-sans transition-all duration-200 border ${
+                        isActive
+                          ? "border-primary/20 bg-primary/5 text-primary"
+                          : "border-primary/5 bg-primary/[0.02] text-[rgba(232,221,208,0.3)]"
+                      }`}
                     >
                       {name}
                     </button>
@@ -197,12 +210,14 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
 
             {type === "tv" && (
               <div className="w-full bg-[#050905]/60 p-4 border-t border-primary/5 flex-shrink-0">
-
                 <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:thin]">
                   {loadingEpisodes ? (
                     <div className="flex gap-3 w-full">
                       {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="skeleton h-[110px] w-[180px] rounded flex-shrink-0" />
+                        <div
+                          key={i}
+                          className="skeleton h-[110px] w-[180px] rounded flex-shrink-0"
+                        />
                       ))}
                     </div>
                   ) : episodesList.length === 0 ? (
@@ -219,10 +234,11 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                           key={ep.episode_number}
                           id={`episode-${ep.episode_number}`}
                           onClick={() => setEpisode(ep.episode_number)}
-                          className={`group flex w-[190px] flex-shrink-0 flex-col rounded overflow-hidden text-left transition-all duration-150 border cursor-pointer ${isActive
-                            ? "border-primary/20 bg-primary/[0.04]"
-                            : "border-primary/5 bg-primary/[0.01] hover:bg-primary/[0.03]"
-                            }`}
+                          className={`group flex w-[190px] flex-shrink-0 flex-col rounded overflow-hidden text-left transition-all duration-150 border cursor-pointer ${
+                            isActive
+                              ? "border-primary/20 bg-primary/[0.04]"
+                              : "border-primary/5 bg-primary/[0.01] hover:bg-primary/[0.03]"
+                          }`}
                         >
                           <div className="relative h-[100px] w-full flex-shrink-0 overflow-hidden bg-[#111811] border-b border-primary/5">
                             {ep.still_path ? (
@@ -237,23 +253,33 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                               </div>
                             )}
 
-                            <div className={`absolute left-2 top-2 rounded px-1.5 py-0.5 text-[9px] font-black tracking-wider shadow-md backdrop-blur-md border ${isActive
-                              ? "bg-emerald-950/80 border-primary/30 text-primary"
-                              : "bg-black/60 border-white/5 text-[rgba(232,221,208,0.7)]"
-                              }`}>
+                            <div
+                              className={`absolute left-2 top-2 rounded px-1.5 py-0.5 text-[9px] font-black tracking-wider shadow-md backdrop-blur-md border ${
+                                isActive
+                                  ? "bg-emerald-950/80 border-primary/30 text-primary"
+                                  : "bg-black/60 border-white/5 text-[rgba(232,221,208,0.7)]"
+                              }`}
+                            >
                               EP {ep.episode_number}
                             </div>
 
                             {isSpoiler && (
                               <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10">
-                                <EyeOff size={14} className="text-[rgba(232,221,208,0.4)] group-hover:opacity-0 transition-opacity duration-200" />
+                                <EyeOff
+                                  size={14}
+                                  className="text-[rgba(232,221,208,0.4)] group-hover:opacity-0 transition-opacity duration-200"
+                                />
                               </div>
                             )}
                           </div>
 
-                          <div className={`p-2 flex-1 flex flex-col justify-between transition-all duration-300 ${isSpoiler ? "blur-[3px] group-hover:blur-0 select-none opacity-40 group-hover:opacity-80" : ""}`}>
+                          <div
+                            className={`p-2 flex-1 flex flex-col justify-between transition-all duration-300 ${isSpoiler ? "blur-[3px] group-hover:blur-0 select-none opacity-40 group-hover:opacity-80" : ""}`}
+                          >
                             <div>
-                              <p className={`line-clamp-1 text-[11px] font-bold tracking-wide ${isActive ? "text-primary" : "text-[rgba(232,221,208,0.75)]"}`}>
+                              <p
+                                className={`line-clamp-1 text-[11px] font-bold tracking-wide ${isActive ? "text-primary" : "text-[rgba(232,221,208,0.75)]"}`}
+                              >
                                 {ep.name}
                               </p>
                               {ep.overview && (
@@ -275,7 +301,6 @@ export default function PlayerSection({ type, id, seasonsData = [], isReleased =
                 </div>
               </div>
             )}
-
           </div>
         </div>
       )}
