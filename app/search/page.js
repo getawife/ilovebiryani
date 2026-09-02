@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, ChevronDown, Search } from "lucide-react";
-import Header from '"../components/header.jsx"';
+import Header from '"../components/header"';
 import Footer from "../components/Footer";
 import MovieCard from "../components/MovieCard";
 import Image from "next/image";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import Header from "./components/header.jsx";
+import Header from "./components/header";
 import Footer from "./components/Footer";
 import { Play } from "lucide-react";
 import { ContentRow } from "./components/ContentRow";

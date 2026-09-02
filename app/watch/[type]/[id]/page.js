@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import Header from "../../../components/header.jsx";
+import Header from "../../../components/header";
 import Footer from "../../../components/Footer";
 import MovieCard from "../../../components/MovieCard";
 import WatchPageClient from "./WatchPageClient";
