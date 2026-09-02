@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- Rounded dark green tile backing -->
-  <rect width="32" height="32" rx="7" fill="#2d9b4e"/>
-  <!-- Elegant cinematic play triangle / rice grain silhouette -->
-  <path d="M12 9l11 7-11 7V9z" fill="#e8ddd0"/>
-</svg>
