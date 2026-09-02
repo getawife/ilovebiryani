@@ -1,17 +1,17 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import Header from './components/header';
-import Footer from './components/Footer';
-import { Play } from 'lucide-react';
-import { ContentRow } from './components/ContentRow';
-import { ContinueWatchingRow } from './components/ContinueWatchingRow';
-import { fetchTMDB } from '../lib/tmdb';
+import Link from "next/link";
+import Image from "next/image";
+import Header from "./components/header";
+import Footer from "./components/Footer";
+import { Play } from "lucide-react";
+import { ContentRow } from "./components/ContentRow";
+import { ContinueWatchingRow } from "./components/ContinueWatchingRow";
+import { fetchTMDB } from "../lib/tmdb";
 
 export default async function Home() {
   const [trendingData, popularData, topRatedData] = await Promise.all([
-    fetchTMDB('trending/movie/week?language=en-US&page=1'),
-    fetchTMDB('movie/popular?language=en-US&page=1'),
-    fetchTMDB('movie/top_rated?language=en-US&page=1'),
+    fetchTMDB("trending/movie/week?language=en-US&page=1"),
+    fetchTMDB("movie/popular?language=en-US&page=1"),
+    fetchTMDB("movie/top_rated?language=en-US&page=1"),
   ]);
 
   const heroMovie = trendingData.results[0];
@@ -21,9 +21,11 @@ export default async function Home() {
 
   let titleLogoPath = null;
   try {
-    const heroImages = await fetchTMDB(`movie/${heroMovie.id}/images?include_image_language=en,null`);
+    const heroImages = await fetchTMDB(
+      `movie/${heroMovie.id}/images?include_image_language=en,null`,
+    );
     const titleLogo = heroImages.logos?.find(
-      (logo) => logo.iso_639_1 === 'en' || logo.iso_639_1 === null
+      (logo) => logo.iso_639_1 === "en" || logo.iso_639_1 === null,
     );
     titleLogoPath = titleLogo ? titleLogo.file_path : null;
   } catch (error) {
@@ -31,9 +33,27 @@ export default async function Home() {
   }
 
   const serverRows = [
-    { title: "Trending", iconName: "Flame", color: "#2d9b4e", data: trendingMovies, type: "movie" },
-    { title: "Highest Rated", iconName: "Trophy", color: "#e8808a", data: topRatedMovies, type: "movie" },
-    { title: "Personal Best", iconName: "Popcorn", color: "#7bc9a8", data: popularMovies, type: "movie" },
+    {
+      title: "Trending",
+      iconName: "Flame",
+      color: "#2d9b4e",
+      data: trendingMovies,
+      type: "movie",
+    },
+    {
+      title: "Highest Rated",
+      iconName: "Trophy",
+      color: "#e8808a",
+      data: topRatedMovies,
+      type: "movie",
+    },
+    {
+      title: "Personal Best",
+      iconName: "Popcorn",
+      color: "#7bc9a8",
+      data: popularMovies,
+      type: "movie",
+    },
   ];
 
   const backdrop = heroMovie?.backdrop_path
@@ -42,7 +62,6 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-bg text-[#e8ddd0] flex flex-col relative isolate">
-
       {backdrop && (
         <div className="absolute top-0 left-0 right-0 h-[80vh] min-h-[550px] -z-20 overflow-hidden pointer-events-none">
           <Image
@@ -71,8 +90,9 @@ export default async function Home() {
         <div
           className="fixed inset-0 pointer-events-none opacity-[0.015] bg-repeat z-[1]"
           style={{
-            backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 256 256\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noise)\" opacity=\"1\"/%3E%3C/svg%3E')",
-            backgroundSize: "256px 256px"
+            backgroundImage:
+              'url(\'data:image/svg+xml,%3Csvg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noise)" opacity="1"/%3E%3C/svg%3E\')',
+            backgroundSize: "256px 256px",
           }}
         />
 
@@ -104,7 +124,9 @@ function HeroBanner({ movie, logoPath }) {
 
   const title = movie.title || movie.name;
   const overview = movie.overview || "";
-  const logoUrl = logoPath ? `https://image.tmdb.org/t/p/w500${logoPath}` : null;
+  const logoUrl = logoPath
+    ? `https://image.tmdb.org/t/p/w500${logoPath}`
+    : null;
 
   return (
     <div className="relative w-full h-[clamp(440px,62vh,700px)] flex flex-col justify-end">
@@ -130,10 +152,7 @@ function HeroBanner({ movie, logoPath }) {
           </p>
 
           <div>
-            <Link
-              href={`/watch/movie/${movie.id}`}
-              className="hero-btn"
-            >
+            <Link href={`/watch/movie/${movie.id}`} className="hero-btn">
               <Play size={16} fill="currentColor" /> Watch Now
             </Link>
           </div>
