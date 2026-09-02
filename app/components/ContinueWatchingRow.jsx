@@ -11,7 +11,7 @@ export function ContinueWatchingRow() {
 
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
-      const scrollAmount = direction === 'left' ? -480 : 480;
+      const scrollAmount = direction === 'left' ? -520 : 520;
       scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
@@ -65,29 +65,29 @@ export function ContinueWatchingRow() {
   if (loading || historyItems.length === 0) return null;
 
   return (
-    <section className="mt-8 sm:mt-10">
-      <div className="flex items-center justify-between mb-3 px-1">
-        <div className="flex items-center gap-2">
-          <History size={18} className="text-amber-400" />
-          <h2 className="font-display text-xl sm:text-2xl text-[#f3ede2] tracking-wider uppercase">
+    <section className="mt-8 sm:mt-12">
+      <div className="flex items-center justify-between mb-4 px-1">
+        <div className="flex items-center gap-2.5">
+          <History size={20} className="text-amber-400" />
+          <h2 className="font-display text-2xl sm:text-3xl text-[#f3ede2] tracking-wider uppercase">
             Continue Watching
           </h2>
         </div>
 
-        <div className="hidden sm:flex items-center gap-1">
+        <div className="hidden sm:flex items-center gap-2">
           <button
             onClick={() => scroll('left')}
-            aria-label="Scroll left"
-            className="w-7 h-7 rounded bg-[#141a14] border border-white/[0.08] text-[#9e988f] hover:text-white hover:border-white/20 flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Scroll continue watching left"
+            className="control-target-arrow focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F4B942]"
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={20} />
           </button>
           <button
             onClick={() => scroll('right')}
-            aria-label="Scroll right"
-            className="w-7 h-7 rounded bg-[#141a14] border border-white/[0.08] text-[#9e988f] hover:text-white hover:border-white/20 flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Scroll continue watching right"
+            className="control-target-arrow focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F4B942]"
           >
-            <ChevronRight size={16} />
+            <ChevronRight size={20} />
           </button>
         </div>
       </div>

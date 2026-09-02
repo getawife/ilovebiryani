@@ -65,26 +65,26 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#070907] text-[#f3ede2] flex flex-col relative isolate">
       {backdrop && (
-        <div className="absolute top-0 left-0 right-0 h-[80vh] min-h-[550px] -z-20 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 right-0 h-[85vh] min-h-[600px] -z-20 overflow-hidden pointer-events-none">
           <Image
             src={backdrop}
             alt=""
             fill
             priority
-            className="object-cover object-[center_20%] brightness-[0.45] saturate-[0.7]"
+            className="object-cover object-[center_20%] brightness-[0.4] saturate-[0.8]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#070907]/40 to-[#070907] to-[98%]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#070907]/50 to-[#070907] to-[98%]" />
         </div>
       )}
 
       {backdrop && (
         <div
-          className="absolute top-0 left-0 right-0 h-[90vh] bg-[length:100%_auto] bg-[center_-10%] blur-[140px] opacity-12 saturate-150 pointer-events-none -z-10"
+          className="absolute top-0 left-0 right-0 h-[90vh] bg-[length:100%_auto] bg-[center_-10%] blur-[140px] opacity-15 saturate-150 pointer-events-none -z-10"
           style={{ backgroundImage: `url(${backdrop})` }}
         />
       )}
 
-      <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-gradient-to-r from-[#070907]/60 via-transparent to-transparent pointer-events-none -z-10" />
+      <div className="absolute top-0 left-0 bottom-0 w-2/3 bg-gradient-to-r from-[#070907]/80 via-[#070907]/30 to-transparent pointer-events-none -z-10" />
 
       <Header />
 
@@ -124,10 +124,10 @@ function HeroBanner({ movie, logoPath }) {
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <div className="relative w-full max-w-[1440px] mx-auto px-4 sm:px-6 pt-10 sm:pt-20 pb-12 sm:pb-16 flex flex-col justify-end">
-      <div className="max-w-[680px]">
+    <div className="relative w-full max-w-[1440px] mx-auto px-4 sm:px-6 pt-12 sm:pt-24 pb-16 sm:pb-20 flex flex-col justify-end">
+      <div className="w-full max-w-[850px]">
         {logoUrl ? (
-          <div className="relative h-[80px] sm:h-[120px] max-w-[85%] mb-4">
+          <div className="relative h-[90px] sm:h-[140px] max-w-[90%] mb-5">
             <Image
               src={logoUrl}
               alt={title}
@@ -136,28 +136,34 @@ function HeroBanner({ movie, logoPath }) {
             />
           </div>
         ) : (
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#f3ede2] leading-[0.95] mb-4">
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-[#f3ede2] leading-[0.95] mb-5">
             {title}
           </h1>
         )}
 
-        <div className="flex items-center gap-3 text-xs font-semibold text-[#9e988f] mb-4">
+        <div className="flex items-center gap-3 text-sm font-bold text-[#E0E0E0] mb-4">
           {rating && rating !== "0.0" && (
-            <span className="text-amber-400 font-bold">★ {rating}</span>
+            <span className="card-badge-pill">
+              <span className="text-amber-400 font-bold">★ {rating}</span>
+            </span>
           )}
-          {year && <span>{year}</span>}
+          {year && (
+            <span className="bg-white/[0.08] border border-white/[0.14] px-2.5 py-0.5 rounded-full text-xs font-semibold text-[#f3ede2]">
+              {year}
+            </span>
+          )}
         </div>
 
-        <p className="text-xs sm:text-sm leading-relaxed text-[#9e988f] mb-6 line-clamp-3 sm:line-clamp-4">
+        <p className="text-sm sm:text-base leading-relaxed text-[#E0E0E0] mb-7 line-clamp-3 sm:line-clamp-4 max-w-[760px]">
           {overview}
         </p>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Link
             href={`/watch/movie/${movie.id}`}
             className="btn-cinema-primary"
           >
-            <Play size={16} fill="currentColor" /> Watch Now
+            <Play size={18} fill="currentColor" /> Watch Now
           </Link>
         </div>
       </div>

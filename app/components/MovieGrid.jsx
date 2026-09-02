@@ -84,15 +84,15 @@ export default function MovieGrid({ items, type }) {
 
   if (!displayedItems || displayedItems.length === 0) {
     return (
-      <div className="text-center py-16 text-[#5e5952]">
-        <p className="text-sm">No titles found in this catalog.</p>
+      <div className="text-center py-20 text-[#E0E0E0] bg-[#0e120e]/80 rounded-xl border border-white/[0.1]">
+        <p className="text-base font-semibold">No titles found in this catalog.</p>
       </div>
     );
   }
 
   return (
     <section>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 w-full">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5 w-full">
         {displayedItems.map((item) => (
           <MovieCard
             key={`${type}-${item.id}`}
@@ -104,36 +104,36 @@ export default function MovieGrid({ items, type }) {
       </div>
 
       {loading && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 mt-4 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5 mt-6 w-full">
           {[...Array(6)].map((_, i) => (
             <div
               key={`sk-${i}`}
-              className="skeleton-shimmer rounded-md aspect-[2/3] w-full"
+              className="skeleton-shimmer rounded-lg aspect-[2/3] w-full"
             />
           ))}
         </div>
       )}
 
       {error && (
-        <div className="text-center py-10 text-[#9e988f]">
-          <p className="text-xs">Failed to load more content.</p>
+        <div className="text-center py-12 text-[#E0E0E0]">
+          <p className="text-sm font-semibold">Failed to load more content.</p>
           <button
             onClick={() => {
               setError(false);
               setHasMore(true);
               loadMore();
             }}
-            className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-xs font-semibold text-[#f3ede2] transition-colors cursor-pointer"
+            className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] border border-white/[0.15] text-xs font-bold text-[#f3ede2] transition-colors cursor-pointer"
           >
-            <RotateCcw size={12} /> Retry
+            <RotateCcw size={14} /> Retry
           </button>
         </div>
       )}
 
-      <div ref={observerRef} className="h-4 mt-4" />
+      <div ref={observerRef} className="h-6 mt-6" />
 
       {!hasMore && !error && displayedItems.length > 0 && (
-        <p className="text-center text-xs text-[#5e5952] mt-8">
+        <p className="text-center text-sm font-medium text-[#A3A3A3] mt-10">
           You have reached the end of the list.
         </p>
       )}
