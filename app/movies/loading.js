@@ -1,5 +1,5 @@
-import Header from '../components/header';
-import Footer from '../components/Footer';
+import Header from '"../components/header.jsx"';
+import Footer from "../components/Footer";
 
 export default function Loading() {
   return (

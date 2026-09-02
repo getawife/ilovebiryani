@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import Header from "./components/header";
+import Header from "./components/header.jsx";
 import Footer from "./components/Footer";
 import { Play } from "lucide-react";
 import { ContentRow } from "./components/ContentRow";
@@ -23,10 +23,10 @@ export default async function Home() {
   if (heroMovie?.id) {
     try {
       const heroImages = await fetchTMDB(
-        `movie/${heroMovie.id}/images?include_image_language=en,null`
+        `movie/${heroMovie.id}/images?include_image_language=en,null`,
       );
       const titleLogo = heroImages.logos?.find(
-        (logo) => logo.iso_639_1 === "en" || logo.iso_639_1 === null
+        (logo) => logo.iso_639_1 === "en" || logo.iso_639_1 === null,
       );
       titleLogoPath = titleLogo ? titleLogo.file_path : null;
     } catch (error) {

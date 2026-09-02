@@ -1,5 +1,5 @@
-import Header from './components/header';
-import Footer from './components/Footer';
+import Header from "./components/header.jsx";
+import Footer from "./components/Footer";
 
 export default function Loading() {
   return (
@@ -7,7 +7,6 @@ export default function Loading() {
       <Header />
 
       <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 pt-10 pb-20">
-        {/* Hero Banner Skeleton */}
         <div className="w-full max-w-[680px] mb-14 flex flex-col gap-4">
           <div className="skeleton-shimmer h-12 sm:h-16 w-3/4 rounded-md" />
           <div className="skeleton-shimmer h-4 w-1/3 rounded" />
@@ -15,7 +14,6 @@ export default function Loading() {
           <div className="skeleton-shimmer h-10 w-36 rounded-md mt-2" />
         </div>
 
-        {/* Content Row Skeletons */}
         {[1, 2, 3].map((row) => (
           <div key={row} className="mt-10">
             <div className="skeleton-shimmer h-7 w-48 rounded mb-4" />

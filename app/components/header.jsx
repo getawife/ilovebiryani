@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, ChevronDown, Search } from "lucide-react";
-import Header from '"../components/header.jsx"';
-import Footer from "../components/Footer";
-import MovieCard from "../components/MovieCard";
+import { SlidersHorizontal, ChevronDown, Search, Film, Tv } from "lucide-react";
+import Header from "./header";
+import Footer from "./Footer";
+import MovieCard from "./MovieCard";
 import Image from "next/image";
 
 function CustomSelect({ label, value, options, onChange }) {
@@ -243,22 +243,24 @@ function SearchContent() {
           <div className="grid grid-cols-3 gap-1">
             {[
               { id: "all", label: "All" },
-              { id: "movie", label: "Films" },
-              { id: "tv", label: "Series" },
+              { id: "movie", label: "Films", icon: Film },
+              { id: "tv", label: "Series", icon: Tv },
             ].map((t) => {
               const isSelected = filters.type === t.id;
+              const Icon = t.icon;
 
               return (
                 <button
                   key={t.id}
                   type="button"
                   onClick={() => handleFilterChange("type", t.id)}
-                  className={`py-1.5 px-2 rounded text-xs font-semibold cursor-pointer transition-colors ${
+                  className={`py-1.5 px-2 rounded text-xs font-semibold cursor-pointer transition-colors flex items-center justify-center gap-1.5 ${
                     isSelected
                       ? "bg-[#F4B942] text-black font-bold"
                       : "bg-white/[0.04] text-[#9e988f] hover:bg-white/[0.08] hover:text-white"
                   }`}
                 >
+                  {Icon && <Icon size={13} strokeWidth={2} />}
                   {t.label}
                 </button>
               );
@@ -360,13 +362,13 @@ export default function SearchPage() {
         {" "}
         <Image
           src="/biryani.jpg"
-          alt="Biryani bg "
+          alt="Biryani bg"
           fill
           priority
           sizes="100vw"
           className="object-cover opacity-30"
         />
-        <div className="absolute inset-0 bg-[#070907]/40 background-blur-[2px]" />
+        <div className="absolute inset-0 bg-[#070907]/40 backdrop-blur-[2px]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#070907] via-[#070907]/20 to-[#070907]/80" />
       </div>
       <div className="relative z-10 flex min-h-screen flex-col">
