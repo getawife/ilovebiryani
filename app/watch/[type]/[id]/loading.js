@@ -1,4 +1,4 @@
-import Header from "../../"../components/header.jsx"";
+import Header from "../../../components/header.jsx";
 import Footer from "../../../components/Footer";
 
 export default function Loading() {

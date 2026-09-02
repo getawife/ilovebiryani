@@ -1,19 +1,19 @@
-import { notFound } from 'next/navigation';
-import Header from "../../"../components/header.jsx"";
+import { notFound } from "next/navigation";
+import Header from "../../../components/header.jsx";
 import Footer from "../../../components/Footer";
 import MovieCard from "../../../components/MovieCard";
 import WatchPageClient from "./WatchPageClient";
-import { User, Star, Film } from 'lucide-react';
+import { User, Star, Film } from "lucide-react";
 
 async function getMediaDetails(id, type = "movie") {
   const res = await fetch(
     `https://api.themoviedb.org/3/${type}/${id}?language=en-US`,
     {
       headers: {
-        accept: 'application/json',
+        accept: "application/json",
         Authorization: `Bearer ${process.env.TMDB_READ_ACCESS_TOKEN}`,
       },
-    }
+    },
   );
   if (!res.ok) return null;
   return res.json();
@@ -64,7 +64,9 @@ export default async function WatchPage({ params }) {
     notFound();
   }
 
-  const isReleased = ["Released", "Returning Series", "Ended"].includes(data.status);
+  const isReleased = ["Released", "Returning Series", "Ended"].includes(
+    data.status,
+  );
   const title = data.title || data.name;
   const overview = data.overview || "No synopsis available.";
   const rating = data.vote_average ? data.vote_average.toFixed(1) : "0.0";
@@ -86,9 +88,11 @@ export default async function WatchPage({ params }) {
     : null;
 
   const logoAsset = data.images?.logos?.find(
-    (logo) => logo.iso_639_1 === 'en' || logo.iso_639_1 === null
+    (logo) => logo.iso_639_1 === "en" || logo.iso_639_1 === null,
   );
-  const logoUrl = logoAsset ? `https://image.tmdb.org/t/p/w500${logoAsset.file_path}` : null;
+  const logoUrl = logoAsset
+    ? `https://image.tmdb.org/t/p/w500${logoAsset.file_path}`
+    : null;
 
   return (
     <div className="isolate flex min-h-screen flex-col bg-[#070907] text-[#f3ede2]">
@@ -148,7 +152,7 @@ export default async function WatchPage({ params }) {
             )}
 
             <div className="flex flex-wrap items-center gap-2 mb-4">
-              {rating !== '0.0' && (
+              {rating !== "0.0" && (
                 <div className="flex items-center gap-1 bg-amber-500/15 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded text-xs font-bold">
                   <Star size={12} className="fill-amber-400 text-amber-400" />
                   <span>{rating}</span>
@@ -166,7 +170,7 @@ export default async function WatchPage({ params }) {
               )}
               {seasons && (
                 <span className="bg-white/[0.06] border border-white/[0.08] text-[#9e988f] px-2 py-0.5 rounded text-xs font-medium">
-                  {seasons} Season{seasons !== 1 ? 's' : ''}
+                  {seasons} Season{seasons !== 1 ? "s" : ""}
                 </span>
               )}
               {episodes && (
@@ -209,7 +213,10 @@ export default async function WatchPage({ params }) {
             </div>
             <div className="horizontal-catalog-row py-1">
               {cast.map((actor) => (
-                <div key={actor.id} className="w-[100px] sm:w-[115px] shrink-0 text-center">
+                <div
+                  key={actor.id}
+                  className="w-[100px] sm:w-[115px] shrink-0 text-center"
+                >
                   <div className="w-16 h-16 sm:w-18 sm:h-18 mx-auto mb-2 rounded-full overflow-hidden bg-[#141a14] border border-white/[0.08]">
                     {actor.profile_path ? (
                       <img
@@ -223,8 +230,12 @@ export default async function WatchPage({ params }) {
                       </div>
                     )}
                   </div>
-                  <p className="text-xs font-semibold text-[#f3ede2] line-clamp-1">{actor.name}</p>
-                  <p className="text-[11px] text-[#9e988f] line-clamp-1">{actor.character}</p>
+                  <p className="text-xs font-semibold text-[#f3ede2] line-clamp-1">
+                    {actor.name}
+                  </p>
+                  <p className="text-[11px] text-[#9e988f] line-clamp-1">
+                    {actor.character}
+                  </p>
                 </div>
               ))}
             </div>
