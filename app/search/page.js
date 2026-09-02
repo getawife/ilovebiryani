@@ -370,7 +370,7 @@ return ( <div className="relative z-10 max-w-[1440px] w-full mx-auto px-4 sm:px-
 export default function SearchPage() {
 return ( <div className="relative min-h-screen bg-[#070907] text-[#f3ede2] flex flex-col overflow-hidden"> <div className="fixed inset-0 z-0 pointer-events-none"> <Image
        src="/biryani.jpg"
-       alt="Delicious Biryani background"
+       alt="Biryani bg "
        fill
        priority
        sizes="100vw"
@@ -378,7 +378,7 @@ return ( <div className="relative min-h-screen bg-[#070907] text-[#f3ede2] flex 
      />
 
  
-    <div className="absolute inset-0 bg-[#070907]/40 backdrop-blur-md" />
+    <div className="absolute inset-0 bg-[#070907]/40 background-blur-[2px]" />
 
     <div className="absolute inset-0 bg-gradient-to-t from-[#070907] via-[#070907]/20 to-[#070907]/80" />
   </div>

@@ -11,12 +11,12 @@ export default function NotFound() {
       <div className="absolute inset-0 w-full h-full pointer-events-none">
         <Image 
           src="/biryani.jpg" 
-          alt="Delicious Biryani background"
+          alt="Biryani bg "
           fill 
           className="object-cover opacity-30" 
           priority
         />
-        <div className="absolute inset-0 bg-[#070907]/40 backdrop-blur-md" />
+        <div className="absolute inset-0 bg-[#070907]/40 background-blur-[2px]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#070907] via-transparent to-[#070907]/80" />
       </div>
 
