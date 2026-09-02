@@ -1,4 +1,4 @@
-import Header from '"../components/header"';
+import Header from "../components/header";
 import Footer from "../components/Footer";
 import { Tv } from "lucide-react";
 import MovieGrid from "../components/MovieGrid";
