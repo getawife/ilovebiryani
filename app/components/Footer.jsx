@@ -1,29 +1,33 @@
 import Link from 'next/link';
 
 export function Footer() {
-    return (
-        <footer className="border-t border-white/5 py-10 px-4 text-center bg-gradient-to-b from-transparent to-bg/90 relative z-20">
-            <div className="max-w-[1400px] mx-auto flex flex-col items-center gap-2">
-                <Link href="/" className="inline-flex items-baseline gap-[0.1rem] no-underline mb-1">
-                    <span className="font-sans text-2xl text-primary tracking-[0.08em] font-bold">ILOVE</span>
-                    <span className="font-sans text-2xl text-cream tracking-[0.08em] font-normal">BIRYANI</span>
-                </Link>
-                <p className="text-[0.7rem] text-text-muted transition-colors duration-200 hover:text-text-sub mt-1 tracking-wide">
-                    Data provided by{' '}
-                    <a
-                        href="https://www.themoviedb.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary no-underline hover:underline"
-                    >
-                        TMDB
-                    </a>
-                    .<span className="inline-block mx-2 opacity-30">·</span>
-                    All content is provided by third parties.
-                </p>
-            </div>
-        </footer>
-    );
+  return (
+    <footer className="mt-auto border-t border-white/[0.08] bg-[#070907] py-10 px-4">
+      <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col items-center sm:items-start gap-1">
+          <Link href="/" className="flex items-baseline tracking-wider">
+            <span className="font-display text-xl text-[#F4B942] font-bold">ILOVE</span>
+            <span className="font-display text-xl text-[#f3ede2] font-bold ml-1">BIRYANI</span>
+          </Link>
+
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-[#9e988f]">
+          <Link href="/" className="hover:text-white transition-colors">Home</Link>
+          <Link href="/movies" className="hover:text-white transition-colors">Films</Link>
+          <Link href="/tv" className="hover:text-white transition-colors">Series</Link>
+          <a
+            href="https://www.themoviedb.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#9e988f] hover:text-[#F4B942] transition-colors"
+          >
+            TMDB Data
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
 }
 
 export default Footer;

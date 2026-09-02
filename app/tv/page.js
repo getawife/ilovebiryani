@@ -4,38 +4,41 @@ import { Tv } from 'lucide-react';
 import MovieGrid from '../components/MovieGrid';
 import { fetchTMDB } from '../../lib/tmdb';
 
+export const metadata = {
+  title: 'Series',
+  description: 'Stream popular TV shows and series on ILOVEBIRYANI.',
+};
+
 export default async function TVPage() {
+  let popularShows = [];
+  try {
     const popularData = await fetchTMDB('tv/popular?language=en-US&page=1');
-    const popularShows = popularData.results || [];
+    popularShows = popularData.results || [];
+  } catch (error) {
+    console.error('Failed to fetch TV series:', error);
+  }
 
-    return (
-        <div className="flex min-h-screen flex-col bg-bg text-[#e8ddd0]">
-            <Header />
-            <main className="relative flex-1 pt-6">
-                {/* SVG Film Grain Noise Overlay */}
-                <div
-                    className="pointer-events-none fixed inset-0 z-[1] opacity-[0.015] bg-repeat bg-[size:256px_256px]"
-                    style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 256 256\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noise\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.9\" numOctaves=\"4\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noise)\" opacity=\"1\"/%3E%3C/svg%3E')" }}
-                />
+  return (
+    <div className="min-h-screen bg-[#070907] text-[#f3ede2] flex flex-col">
+      <Header />
 
-                <div className="relative z-[2] mx-auto max-w-[1400px] px-6 pb-16">
-                    <div className="mb-8">
-                        <h1 className="flex items-center gap-3 font-sans text-[clamp(2rem,4vw,3rem)] font-bold tracking-wide text-[#e8ddd0]">
-                            <Tv size={32} className="text-[#2d9b4e]" />
-                            Series
-                        </h1>
-                        <p className="mt-1 text-sm italic text-[rgba(232,221,208,0.4)]">
-                            Binge-worthy shows worth your time
-                        </p>
-                    </div>
-
-                    <MovieGrid
-                        items={popularShows}
-                        type="tv"
-                    />
-                </div>
-            </main>
-            <Footer />
+      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-16">
+        <div className="mb-6 sm:mb-8 border-b border-white/[0.08] pb-4">
+          <div className="flex items-center gap-2 mb-1">
+            <Tv size={22} className="text-[#F4B942]" />
+            <h1 className="font-display text-3xl sm:text-5xl font-bold tracking-wider text-[#f3ede2] uppercase">
+              Series
+            </h1>
+          </div>
+          <p className="text-xs text-[#9e988f]">
+            Binge-worthy shows, seasonal dramas, and episodic favorites.
+          </p>
         </div>
-    );
+
+        <MovieGrid items={popularShows} type="tv" />
+      </main>
+
+      <Footer />
+    </div>
+  );
 }

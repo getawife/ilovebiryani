@@ -14,43 +14,45 @@ export default async function Home() {
     fetchTMDB("movie/top_rated?language=en-US&page=1"),
   ]);
 
-  const heroMovie = trendingData.results[0];
-  const trendingMovies = trendingData.results.slice(1, 13);
-  const popularMovies = popularData.results.slice(0, 12);
-  const topRatedMovies = topRatedData.results.slice(0, 12);
+  const heroMovie = trendingData.results?.[0];
+  const trendingMovies = trendingData.results?.slice(1, 15) || [];
+  const popularMovies = popularData.results?.slice(0, 14) || [];
+  const topRatedMovies = topRatedData.results?.slice(0, 14) || [];
 
   let titleLogoPath = null;
-  try {
-    const heroImages = await fetchTMDB(
-      `movie/${heroMovie.id}/images?include_image_language=en,null`,
-    );
-    const titleLogo = heroImages.logos?.find(
-      (logo) => logo.iso_639_1 === "en" || logo.iso_639_1 === null,
-    );
-    titleLogoPath = titleLogo ? titleLogo.file_path : null;
-  } catch (error) {
-    console.error("Failed to fetch hero movie logo:", error);
+  if (heroMovie?.id) {
+    try {
+      const heroImages = await fetchTMDB(
+        `movie/${heroMovie.id}/images?include_image_language=en,null`
+      );
+      const titleLogo = heroImages.logos?.find(
+        (logo) => logo.iso_639_1 === "en" || logo.iso_639_1 === null
+      );
+      titleLogoPath = titleLogo ? titleLogo.file_path : null;
+    } catch (error) {
+      console.error("Failed to fetch movie logo:", error);
+    }
   }
 
   const serverRows = [
     {
       title: "Trending",
       iconName: "Flame",
-      color: "#2d9b4e",
+      color: "#22c55e",
       data: trendingMovies,
       type: "movie",
     },
     {
-      title: "Highest Rated",
+      title: "Top Rated",
       iconName: "Trophy",
-      color: "#e8808a",
+      color: "#f59e0b",
       data: topRatedMovies,
       type: "movie",
     },
     {
-      title: "Personal Best",
+      title: "Popular Right Now",
       iconName: "Popcorn",
-      color: "#7bc9a8",
+      color: "#22c55e",
       data: popularMovies,
       type: "movie",
     },
@@ -61,7 +63,7 @@ export default async function Home() {
     : null;
 
   return (
-    <div className="min-h-screen bg-bg text-[#e8ddd0] flex flex-col relative isolate">
+    <div className="min-h-screen bg-[#070907] text-[#f3ede2] flex flex-col relative isolate">
       {backdrop && (
         <div className="absolute top-0 left-0 right-0 h-[80vh] min-h-[550px] -z-20 overflow-hidden pointer-events-none">
           <Image
@@ -71,7 +73,7 @@ export default async function Home() {
             priority
             className="object-cover object-[center_20%] brightness-[0.45] saturate-[0.7]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f0a]/40 to-[#0a0f0a] to-[98%]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#070907]/40 to-[#070907] to-[98%]" />
         </div>
       )}
 
@@ -82,23 +84,14 @@ export default async function Home() {
         />
       )}
 
-      <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-gradient-to-r from-[#0a0f0a]/60 via-transparent to-transparent pointer-events-none -z-10" />
+      <div className="absolute top-0 left-0 bottom-0 w-1/2 bg-gradient-to-r from-[#070907]/60 via-transparent to-transparent pointer-events-none -z-10" />
 
       <Header />
 
       <main className="flex-1 relative">
-        <div
-          className="fixed inset-0 pointer-events-none opacity-[0.015] bg-repeat z-[1]"
-          style={{
-            backgroundImage:
-              'url(\'data:image/svg+xml,%3Csvg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noise)" opacity="1"/%3E%3C/svg%3E\')',
-            backgroundSize: "256px 256px",
-          }}
-        />
-
         <HeroBanner movie={heroMovie} logoPath={titleLogoPath} />
 
-        <div className="max-w-[1400px] mx-auto px-4 pb-16 relative z-20">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-20 relative z-10">
           <ContinueWatchingRow />
 
           {serverRows.map((row) => (
@@ -127,35 +120,45 @@ function HeroBanner({ movie, logoPath }) {
   const logoUrl = logoPath
     ? `https://image.tmdb.org/t/p/w500${logoPath}`
     : null;
+  const year = (movie.release_date || "").split("-")[0];
+  const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <div className="relative w-full h-[clamp(440px,62vh,700px)] flex flex-col justify-end">
-      <div className="w-full max-w-[1400px] mx-auto px-4 pb-18 flex flex-col justify-end">
-        <div className="flex-1 max-w-[650px] flex flex-col justify-end">
-          {logoUrl ? (
-            <div className="relative h-[clamp(65px,12vh,110px)] max-w-[85%] mb-5">
-              <Image
-                src={logoUrl}
-                alt={title}
-                fill
-                className="object-contain object-left-bottom"
-              />
-            </div>
-          ) : (
-            <h1 className="font-sans text-[clamp(1.8rem,4vw,3.2rem)] tracking-tight leading-[1.1] mb-3 font-extrabold text-[#e8ddd0]">
-              {title}
-            </h1>
-          )}
-
-          <p className="text-[clamp(0.85rem,1.1vw,0.95rem)] leading-1.8 text-[#e8ddd0]/70 mb-6 max-w-full">
-            {overview}
-          </p>
-
-          <div>
-            <Link href={`/watch/movie/${movie.id}`} className="hero-btn">
-              <Play size={16} fill="currentColor" /> Watch Now
-            </Link>
+    <div className="relative w-full max-w-[1440px] mx-auto px-4 sm:px-6 pt-10 sm:pt-20 pb-12 sm:pb-16 flex flex-col justify-end">
+      <div className="max-w-[680px]">
+        {logoUrl ? (
+          <div className="relative h-[80px] sm:h-[120px] max-w-[85%] mb-4">
+            <Image
+              src={logoUrl}
+              alt={title}
+              fill
+              className="object-contain object-left-bottom"
+            />
           </div>
+        ) : (
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#f3ede2] leading-[0.95] mb-4">
+            {title}
+          </h1>
+        )}
+
+        <div className="flex items-center gap-3 text-xs font-semibold text-[#9e988f] mb-4">
+          {rating && rating !== "0.0" && (
+            <span className="text-amber-400 font-bold">★ {rating}</span>
+          )}
+          {year && <span>{year}</span>}
+        </div>
+
+        <p className="text-xs sm:text-sm leading-relaxed text-[#9e988f] mb-6 line-clamp-3 sm:line-clamp-4">
+          {overview}
+        </p>
+
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/watch/movie/${movie.id}`}
+            className="btn-cinema-primary"
+          >
+            <Play size={16} fill="currentColor" /> Watch Now
+          </Link>
         </div>
       </div>
     </div>

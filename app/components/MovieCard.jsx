@@ -1,142 +1,83 @@
 'use client';
 
 import Link from 'next/link';
-import { Play } from 'lucide-react';
-import { getRatingColor } from '../../lib/utils';
+import { Play, Star } from 'lucide-react';
 
-export function MovieCard({ item, type, accentColor = '#2d9b4eE6', fixedWidth = true }) {
-    if (!item) return null;
+export function MovieCard({ item, type, accentColor = '#22c55e', fixedWidth = true }) {
+  if (!item) return null;
 
-    const mediaType = item.media_type || item.type || type || 'movie';
-    const poster = item.poster_path
-        ? `https://image.tmdb.org/t/p/w400${item.poster_path}`
-        : `https://placehold.co/400x600/1a221a/8a7a6a?text=No+Image`;
+  const mediaType = item.media_type || item.type || type || 'movie';
+  const poster = item.poster_path
+    ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+    : null;
 
-    const title = item.title || item.name;
-    const year = (item.release_date || item.first_air_date || '').split('-')[0];
-    const rating = item.vote_average ? item.vote_average.toFixed(1) : (item.rating || '0.0');
+  const title = item.title || item.name;
+  const year = (item.release_date || item.first_air_date || '').split('-')[0];
+  const rating = item.vote_average ? item.vote_average.toFixed(1) : (item.rating || '0.0');
 
-    // Check if it's a continue watching item (has season and episode)
-    const isContinueWatching = item.season !== undefined && item.episode !== undefined;
+  const isContinueWatching = item.season !== undefined && item.episode !== undefined;
 
-    return (
-        <Link
-            href={`/watch/${mediaType}/${item.id}`}
-            style={{
-                display: 'block',
-                width: fixedWidth ? 160 : '100%',
-                textDecoration: 'none',
-                flexShrink: fixedWidth ? 0 : undefined,
-            }}
-        >
-            <div
-                className="card-hover"
-                style={{
-                    background: '#111811',
-                    borderRadius: 8,
-                    overflow: 'hidden',
-                    border: `1px solid ${accentColor === '#2d9b4eE6' ? 'rgba(150,200,150,0.06)' : accentColor.slice(0, 7) + '15'}`,
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-            >
-                <div
-                    style={{
-                        position: 'relative',
-                        width: '100%',
-                        aspectRatio: '2/3',
-                        overflow: 'hidden',
-                        background: '#0a0f0a',
-                    }}
-                >
-                    <img
-                        src={poster}
-                        alt={title}
-                        loading="lazy"
-                        className="poster-img"
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            display: 'block',
-                            filter: 'brightness(0.92) saturate(0.95)',
-                        }}
-                    />
-
-                    {!isContinueWatching && rating !== '0.0' && (
-                        <div
-                            style={{
-                                position: 'absolute',
-                                bottom: 8,
-                                left: 8,
-                                background: 'rgba(0,0,0,0.7)',
-                                backdropFilter: 'blur(6px)',
-                                borderRadius: 4,
-                                padding: '0.15rem 0.5rem',
-                                fontSize: '0.6rem',
-                                fontWeight: 600,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 3,
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                zIndex: 2,
-                            }}
-                            className={getRatingColor(rating)}
-                        >
-                            ★ {rating}
-                        </div>
-                    )}
-
-                    <div className="play-overlay">
-                        <div className="play-btn" style={{ background: accentColor }}>
-                            <Play size={18} fill="white" style={{ marginLeft: 2 }} />
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    style={{
-                        padding: '0.6rem 0.7rem 0.7rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        flex: 1,
-                        justifyContent: 'space-between',
-                    }}
-                >
-                    <p
-                        style={{
-                            fontWeight: 500,
-                            fontSize: '0.8rem',
-                            color: '#e8ddd0',
-                            lineHeight: 1.3,
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            marginBottom: '0.2rem',
-                            letterSpacing: '0.02em',
-                        }}
-                    >
-                        {title}
-                    </p>
-                    <p
-                        style={{
-                            fontSize: '0.65rem',
-                            color: isContinueWatching ? (accentColor.startsWith('#c9a84c') ? '#c9a84c' : '#2d9b4e') : 'rgba(232,221,208,0.3)',
-                            fontWeight: isContinueWatching ? '600' : 'normal',
-                            letterSpacing: '0.08em',
-                        }}
-                    >
-                        {isContinueWatching
-                            ? `Season ${item.season} · Ep ${item.episode}`
-                            : (year || 'Coming Soon')}
-                    </p>
-                </div>
+  return (
+    <Link
+      href={`/watch/${mediaType}/${item.id}`}
+      className={`group block text-left no-underline select-none ${
+        fixedWidth ? 'w-[150px] sm:w-[170px] shrink-0' : 'w-full'
+      }`}
+    >
+      <div className="streaming-card bg-[#0e120e] rounded-md overflow-hidden border border-white/[0.07] flex flex-col h-full">
+        <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#141a14]">
+          {poster ? (
+            <img
+              src={poster}
+              alt={title}
+              loading="lazy"
+              className="card-poster-img w-full h-full object-cover block"
+            />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-[#111611]">
+              <span className="font-display text-xl text-[#5e5952] mb-1">NO POSTER</span>
+              <span className="text-[10px] text-[#5e5952] line-clamp-2">{title}</span>
             </div>
-        </Link>
-    );
+          )}
+
+          {!isContinueWatching && rating !== '0.0' && (
+            <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/80 backdrop-blur-xs px-1.5 py-0.5 rounded text-[10px] font-bold text-amber-400 border border-white/[0.08]">
+              <Star size={10} className="fill-amber-400 text-amber-400" />
+              <span>{rating}</span>
+            </div>
+          )}
+
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#F4B942] text-black flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-200 shadow-lg shadow-black/60">
+              <Play size={18} fill="currentColor" className="ml-0.5" />
+            </div>
+          </div>
+
+ 
+        </div>
+
+        <div className="p-2.5 flex flex-col flex-1 justify-between gap-1">
+          <h3 className="text-xs font-semibold text-[#f3ede2] line-clamp-1 group-hover:text-[#F4B942] transition-colors">
+            {title}
+          </h3>
+          <div className="flex items-center justify-between text-[11px] text-[#9e988f]">
+            {isContinueWatching ? (
+              <span className="text-amber-400 font-medium text-[10px]">
+                S{item.season} · E{item.episode}
+              </span>
+            ) : (
+              <span>{year || '—'}</span>
+            )}
+            {isContinueWatching && (
+              <span className="text-[10px] text-[#F4B942] font-semibold uppercase tracking-wider">
+                Resume
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 export default MovieCard;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Play, X, Clock, EyeOff } from "lucide-react";
+import { Play, X, Clock, EyeOff, Server, Film } from "lucide-react";
 
 function getEmbedUrl(server, type, id, season, episode) {
   const isTv = type === "tv";
@@ -9,9 +9,9 @@ function getEmbedUrl(server, type, id, season, episode) {
   switch (server) {
     case "Server 1":
       if (isTv) {
-        return `https://thisiscinema.pages.dev/?type=tv&version=v3&id=${id}&season=${season}&episode=${episode}&color=2d9b4e`;
+        return `https://thisiscinema.pages.dev/?type=tv&version=v3&id=${id}&season=${season}&episode=${episode}&color=22c55e`;
       } else {
-        return `https://thisiscinema.pages.dev/?type=movie&version=v3&id=${id}&color=2d9b4e`;
+        return `https://thisiscinema.pages.dev/?type=movie&version=v3&id=${id}&color=22c55e`;
       }
 
     case "Server 2":
@@ -26,9 +26,9 @@ function getEmbedUrl(server, type, id, season, episode) {
 
     case "Server 4":
       if (isTv) {
-        return `https://vidfast.vc/tv/${id}/${season}/${episode}?theme=2d9b4e&nextButton=true&autoNext=true`;
+        return `https://vidfast.vc/tv/${id}/${season}/${episode}?theme=22c55e&nextButton=true&autoNext=true`;
       } else {
-        return `https://vidfast.vc/movie/${id}?theme=2d9b4e`;
+        return `https://vidfast.vc/movie/${id}?theme=22c55e`;
       }
 
     default:
@@ -82,7 +82,6 @@ export default function PlayerSection({
     }
   }, [season, episode, id, type]);
 
-  // Sync external parent season selection changes smoothly
   const [prevSelectedSeason, setPrevSelectedSeason] = useState(selectedSeason);
   if (selectedSeason && selectedSeason !== prevSelectedSeason) {
     setPrevSelectedSeason(selectedSeason);
@@ -91,7 +90,6 @@ export default function PlayerSection({
     setEpisodesList([]);
   }
 
-  // Handle data fetching for TV Episodes safely
   useEffect(() => {
     if (type !== "tv" || !showPlayer || !isReleased) return;
 
@@ -135,9 +133,9 @@ export default function PlayerSection({
 
   if (!isReleased) {
     return (
-      <div className="inline-flex items-center gap-2 rounded-md border border-primary/5 bg-primary/[0.04] px-5 py-3 text-xs font-medium text-[rgba(232,221,208,0.4)] tracking-wider">
-        <Clock size={16} className="opacity-50" />
-        Coming soon
+      <div className="inline-flex items-center gap-2 rounded bg-white/[0.05] border border-white/[0.08] px-4 py-2.5 text-xs font-semibold text-[#9e988f]">
+        <Clock size={16} className="text-amber-400" />
+        Coming Soon
       </div>
     );
   }
@@ -150,25 +148,29 @@ export default function PlayerSection({
         <button
           id="watch-now-btn"
           onClick={() => setShowPlayer(true)}
-          className="hero-btn min-w-35 px-7 py-3 text-xs cursor-pointer"
+          className="btn-cinema-primary cursor-pointer"
         >
-          <Play size={18} fill="currentColor" />
+          <Play size={16} fill="currentColor" />
           {type === "tv" && (season > 1 || episode > 1)
-            ? `Resume S${season}: E${episode}`
-            : "Start watching"}
+            ? `Resume S${season} : E${episode}`
+            : "Start Watching"}
         </button>
       </div>
 
       {showPlayer && (
-        <div className="overlay-enter fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-2 sm:p-4 bg-black/90 fade-in-cinema">
           <div
             onClick={() => setShowPlayer(false)}
-            className="absolute inset-0 cursor-pointer bg-[#060c06]/92 backdrop-blur-xl"
+            className="absolute inset-0 cursor-pointer"
           />
 
-          <div className="panel-enter relative flex h-fit max-h-screen w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-primary/5 bg-gradient-to-br from-[#0e180e] to-[#0a120a] shadow-[0_48px_128px_rgba(0,0,0,0.9),0_0_0_1px_rgba(45,155,78,0.04)] z-10">
-            <div className="flex flex-shrink-0 items-center justify-between bg-[#0a0f0a]/50 px-3 py-2 border-b border-primary/5">
-              <div className="flex gap-1">
+          <div className="relative flex max-h-[96vh] w-full max-w-[1150px] flex-col overflow-hidden rounded-lg border border-white/[0.1] bg-[#0a0d0a] shadow-2xl z-10">
+            {/* Player Top Navigation & Server Switcher */}
+            <div className="flex flex-wrap items-center justify-between bg-[#0e120e] px-4 py-2.5 border-b border-white/[0.08] gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="hidden sm:flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#9e988f] mr-1">
+                  <Server size={12} /> Server:
+                </span>
                 {SERVER_NAMES.map((name) => {
                   const isActive = activeServer === name;
                   return (
@@ -176,10 +178,10 @@ export default function PlayerSection({
                       key={name}
                       id={`server-${name.toLowerCase().replace(/\s/g, "-")}`}
                       onClick={() => setActiveServer(name)}
-                      className={`cursor-pointer rounded px-3 py-1 text-[10px] font-semibold uppercase tracking-widest font-sans transition-all duration-200 border ${
+                      className={`cursor-pointer rounded px-2.5 py-1 text-[11px] font-bold tracking-wider uppercase transition-colors ${
                         isActive
-                          ? "border-primary/20 bg-primary/5 text-primary"
-                          : "border-primary/5 bg-primary/[0.02] text-[rgba(232,221,208,0.3)]"
+                          ? "bg-[#F4B942] text-black"
+                          : "bg-white/[0.05] text-[#9e988f] hover:bg-white/[0.1] hover:text-white"
                       }`}
                     >
                       {name}
@@ -191,9 +193,10 @@ export default function PlayerSection({
               <button
                 id="close-player-btn"
                 onClick={() => setShowPlayer(false)}
-                className="flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded border border-primary/5 bg-primary/[0.02] text-[rgba(232,221,208,0.3)] transition-all duration-200 hover:border-primary/20 hover:bg-primary/10 hover:text-primary"
+                className="flex h-7 w-7 cursor-pointer items-center justify-center rounded bg-white/[0.05] text-[#9e988f] hover:bg-white/[0.1] hover:text-white transition-colors"
+                aria-label="Close video player"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
@@ -209,20 +212,27 @@ export default function PlayerSection({
             </div>
 
             {type === "tv" && (
-              <div className="w-full bg-[#050905]/60 p-4 border-t border-primary/5 flex-shrink-0">
-                <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:thin]">
+              <div className="w-full bg-[#080b08] p-3 sm:p-4 border-t border-white/[0.08] flex-shrink-0">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-display text-sm tracking-wider uppercase text-[#9e988f]">
+                    Season {season} Episodes
+                  </span>
+
+                </div>
+
+                <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">
                   {loadingEpisodes ? (
-                    <div className="flex gap-3 w-full">
+                    <div className="flex gap-2.5 w-full">
                       {[1, 2, 3, 4, 5].map((i) => (
                         <div
                           key={i}
-                          className="skeleton h-[110px] w-[180px] rounded flex-shrink-0"
+                          className="skeleton-shimmer h-[100px] w-[180px] rounded flex-shrink-0"
                         />
                       ))}
                     </div>
                   ) : episodesList.length === 0 ? (
-                    <p className="py-8 text-center w-full text-xs italic text-[rgba(232,221,208,0.2)]">
-                      No episodes listed.
+                    <p className="py-6 text-center w-full text-xs text-[#5e5952]">
+                      No episodes found for Season {season}.
                     </p>
                   ) : (
                     episodesList.map((ep) => {
@@ -234,63 +244,66 @@ export default function PlayerSection({
                           key={ep.episode_number}
                           id={`episode-${ep.episode_number}`}
                           onClick={() => setEpisode(ep.episode_number)}
-                          className={`group flex w-[190px] flex-shrink-0 flex-col rounded overflow-hidden text-left transition-all duration-150 border cursor-pointer ${
+                          className={`group flex w-[180px] sm:w-[200px] flex-shrink-0 flex-col rounded overflow-hidden text-left transition-all border cursor-pointer ${
                             isActive
-                              ? "border-primary/20 bg-primary/[0.04]"
-                              : "border-primary/5 bg-primary/[0.01] hover:bg-primary/[0.03]"
+                              ? "border-[#F4B942] bg-[#141e14]"
+                              : "border-white/[0.08] bg-[#0e120e] hover:border-white/20 hover:bg-[#141a14]"
                           }`}
                         >
-                          <div className="relative h-[100px] w-full flex-shrink-0 overflow-hidden bg-[#111811] border-b border-primary/5">
+                          <div className="relative h-[95px] w-full flex-shrink-0 overflow-hidden bg-[#111611]">
                             {ep.still_path ? (
                               <img
                                 src={`https://image.tmdb.org/t/p/w185${ep.still_path}`}
                                 alt={ep.name}
-                                className={`h-full w-full object-cover brightness-[0.85] transition-all duration-300 ${isSpoiler ? "blur-md scale-105 group-hover:blur-sm" : ""}`}
+                                className={`h-full w-full object-cover brightness-[0.8] transition-all ${
+                                  isSpoiler
+                                    ? "blur-sm group-hover:blur-none scale-105"
+                                    : ""
+                                }`}
                               />
                             ) : (
-                              <div className="flex h-full w-full items-center justify-center text-[10px] text-[rgba(232,221,208,0.15)] bg-[#0c120c]">
-                                No Thumbnail
+                              <div className="flex h-full w-full items-center justify-center text-[10px] text-[#5e5952]">
+                                <Film size={18} />
                               </div>
                             )}
 
                             <div
-                              className={`absolute left-2 top-2 rounded px-1.5 py-0.5 text-[9px] font-black tracking-wider shadow-md backdrop-blur-md border ${
+                              className={`absolute left-2 top-2 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
                                 isActive
-                                  ? "bg-emerald-950/80 border-primary/30 text-primary"
-                                  : "bg-black/60 border-white/5 text-[rgba(232,221,208,0.7)]"
+                                  ? "bg-[#F4B942] text-black"
+                                  : "bg-black/80 text-[#f3ede2] border border-white/[0.1]"
                               }`}
                             >
                               EP {ep.episode_number}
                             </div>
 
                             {isSpoiler && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10">
-                                <EyeOff
-                                  size={14}
-                                  className="text-[rgba(232,221,208,0.4)] group-hover:opacity-0 transition-opacity duration-200"
-                                />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:opacity-0 transition-opacity">
+                                <EyeOff size={14} className="text-[#9e988f]" />
                               </div>
                             )}
                           </div>
 
-                          <div
-                            className={`p-2 flex-1 flex flex-col justify-between transition-all duration-300 ${isSpoiler ? "blur-[3px] group-hover:blur-0 select-none opacity-40 group-hover:opacity-80" : ""}`}
-                          >
+                          <div className="p-2 flex-1 flex flex-col justify-between">
                             <div>
                               <p
-                                className={`line-clamp-1 text-[11px] font-bold tracking-wide ${isActive ? "text-primary" : "text-[rgba(232,221,208,0.75)]"}`}
+                                className={`line-clamp-1 text-xs font-semibold ${
+                                  isActive
+                                    ? "text-[#F4B942]"
+                                    : "text-[#f3ede2] group-hover:text-white"
+                                }`}
                               >
-                                {ep.name}
+                                {ep.name || `Episode ${ep.episode_number}`}
                               </p>
                               {ep.overview && (
-                                <p className="line-clamp-2 mt-1 text-[10px] leading-snug text-[rgba(232,221,208,0.25)]">
+                                <p className="line-clamp-2 mt-0.5 text-[10px] text-[#9e988f]">
                                   {ep.overview}
                                 </p>
                               )}
                             </div>
                             {ep.runtime && (
-                              <p className="mt-1.5 text-[9px] font-medium tracking-widest text-[rgba(232,221,208,0.2)]">
-                                {ep.runtime} MINS
+                              <p className="mt-1 text-[9px] text-[#5e5952]">
+                                {ep.runtime} min
                               </p>
                             )}
                           </div>
