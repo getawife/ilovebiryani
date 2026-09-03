@@ -199,7 +199,7 @@ export default function BookmarksPage() {
               ))}
             </div>
           ) : items.length === 0 ? (
-            <div className="py-20 px-6 bg-surface/95 backdrop-blur-xl rounded-2xl border border-border max-w-xl mx-auto text-center justify-center items-center">
+            <div className="text-center justify-center items-center">
               <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-wide text-text-main uppercase mb-2">
                 Your Watch Later is Empty
               </h2>
