@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Play, X, Clock, EyeOff, Server, Film } from "lucide-react";
+import { Play, X, Clock, EyeOff, Server, Film, Bookmark, BookmarkCheck } from "lucide-react";
+import { isBookmarked, toggleBookmark, BOOKMARKS_EVENT } from "../../../../lib/bookmarks";
 
 function getEmbedUrl(server, type, id, season, episode) {
   const isTv = type === "tv";
@@ -44,14 +45,38 @@ export default function PlayerSection({
   seasonsData = [],
   isReleased = true,
   selectedSeason = 1,
+  itemData,
 }) {
   const [showPlayer, setShowPlayer] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const [season, setSeason] = useState(selectedSeason || 1);
   const [episode, setEpisode] = useState(1);
   const [activeServer, setActiveServer] = useState(SERVER_NAMES[0]);
   const [episodesList, setEpisodesList] = useState([]);
   const [loadingEpisodes, setLoadingEpisodes] = useState(false);
+
+  useEffect(() => {
+    setSaved(isBookmarked(id, type));
+
+    const handleUpdate = () => {
+      setSaved(isBookmarked(id, type));
+    };
+
+    window.addEventListener(BOOKMARKS_EVENT, handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener(BOOKMARKS_EVENT, handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, [id, type]);
+
+  const handleBookmarkToggle = () => {
+    const willBeSaved = toggleBookmark(
+      itemData || { id, type }
+    );
+    setSaved(willBeSaved);
+  };
 
   useEffect(() => {
     if (type !== "tv" || typeof window === "undefined") return;
@@ -144,7 +169,7 @@ export default function PlayerSection({
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3.5">
         <button
           id="watch-now-btn"
           onClick={() => setShowPlayer(true)}
@@ -154,6 +179,30 @@ export default function PlayerSection({
           {type === "tv" && (season > 1 || episode > 1)
             ? `Resume S${season} : E${episode}`
             : "Start Watching"}
+        </button>
+
+        <button
+          id="watch-later-btn"
+          type="button"
+          onClick={handleBookmarkToggle}
+          aria-label={saved ? "Remove from Watch Later" : "Save to Watch Later"}
+          className={`cursor-pointer inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-bold uppercase tracking-wider transition-all duration-200 border ${
+            saved
+              ? "bg-[#F4B942]/15 border-[#F4B942] text-[#F4B942] shadow-sm shadow-[#F4B942]/20 hover:bg-[#F4B942]/25"
+              : "btn-cinema-ghost hover:border-[#F4B942]/50 hover:text-white"
+          }`}
+        >
+          {saved ? (
+            <>
+              <BookmarkCheck size={18} className="text-[#F4B942]" />
+              <span>Saved to Watch Later</span>
+            </>
+          ) : (
+            <>
+              <Bookmark size={18} />
+              <span>Save to Watch Later</span>
+            </>
+          )}
         </button>
       </div>
 

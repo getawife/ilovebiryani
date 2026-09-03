@@ -12,7 +12,7 @@
   --color-border: rgba(255, 255, 255, 0.12);
   --color-border-hover: rgba(244, 185, 66, 0.4);
 
-  --color-primary: #F4B942;
+  --color-primary: #f4b942;
   --color-primary-hover: #e0a32e;
   --color-primary-dim: rgba(244, 185, 66, 0.15);
 
@@ -20,8 +20,8 @@
   --color-accent-amber: #d97706;
 
   --color-text-main: #f3ede2;
-  --color-text-sub: #E0E0E0;
-  --color-text-muted: #A3A3A3;
+  --color-text-sub: #e0e0e0;
+  --color-text-muted: #a3a3a3;
 }
 
 *,
@@ -63,7 +63,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #F4B942;
+  background: #f4b942;
 }
 
 .font-display {
@@ -77,14 +77,15 @@ body {
 
 .streaming-card {
   transform: translateZ(0);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   will-change: transform;
 }
 
 .streaming-card:hover {
   transform: scale(1.03);
-  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.8), 0 0 18px 0 rgba(244, 185, 66, 0.18);
-  border-color: rgba(244, 185, 66, 0.45);
 }
 
 .streaming-card:hover .card-poster-img {
@@ -138,11 +139,14 @@ body {
   font-weight: 700;
   font-size: 0.9375rem;
   letter-spacing: 0.04em;
-  background: #F4B942;
+  background: #f4b942;
   color: #050805;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
   text-transform: uppercase;
   box-shadow: 0 4px 14px rgba(244, 185, 66, 0.3);
 }
@@ -155,7 +159,7 @@ body {
 }
 
 .btn-cinema-primary:active {
-  background: #F4B942;
+  background: #f4b942;
   transform: scale(0.98);
 }
 
@@ -172,7 +176,10 @@ body {
   color: #f3ede2;
   border: 1px solid rgba(255, 255, 255, 0.18);
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .btn-cinema-ghost:hover {
@@ -193,7 +200,7 @@ body {
   border-radius: 9999px;
   background-color: #141a14;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #E0E0E0;
+  color: #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,9 +210,9 @@ body {
 }
 
 .control-target-arrow:hover {
-  background-color: #F4B942;
+  background-color: #f4b942;
   color: #050805;
-  border-color: #F4B942;
+  border-color: #f4b942;
   transform: scale(1.06);
   box-shadow: 0 4px 14px rgba(244, 185, 66, 0.3);
 }
@@ -224,12 +231,7 @@ body {
 }
 
 .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    #0e120e 0%,
-    #1b231b 50%,
-    #0e120e 100%
-  );
+  background: linear-gradient(90deg, #0e120e 0%, #1b231b 50%, #0e120e 100%);
   background-size: 800px 100%;
   animation: shimmer 1.8s ease-in-out infinite;
 }

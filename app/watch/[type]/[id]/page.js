@@ -198,6 +198,17 @@ export default async function WatchPage({ params }) {
               cast={cast}
               backdrops={backdrops}
               recommendations={recommendations}
+              itemData={{
+                id,
+                type,
+                title,
+                poster_path: data.poster_path,
+                backdrop_path: data.backdrop_path,
+                vote_average: data.vote_average,
+                release_date: data.release_date,
+                first_air_date: data.first_air_date,
+                overview,
+              }}
             />
           </div>
         </div>

@@ -14,6 +14,7 @@ export default function WatchPageClient({
   cast = [],
   backdrops = [],
   recommendations = [],
+  itemData,
 }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedSeason, setSelectedSeason] = useState(() =>
@@ -43,6 +44,7 @@ export default function WatchPageClient({
         seasonsData={validSeasons}
         isReleased={isReleased}
         selectedSeason={selectedSeason}
+        itemData={itemData}
       />
 
       <div className="mt-10 sm:mt-14 w-full">

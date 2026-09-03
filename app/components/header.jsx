@@ -3,15 +3,30 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Search, X, Menu, Film, Tv } from "lucide-react";
+import { Search, X, Menu, Film, Tv, Bookmark } from "lucide-react";
+import { getBookmarks, BOOKMARKS_EVENT } from "../../lib/bookmarks";
 
 export default function Header() {
   const [query, setQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
   const mobileMenuRef = useRef(null);
   const mobileMenuButtonRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
+
+  useEffect(() => {
+    const updateCount = () => {
+      setBookmarkCount(getBookmarks().length);
+    };
+    updateCount();
+    window.addEventListener(BOOKMARKS_EVENT, updateCount);
+    window.addEventListener("storage", updateCount);
+    return () => {
+      window.removeEventListener(BOOKMARKS_EVENT, updateCount);
+      window.removeEventListener("storage", updateCount);
+    };
+  }, []);
 
   const handleSearchSubmit = useCallback(
     (e) => {
@@ -91,6 +106,11 @@ export default function Header() {
       label: "Series",
       icon: Tv,
     },
+    {
+      href: "/bookmarks",
+      label: "Watch Later",
+      icon: Bookmark,
+    },
   ];
 
   return (
@@ -141,7 +161,7 @@ export default function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-3 flex-1 max-w-[400px] justify-end">
+        <div className="flex items-center gap-2.5 flex-1 max-w-[440px] justify-end">
           <div className="relative w-full max-w-[340px]">
             <Search
               size={16}
@@ -171,6 +191,7 @@ export default function Header() {
             )}
           </div>
 
+
           <button
             ref={mobileMenuButtonRef}
             type="button"
@@ -182,7 +203,7 @@ export default function Header() {
             }
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-navigation"
-            className="md:hidden flex items-center justify-center p-2.5 text-[#f3ede2] rounded-md bg-[#111611] border border-white/[0.14] hover:bg-white/[0.1] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F4B942]"
+            className="md:hidden flex items-center justify-center h-[38px] w-[38px] text-[#f3ede2] rounded-md bg-[#111611] border border-white/[0.14] hover:bg-white/[0.1] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F4B942]"
           >
             {isMobileMenuOpen ? (
               <X size={20} aria-hidden="true" />
