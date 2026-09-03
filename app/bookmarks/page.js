@@ -171,10 +171,10 @@ export default function BookmarksPage() {
                         key={t.id}
                         type="button"
                         onClick={() => setTypeFilter(t.id)}
-                        className={`cursor-pointer px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all border flex items-center gap-1.5 shrink-0 ${
+                        className={`cursor-pointer px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-colors border flex items-center gap-1.5 shrink-0 ${
                           isActive
-                            ? "bg-[#F4B942] text-black border-[#F4B942] shadow-sm"
-                            : "bg-[#111611] text-[#E0E0E0] border-white/[0.14] hover:bg-white/[0.08] hover:text-white"
+                            ? "bg-primary text-black border-primary"
+                            : "bg-surface text-text-sub border-border hover:bg-surface-hover hover:text-white"
                         }`}
                       >
                         {Icon && <Icon size={13} strokeWidth={2.2} />}
@@ -199,7 +199,7 @@ export default function BookmarksPage() {
               ))}
             </div>
           ) : items.length === 0 ? (
-            <div className="py-20 px-6 bg-surface/95 backdrop-blur-xl rounded-2xl border border-white/[0.14] shadow-2xl max-w-xl mx-auto text-center justify-center items-center">
+            <div className="py-20 px-6 bg-surface/95 backdrop-blur-xl rounded-2xl border border-border max-w-xl mx-auto text-center justify-center items-center">
               <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-wide text-text-main uppercase mb-2">
                 Your Watch Later is Empty
               </h2>
@@ -228,25 +228,25 @@ export default function BookmarksPage() {
                     <div
                       key={itemKey}
                       onClick={() => toggleSelectKey(itemKey)}
-                      className={`group block text-left select-none cursor-pointer transition-all duration-200 rounded-lg overflow-hidden border ${
+                      className={`group block text-left select-none cursor-pointer transition-colors rounded-lg overflow-hidden border ${
                         isSelected
-                          ? "ring-2 ring-[#F4B942] border-[#F4B942] bg-[#1a221a]"
-                          : "border-white/[0.14] bg-[#0e120e] hover:border-white/30"
+                          ? "border-primary bg-surface-elevated"
+                          : "border-border bg-surface hover:border-white/25"
                       }`}
                     >
-                      <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#141a14]">
+                      <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-hover">
                         {poster ? (
                           <img
                             src={poster}
                             alt={title}
                             loading="lazy"
-                            className={`w-full h-full object-cover transition-opacity ${
+                            className={`w-full h-full object-cover ${
                               isSelected ? "opacity-75" : "opacity-90"
                             }`}
                           />
                         ) : (
-                          <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-[#111611]">
-                            <span className="font-display text-lg text-[#A3A3A3] mb-1">
+                          <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-surface">
+                            <span className="font-display text-lg text-text-muted mb-1">
                               NO POSTER
                             </span>
                           </div>
@@ -254,9 +254,9 @@ export default function BookmarksPage() {
 
                         <div className="absolute top-2.5 left-2.5 z-10">
                           <div
-                            className={`h-6 w-6 rounded-md flex items-center justify-center transition-all ${
+                            className={`h-6 w-6 rounded-md flex items-center justify-center transition-colors ${
                               isSelected
-                                ? "bg-[#F4B942] text-black shadow-lg"
+                                ? "bg-primary text-black"
                                 : "bg-black/70 text-white border border-white/40"
                             }`}
                           >
@@ -271,15 +271,15 @@ export default function BookmarksPage() {
                         </div>
                       </div>
 
-                      <div className="p-3 bg-[#0e120e]">
+                      <div className="p-3 bg-surface">
                         <h3
                           className={`text-sm font-bold line-clamp-1 ${
-                            isSelected ? "text-[#F4B942]" : "text-[#f3ede2]"
+                            isSelected ? "text-primary" : "text-text-main"
                           }`}
                         >
                           {title}
                         </h3>
-                        <div className="flex items-center justify-between text-xs text-[#A3A3A3] mt-1">
+                        <div className="flex items-center justify-between text-xs text-text-muted mt-1">
                           <span>{year || "—"}</span>
                           {rating !== "0.0" && (
                             <span className="text-amber-400 font-semibold">
@@ -301,8 +301,8 @@ export default function BookmarksPage() {
                       href={`/watch/${itemType}/${item.id}`}
                       className="block no-underline"
                     >
-                      <div className="streaming-card bg-[#0e120e] rounded-lg overflow-hidden border border-white/[0.12] flex flex-col h-full">
-                        <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#141a14]">
+                      <div className="streaming-card bg-surface rounded-lg overflow-hidden border border-border flex flex-col h-full">
+                        <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-hover">
                           {poster ? (
                             <img
                               src={poster}
@@ -311,11 +311,11 @@ export default function BookmarksPage() {
                               className="card-poster-img w-full h-full object-cover block"
                             />
                           ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-[#111611]">
-                              <span className="font-display text-xl text-[#A3A3A3] mb-1">
+                            <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-surface">
+                              <span className="font-display text-xl text-text-muted mb-1">
                                 NO POSTER
                               </span>
-                              <span className="text-xs text-[#A3A3A3] line-clamp-2">
+                              <span className="text-xs text-text-muted line-clamp-2">
                                 {title}
                               </span>
                             </div>
@@ -331,8 +331,8 @@ export default function BookmarksPage() {
                             </div>
                           )}
 
-                          <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                            <div className="w-11 h-11 rounded-full bg-[#F4B942] text-black flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-200 shadow-xl shadow-black/70">
+                          <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center justify-center">
+                            <div className="w-11 h-11 rounded-full bg-primary text-black flex items-center justify-center">
                               <Play
                                 size={20}
                                 fill="currentColor"
@@ -342,12 +342,12 @@ export default function BookmarksPage() {
                           </div>
                         </div>
 
-                        <div className="p-3 flex flex-col flex-1 justify-between gap-1.5 bg-[#0e120e]">
-                          <h3 className="text-sm font-bold text-[#f3ede2] line-clamp-1 group-hover:text-[#F4B942] transition-colors">
+                        <div className="p-3 flex flex-col flex-1 justify-between gap-1.5 bg-surface">
+                          <h3 className="text-sm font-bold text-text-main line-clamp-1 group-hover:text-primary transition-colors">
                             {title}
                           </h3>
-                          <div className="flex items-center justify-between text-xs text-[#E0E0E0]">
-                            <span className="text-[#A3A3A3] font-medium">
+                          <div className="flex items-center justify-between text-xs text-text-sub">
+                            <span className="text-text-muted font-medium">
                               {year || "—"}
                             </span>
                           </div>
@@ -360,7 +360,7 @@ export default function BookmarksPage() {
                       title="Remove from Watch Later"
                       aria-label={`Remove ${title} from Watch Later`}
                       onClick={(e) => handleQuickDelete(e, item)}
-                      className="absolute top-2 right-2 z-20 h-7 w-7 rounded-full bg-black/75 backdrop-blur-sm border border-white/20 text-[#E0E0E0] hover:text-red-400 hover:border-red-400/50 hover:bg-black/90 flex items-center justify-center transition-all cursor-pointer shadow-lg opacity-80 sm:opacity-0 group-hover:opacity-100"
+                      className="absolute top-2 right-2 z-20 h-7 w-7 rounded-full bg-black/75 backdrop-blur-sm border border-white/20 text-text-sub hover:text-red-400 hover:border-red-400/50 hover:bg-black/90 flex items-center justify-center transition-colors cursor-pointer opacity-80 sm:opacity-0 group-hover:opacity-100"
                     >
                       <Trash2 size={13} />
                     </button>
@@ -372,22 +372,22 @@ export default function BookmarksPage() {
         </main>
 
         {isSelectMode && selectedKeys.size > 0 && (
-          <div className="sm:hidden fixed bottom-4 inset-x-4 z-40 p-3 bg-[#0e120e]/95 backdrop-blur-xl border border-white/[0.18] rounded-xl shadow-2xl flex items-center justify-between gap-3">
-            <span className="text-xs font-bold text-[#f3ede2]">
+          <div className="sm:hidden fixed bottom-4 inset-x-4 z-40 p-3 bg-surface/95 backdrop-blur-xl border border-border rounded-xl flex items-center justify-between gap-3">
+            <span className="text-xs font-bold text-text-main">
               {selectedKeys.size} item{selectedKeys.size > 1 ? "s" : ""} selected
             </span>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setSelectedKeys(new Set())}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#E0E0E0] bg-white/[0.08]"
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-sub bg-white/[0.08]"
               >
                 Clear
               </button>
               <button
                 type="button"
                 onClick={handleDeleteSelected}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-red-600 shadow flex items-center gap-1.5"
+                className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-red-600 flex items-center gap-1.5"
               >
                 <Trash2 size={13} />
                 Delete

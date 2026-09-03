@@ -48,7 +48,7 @@ export default function WatchPageClient({
       />
 
       <div className="mt-10 sm:mt-14 w-full">
-        <div className="flex items-center gap-2 overflow-x-auto border-b border-white/[0.14] pb-px [scrollbar-width:thin]">
+        <div className="flex items-center gap-2 overflow-x-auto border-b border-border pb-px [scrollbar-width:thin]">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -58,10 +58,10 @@ export default function WatchPageClient({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider whitespace-nowrap transition-all border-b-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#F4B942] ${
+                className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider whitespace-nowrap transition-colors border-b-2 cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-primary ${
                   isActive
-                    ? 'border-[#F4B942] text-[#F4B942] bg-white/[0.04] rounded-t-lg'
-                    : 'border-transparent text-[#E0E0E0] hover:text-white hover:bg-white/[0.02]'
+                    ? 'border-primary text-primary bg-white/[0.04] rounded-t-lg'
+                    : 'border-transparent text-text-sub hover:text-white hover:bg-white/[0.02]'
                 }`}
               >
                 {Icon && <Icon size={16} strokeWidth={2.2} />}
@@ -88,9 +88,9 @@ export default function WatchPageClient({
                 {cast.map((actor) => (
                   <div
                     key={actor.id}
-                    className="flex flex-col items-center text-center bg-[#0e120e] p-4 rounded-xl border border-white/[0.12]"
+                    className="flex flex-col items-center text-center bg-surface p-4 rounded-xl border border-border"
                   >
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 mb-3 rounded-full overflow-hidden bg-[#141a14] border-2 border-white/[0.14] shadow-lg">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 mb-3 rounded-full overflow-hidden bg-surface-hover border border-border">
                       {actor.profile_path ? (
                         <img
                           src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
@@ -98,15 +98,15 @@ export default function WatchPageClient({
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[#A3A3A3]">
+                        <div className="w-full h-full flex items-center justify-center text-text-muted">
                           <Users size={24} />
                         </div>
                       )}
                     </div>
-                    <p className="text-sm font-bold text-[#f3ede2] line-clamp-1">
+                    <p className="text-sm font-bold text-text-main line-clamp-1">
                       {actor.name}
                     </p>
-                    <p className="text-xs text-[#E0E0E0] mt-0.5 line-clamp-1">
+                    <p className="text-xs text-text-sub mt-0.5 line-clamp-1">
                       {actor.character}
                     </p>
                   </div>
@@ -121,13 +121,13 @@ export default function WatchPageClient({
                 {backdrops.map((img, i) => (
                   <div
                     key={i}
-                    className="aspect-video w-full rounded-xl overflow-hidden bg-[#141a14] border border-white/[0.14] shadow-lg"
+                    className="aspect-video w-full rounded-xl overflow-hidden bg-surface-hover border border-border"
                   >
                     <img
                       src={`https://image.tmdb.org/t/p/w780${img.file_path}`}
                       alt=""
                       loading="lazy"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 ))}

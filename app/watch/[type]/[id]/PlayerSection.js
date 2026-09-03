@@ -186,15 +186,15 @@ export default function PlayerSection({
           type="button"
           onClick={handleBookmarkToggle}
           aria-label={saved ? "Remove from Watch Later" : "Save to Watch Later"}
-          className={`cursor-pointer inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-bold uppercase tracking-wider transition-all duration-200 border ${
+          className={`cursor-pointer inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-bold uppercase tracking-wider transition-colors border ${
             saved
-              ? "bg-[#F4B942]/15 border-[#F4B942] text-[#F4B942] shadow-sm shadow-[#F4B942]/20 hover:bg-[#F4B942]/25"
-              : "btn-cinema-ghost hover:border-[#F4B942]/50 hover:text-white"
+              ? "bg-primary-dim border-primary text-primary hover:bg-primary-dim/80"
+              : "btn-cinema-ghost hover:border-white/30 hover:text-white"
           }`}
         >
           {saved ? (
             <>
-              <BookmarkCheck size={18} className="text-[#F4B942]" />
+              <BookmarkCheck size={18} className="text-primary" />
               <span>Saved to Watch Later</span>
             </>
           ) : (
@@ -214,11 +214,11 @@ export default function PlayerSection({
             aria-label="Close modal background"
           />
 
-          <div className="relative flex max-h-[96vh] w-full max-w-[1240px] flex-col overflow-hidden rounded-2xl border border-white/[0.16] bg-[#0a0d0a] shadow-2xl z-10">
-            <div className="flex flex-wrap items-center justify-between bg-[#0e120e] px-5 py-3 border-b border-white/[0.12] gap-3">
+          <div className="relative flex max-h-[96vh] w-full max-w-[1240px] flex-col overflow-hidden rounded-2xl border border-border bg-bg z-10">
+            <div className="flex flex-wrap items-center justify-between bg-surface px-5 py-3 border-b border-border gap-3">
               <div className="flex items-center gap-2 sm:gap-3">
-                <span className="hidden sm:flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#E0E0E0] mr-1">
-                  <Server size={14} className="text-[#F4B942]" /> Server:
+                <span className="hidden sm:flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-text-sub mr-1">
+                  <Server size={14} className="text-primary" /> Server:
                 </span>
                 {SERVER_NAMES.map((name) => {
                   const isActive = activeServer === name;
@@ -227,10 +227,10 @@ export default function PlayerSection({
                       key={name}
                       id={`server-${name.toLowerCase().replace(/\s/g, "-")}`}
                       onClick={() => setActiveServer(name)}
-                      className={`cursor-pointer rounded-md px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-all ${
+                      className={`cursor-pointer rounded-md px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-colors ${
                         isActive
-                          ? "bg-[#F4B942] text-black shadow-sm"
-                          : "bg-white/[0.08] text-[#E0E0E0] hover:bg-white/[0.15] hover:text-white"
+                          ? "bg-primary text-black"
+                          : "bg-white/[0.08] text-text-sub hover:bg-white/[0.15] hover:text-white"
                       }`}
                     >
                       {name}
@@ -242,7 +242,7 @@ export default function PlayerSection({
               <button
                 id="close-player-btn"
                 onClick={() => setShowPlayer(false)}
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/[0.08] text-[#E0E0E0] hover:bg-white/[0.18] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#F4B942]"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/[0.08] text-text-sub hover:bg-white/[0.18] hover:text-white transition-colors focus:outline-none focus:ring-1 focus:ring-primary"
                 aria-label="Close video player"
               >
                 <X size={18} />
@@ -261,9 +261,9 @@ export default function PlayerSection({
             </div>
 
             {type === "tv" && (
-              <div className="w-full bg-[#080b08] p-4 sm:p-5 border-t border-white/[0.12] flex-shrink-0">
+              <div className="w-full bg-surface p-4 sm:p-5 border-t border-border flex-shrink-0">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-display text-base tracking-wider uppercase text-[#f3ede2]">
+                  <span className="font-display text-base tracking-wider uppercase text-text-main">
                     Season {season} Episodes
                   </span>
                 </div>
@@ -279,7 +279,7 @@ export default function PlayerSection({
                       ))}
                     </div>
                   ) : episodesList.length === 0 ? (
-                    <p className="py-8 text-center w-full text-sm font-semibold text-[#E0E0E0]">
+                    <p className="py-8 text-center w-full text-sm font-semibold text-text-sub">
                       No episodes found for Season {season}.
                     </p>
                   ) : (
@@ -292,10 +292,10 @@ export default function PlayerSection({
                           key={ep.episode_number}
                           id={`episode-${ep.episode_number}`}
                           onClick={() => setEpisode(ep.episode_number)}
-                          className={`group flex w-[230px] sm:w-[260px] flex-shrink-0 flex-col rounded-xl overflow-hidden text-left transition-all border cursor-pointer ${
+                          className={`group flex w-[230px] sm:w-[260px] flex-shrink-0 flex-col rounded-xl overflow-hidden text-left transition-colors border cursor-pointer ${
                             isActive
-                              ? "border-[#F4B942] bg-[#162016] ring-2 ring-[#F4B942] shadow-lg shadow-[#F4B942]/15"
-                              : "border-white/[0.14] bg-[#0e120e] hover:border-white/30 hover:bg-[#141a14]"
+                              ? "border-primary bg-surface-elevated"
+                              : "border-border bg-surface hover:border-white/25 hover:bg-surface-hover"
                           }`}
                         >
                           <div className="relative h-[115px] w-full flex-shrink-0 overflow-hidden bg-[#111611]">

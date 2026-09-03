@@ -24,8 +24,8 @@ export function MovieCard({ item, type, accentColor = '#22c55e', fixedWidth = tr
         fixedWidth ? 'w-[160px] sm:w-[185px] shrink-0' : 'w-full'
       }`}
     >
-      <div className="streaming-card bg-[#0e120e] rounded-lg overflow-hidden border border-white/[0.12] flex flex-col h-full">
-        <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#141a14]">
+      <div className="streaming-card bg-surface rounded-lg overflow-hidden border border-border flex flex-col h-full">
+        <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-hover">
           {poster ? (
             <img
               src={poster}
@@ -34,9 +34,9 @@ export function MovieCard({ item, type, accentColor = '#22c55e', fixedWidth = tr
               className="card-poster-img w-full h-full object-cover block"
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-[#111611]">
-              <span className="font-display text-xl text-[#A3A3A3] mb-1">NO POSTER</span>
-              <span className="text-xs text-[#A3A3A3] line-clamp-2">{title}</span>
+            <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-surface">
+              <span className="font-display text-xl text-text-muted mb-1">NO POSTER</span>
+              <span className="text-xs text-text-muted line-clamp-2">{title}</span>
             </div>
           )}
 
@@ -47,27 +47,27 @@ export function MovieCard({ item, type, accentColor = '#22c55e', fixedWidth = tr
             </div>
           )}
 
-          <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-            <div className="w-11 h-11 rounded-full bg-[#F4B942] text-black flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-200 shadow-xl shadow-black/70">
+          <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-150 flex items-center justify-center">
+            <div className="w-11 h-11 rounded-full bg-primary text-black flex items-center justify-center">
               <Play size={20} fill="currentColor" className="ml-0.5" />
             </div>
           </div>
         </div>
 
-        <div className="p-3 flex flex-col flex-1 justify-between gap-1.5 bg-[#0e120e]">
-          <h3 className="text-sm font-bold text-[#f3ede2] line-clamp-1 group-hover:text-[#F4B942] transition-colors">
+        <div className="p-3 flex flex-col flex-1 justify-between gap-1.5 bg-surface">
+          <h3 className="text-sm font-bold text-text-main line-clamp-1 group-hover:text-primary transition-colors">
             {title}
           </h3>
-          <div className="flex items-center justify-between text-xs text-[#E0E0E0]">
+          <div className="flex items-center justify-between text-xs text-text-sub">
             {isContinueWatching ? (
               <span className="text-amber-400 font-semibold text-xs">
                 S{item.season} · E{item.episode}
               </span>
             ) : (
-              <span className="text-[#A3A3A3] font-medium">{year || '—'}</span>
+              <span className="text-text-muted font-medium">{year || '—'}</span>
             )}
             {isContinueWatching && (
-              <span className="text-xs text-[#F4B942] font-bold uppercase tracking-wider">
+              <span className="text-xs text-primary font-bold uppercase tracking-wider">
                 Resume
               </span>
             )}

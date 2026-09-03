@@ -94,7 +94,7 @@ export default async function WatchPage({ params }) {
     : null;
 
   return (
-    <div className="isolate flex min-h-screen flex-col bg-[#070907] text-[#f3ede2]">
+    <div className="isolate flex min-h-screen flex-col bg-bg text-text-main">
       <Header />
 
       {backdropUrl && (
@@ -104,7 +104,7 @@ export default async function WatchPage({ params }) {
             alt=""
             className="h-full w-full object-cover object-[center_20%] brightness-[0.25] saturate-[0.7]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#070907]/50 to-[#070907] to-[96%]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg/50 to-bg to-[96%]" />
         </div>
       )}
 
@@ -118,7 +118,7 @@ export default async function WatchPage({ params }) {
       <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 pt-6 sm:pt-14 pb-20 flex-1">
         <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start mb-6">
           <div className="w-[200px] sm:w-[240px] md:w-[280px] shrink-0 mx-auto md:mx-0">
-            <div className="aspect-[2/3] w-full rounded-xl overflow-hidden bg-[#111611] border border-white/[0.16] shadow-2xl shadow-black/90">
+            <div className="aspect-[2/3] w-full rounded-xl overflow-hidden bg-surface border border-border">
               {posterUrl ? (
                 <img
                   src={posterUrl}
@@ -126,7 +126,7 @@ export default async function WatchPage({ params }) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-xs text-[#A3A3A3]">
+                <div className="w-full h-full flex items-center justify-center text-xs text-text-muted">
                   No Image
                 </div>
               )}
@@ -143,7 +143,7 @@ export default async function WatchPage({ params }) {
                 />
               </div>
             ) : (
-              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#f3ede2] leading-[1.0] mb-4">
+              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-text-main leading-[1.0] mb-4">
                 {title}
               </h1>
             )}
@@ -156,36 +156,36 @@ export default async function WatchPage({ params }) {
                 </div>
               )}
               {year && (
-                <span className="bg-white/[0.08] border border-white/[0.14] text-[#E0E0E0] px-3 py-1 rounded-full text-xs font-semibold">
+                <span className="bg-white/[0.08] border border-border text-text-sub px-3 py-1 rounded-full text-xs font-semibold">
                   {year}
                 </span>
               )}
               {runtime && (
-                <span className="bg-white/[0.08] border border-white/[0.14] text-[#E0E0E0] px-3 py-1 rounded-full text-xs font-semibold">
+                <span className="bg-white/[0.08] border border-border text-text-sub px-3 py-1 rounded-full text-xs font-semibold">
                   {runtime}
                 </span>
               )}
               {seasons && (
-                <span className="bg-white/[0.08] border border-white/[0.14] text-[#E0E0E0] px-3 py-1 rounded-full text-xs font-semibold">
+                <span className="bg-white/[0.08] border border-border text-text-sub px-3 py-1 rounded-full text-xs font-semibold">
                   {seasons} Season{seasons !== 1 ? "s" : ""}
                 </span>
               )}
               {episodes && (
-                <span className="bg-white/[0.08] border border-white/[0.14] text-[#E0E0E0] px-3 py-1 rounded-full text-xs font-semibold">
+                <span className="bg-white/[0.08] border border-border text-text-sub px-3 py-1 rounded-full text-xs font-semibold">
                   {episodes} Episodes
                 </span>
               )}
               {genres.map((g) => (
                 <span
                   key={g.id}
-                  className="bg-[#F4B942]/15 border border-[#F4B942]/30 text-[#F4B942] px-3 py-1 rounded-full text-xs font-bold"
+                  className="bg-primary-dim border border-primary/30 text-primary px-3 py-1 rounded-full text-xs font-bold"
                 >
                   {g.name}
                 </span>
               ))}
             </div>
 
-            <p className="text-sm sm:text-base leading-[1.7] text-[#E0E0E0] max-w-[800px] mb-8 line-clamp-3">
+            <p className="text-sm sm:text-base leading-[1.7] text-text-sub max-w-[800px] mb-8 line-clamp-3">
               {overview}
             </p>
 

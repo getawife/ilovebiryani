@@ -139,28 +139,21 @@ body {
   font-weight: 700;
   font-size: 0.9375rem;
   letter-spacing: 0.04em;
-  background: #f4b942;
+  background: var(--color-primary);
   color: #050805;
   border: none;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.2s ease;
+  transition: background-color 0.15s ease;
   text-transform: uppercase;
-  box-shadow: 0 4px 14px rgba(244, 185, 66, 0.3);
 }
 
 .btn-cinema-primary:hover {
-  background: #fcd34d;
+  background: var(--color-primary-hover);
   color: #050805;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(244, 185, 66, 0.45);
 }
 
 .btn-cinema-primary:active {
-  background: #f4b942;
-  transform: scale(0.98);
+  background: var(--color-primary);
 }
 
 .btn-cinema-ghost {
@@ -173,19 +166,17 @@ body {
   font-weight: 600;
   font-size: 0.9375rem;
   background: rgba(255, 255, 255, 0.07);
-  color: #f3ede2;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
   cursor: pointer;
   transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .btn-cinema-ghost:hover {
   background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .player-backdrop-dim {
@@ -198,27 +189,25 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 9999px;
-  background-color: #141a14;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #e0e0e0;
+  background-color: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-sub);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .control-target-arrow:hover {
-  background-color: #f4b942;
+  background-color: var(--color-primary);
   color: #050805;
-  border-color: #f4b942;
-  transform: scale(1.06);
-  box-shadow: 0 4px 14px rgba(244, 185, 66, 0.3);
+  border-color: var(--color-primary);
 }
 
 .control-target-arrow:active {
-  transform: scale(0.95);
+  background-color: var(--color-primary-hover);
 }
 
 @keyframes shimmer {
