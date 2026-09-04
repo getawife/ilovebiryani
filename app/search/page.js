@@ -572,10 +572,7 @@ function SearchContent() {
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div
-            className="text-center py-20 px-6 bg-[#0e120e]/95 backdrop-blur-xl rounded-xl border border-white/[0.14] shadow-xl"
-            role="status"
-          >
+          <div className="text-center py-20 px-6 " role="status">
             <p className="text-base font-semibold text-[#E0E0E0] mb-2">
               {queryParam.trim()
                 ? "No matching movies or shows found for this search criteria."
