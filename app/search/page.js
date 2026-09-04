@@ -2,7 +2,15 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, ChevronDown, Search, Film, Tv, Sparkles, X } from "lucide-react";
+import {
+  SlidersHorizontal,
+  ChevronDown,
+  Search,
+  Film,
+  Tv,
+  Sparkles,
+  X,
+} from "lucide-react";
 import Header from "../components/header";
 import Footer from "../components/Footer";
 import MovieCard from "../components/MovieCard";
@@ -542,22 +550,11 @@ function SearchContent() {
       <main className="flex-1 w-full min-w-0">
         <div className="mb-8 border-b border-white/[0.12] pb-5">
           <div className="flex items-center gap-2.5 mb-2">
-            <Search size={26} className="text-[#F4B942]" aria-hidden="true" />
             <h1 className="font-display text-3xl sm:text-5xl font-bold tracking-wider text-[#f3ede2] uppercase">
               Results for:{" "}
               <span className="text-[#F4B942]">&quot;{queryParam}&quot;</span>
             </h1>
           </div>
-
-          <p
-            className="text-sm font-medium text-[#E0E0E0]"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {loading
-              ? "Searching catalog..."
-              : `${items.length} titles matched`}
-          </p>
         </div>
 
         {loading ? (

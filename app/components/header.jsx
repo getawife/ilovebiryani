@@ -174,8 +174,8 @@ export default function Header() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleSearchSubmit}
-              placeholder="Search title, cast... (Enter)"
-              aria-label="Search titles and cast"
+              placeholder="Search title... (Enter)"
+              aria-label="Search titles... (Press Enter to search)"
               className="w-full bg-[#111611] text-sm font-medium text-[#f3ede2] placeholder-[#A3A3A3] border border-white/[0.16] rounded-md pl-9 pr-9 py-2 outline-none focus:border-[#F4B942] focus:bg-[#162016] focus:ring-2 focus:ring-[#F4B942]/30 transition-all"
             />
 
@@ -190,7 +190,6 @@ export default function Header() {
               </button>
             )}
           </div>
-
 
           <button
             ref={mobileMenuButtonRef}
